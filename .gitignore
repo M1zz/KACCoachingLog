@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# Xcode
+DerivedData/
+build/
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+
+# verify.sh output (logs, test binary, sample xlsx)
+Scripts/output/
+
+# local task notes
+todo.md

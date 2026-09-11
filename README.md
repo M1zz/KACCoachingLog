@@ -1,0 +1,75 @@
+# 코칭일지 (KAC Coaching Log)
+
+한국코치협회 **코칭일지 양식(인증_1_34_v6_260201)** 을 자동으로 채워 주는 iOS · macOS 앱입니다.
+코칭을 녹음하면 날짜·시간·분이 기록되고, 대화는 텍스트로 변환되며, 버튼 한 번으로 원본과 같은 서식의 `.xlsx`로 내보낼 수 있습니다.
+
+## 주요 기능
+
+| 기능 | 설명 |
+| --- | --- |
+| 코칭 녹음 | 시작 시각 = 녹음 시작, 종료 시각 = 종료 버튼. 일시정지, 전화 끊김 후 자동 재개(iOS), 잠금 화면에서도 녹음 유지 |
+| 타이머 모드 | 녹음 동의가 없을 때 시간만 기록 |
+| 텍스트 변환 (STT) | iOS 26 / macOS 26+: `SpeechAnalyzer` (기기 내 처리, 긴 녹음용) · 이전 버전: `SFSpeechRecognizer` 구간 분할 |
+| 구간별 듣기 | 변환된 문장을 누르면 그 위치부터 재생 |
+| 오디오 가져오기 | Zoom · 음성 메모 등으로 녹음한 파일을 새 기록으로 만들거나 기존 기록에 첨부 |
+| 작성 점검 | 양식의 유의사항 1~9번을 기준으로 오류/주의 표시 (아래 표) |
+| 엑셀 내보내기 | 원본 양식의 스타일·안내문을 그대로 사용, 날짜순 정렬, SUM 수식, "○시간 ○분" 합계 자동 기입 |
+
+### 앱이 점검하는 규칙
+
+| 유의사항 | 점검 내용 |
+| --- | --- |
+| 1 | 응시자 명, 고객명, 시간 누락 / 분이 시간 범위와 다른 경우 |
+| 2 | 고객 3명 미만 |
+| 3 | 세션 30분 미만·120분 초과, 같은 날 동일 고객 3회 이상 또는 2회 합산 120분 초과 |
+| 4 | 날짜순 자동 정렬, 시간이 겹치는 세션 경고 |
+| 6 | 코치더코치: 코치명·자격번호, 1:1·1:2는 2배 계산 후 60~120분, 총 25시간 이하 |
+| 7 | 그룹코칭 최대 1:9 |
+| 8 | 코칭형태는 대면/비대면만 선택 가능 |
+| 9 | 합계를 시간·분으로 기입 |
+
+유의사항 5번(코칭교육 중 실습 제외)은 앱이 알 수 없으니 직접 빼 주세요.
+
+## 요구 사항
+
+- Xcode 16 이상 (Xcode 26 권장 — `SpeechAnalyzer` 경로가 함께 컴파일됩니다)
+- iOS 17 / macOS 14 이상
+- 외부 패키지 없음
+
+## 실행 방법
+
+1. `KACCoachingLog.xcodeproj`를 엽니다.
+2. 타깃 **KACCoachingLog → Signing & Capabilities**에서 Team을 선택합니다. 필요하면 Bundle Identifier(`com.leeo.KACCoachingLog`)를 바꿉니다.
+3. 실행 대상으로 iPhone 또는 **My Mac**을 고르고 실행합니다.
+4. 설정에서 **응시자 명**을 입력합니다.
+
+> 마이크와 음성 인식은 실제 기기에서 테스트하세요. 시뮬레이터는 마이크 입력이 제한됩니다.
+> 한국어 음성 모델은 처음 변환할 때 한 번 내려받습니다.
+
+## 프로젝트 구조
+
+```
+KACCoachingLog/
+├─ App/             앱 진입점, 설정 키
+├─ Core/            LogEntry, 규칙 점검(KACValidator), 합계 — Foundation만 사용
+├─ Export/          XLSX 생성(KACWorkbookBuilder), ZIP 작성기, 원본 양식 스타일(KACTemplateParts)
+├─ Models/          SwiftData 모델(CoachingSession), 녹음 파일 저장소
+├─ Recording/       AVAudioRecorder 녹음, 재생
+├─ Transcription/   SpeechAnalyzer / SFSpeechRecognizer 엔진, 변환 작업 관리
+└─ Views/           SwiftUI 화면
+Config/             Info.plist(백그라운드 오디오), macOS 샌드박스 권한
+Scripts/verify.sh   Mac에서 핵심 로직 테스트 + macOS/iOS 빌드 확인
+```
+
+## 검증 스크립트
+
+```bash
+./Scripts/verify.sh        # 핵심 로직 테스트 + macOS·iOS 시뮬레이터 빌드
+./Scripts/verify.sh core   # 규칙·엑셀 생성만 테스트 (Scripts/output/sample-코칭일지.xlsx 생성)
+```
+
+## 참고
+
+- 양식이 개정되면 `Export/KACTemplateParts.swift`의 스타일/문자열을 새 양식에서 다시 추출하고, `KACWorkbookBuilder`의 행 구성을 맞춰 주세요.
+- 녹음·텍스트는 앱 컨테이너(Application Support/Recordings)와 SwiftData 저장소에만 보관됩니다. 고객 동의 없이 녹음하지 마세요.
+- 응시 요건(필요 시간, 유료·무료 구성)은 협회의 최신 "코치인증자격시험 세부사항"을 확인하세요. 앱의 목표 시간은 설정에서 바꿀 수 있습니다.
