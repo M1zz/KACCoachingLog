@@ -169,7 +169,7 @@ struct SheetRowPreview: View {
             row("받은 코치더코치(분)", entry.kind == .coachTheCoach ? "\(entry.recordedMinutes)" : "")
             row("코칭형태", formatter.formatText(entry))
         }
-        .font(.callout)
+        .font(.body)
     }
 
     @ViewBuilder

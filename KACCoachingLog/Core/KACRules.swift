@@ -52,6 +52,10 @@ enum KACValidator {
     static let maxGroupSize = 9
     static let maxCTCMinutes = 25 * 60
     static let minimumClientCount = 3
+    /// KAC requires 50 hours of coaching.
+    static let requiredTotalMinutes = 50 * 60
+    /// Some sessions may be rejected for writing errors, so 55–60 hours is the safe target.
+    static let recommendedTotalMinutes = 55 * 60
 
     static func uniqueClients(in entries: [LogEntry]) -> Set<String> {
         var names = Set<String>()
@@ -74,9 +78,66 @@ enum KACValidator {
         }
     }
 
+    // MARK: Session length
+
+    /// Minutes that may be written to the sheet for one session.
+    /// Rule 3: 30...120. Rule 6-③: 1:1·1:2 coach-the-coach is doubled, and the doubled value must be 60...120.
+    static func allowedRecordedMinutes(for entry: LogEntry) -> ClosedRange<Int> {
+        if entry.kind == .coachTheCoach && entry.ctcComposition.multiplier > 1 {
+            return 60...maxSessionMinutes
+        }
+        return minSessionMinutes...maxSessionMinutes
+    }
+
+    /// Real (clock) minutes the written time range may cover. 1:1·1:2 coach-the-coach: 30...60.
+    static func allowedRangeMinutes(for entry: LogEntry) -> ClosedRange<Int> {
+        let multiplier = entry.kind == .coachTheCoach ? entry.ctcComposition.multiplier : 1
+        let recorded = allowedRecordedMinutes(for: entry)
+        return (recorded.lowerBound / multiplier)...(recorded.upperBound / multiplier)
+    }
+
+    /// Human-readable allowed length, e.g. "30~120분" or "실제 30~60분 (2배 60~120분)".
+    static func allowedLengthText(for entry: LogEntry) -> String {
+        let recorded = allowedRecordedMinutes(for: entry)
+        let range = allowedRangeMinutes(for: entry)
+        if recorded == range {
+            return "\(recorded.lowerBound)~\(recorded.upperBound)분"
+        }
+        return "실제 \(range.lowerBound)~\(range.upperBound)분 (2배 \(recorded.lowerBound)~\(recorded.upperBound)분)"
+    }
+
+    /// Whether the session length satisfies rule 3 / 6-③, both for the written minutes and the time range.
+    static func hasValidLength(_ entry: LogEntry) -> Bool {
+        allowedRecordedMinutes(for: entry).contains(entry.recordedMinutes)
+            && allowedRangeMinutes(for: entry).contains(entry.rangeMinutes)
+    }
+
+    struct LengthFix: Equatable {
+        var end: Date
+        var minutesOverride: Int?
+    }
+
+    /// A safe automatic correction for a length error, or nil when none is needed or possible.
+    /// Too long → end time is cut to the maximum. Too short is never padded: the user has to check it.
+    static func lengthFix(for entry: LogEntry) -> LengthFix? {
+        guard entry.end > entry.start, !hasValidLength(entry) else { return nil }
+        let range = allowedRangeMinutes(for: entry)
+        if entry.rangeMinutes > range.upperBound {
+            let startMinute = (entry.start.timeIntervalSince1970 / 60).rounded(.down) * 60
+            return LengthFix(end: Date(timeIntervalSince1970: startMinute + Double(range.upperBound * 60)), minutesOverride: nil)
+        }
+        if entry.minutesOverride != nil && range.contains(entry.rangeMinutes) {
+            // Time range is fine; only the hand-typed minutes are off.
+            return LengthFix(end: entry.end, minutesOverride: nil)
+        }
+        return nil
+    }
+
     static func validate(
         entries: [LogEntry],
         candidateName: String,
+        trainingStartDate: Date? = nil,
+        checkTotalHours: Bool = false,
         formatter: KACFormatter = KACFormatter()
     ) -> [ValidationIssue] {
         var issues: [ValidationIssue] = []
@@ -140,6 +201,30 @@ enum KACValidator {
             }
         }
 
+        // Practice only counts from the day the 20-hour basic training started.
+        if let trainingStartDate {
+            let trainingDay = formatter.dayKey(trainingStartDate)
+            for entry in ordered where formatter.dayKey(entry.start) < trainingDay {
+                issues.append(.init(entryID: entry.id, severity: .error, rule: 0, code: "beforeTraining",
+                                    message: "\(formatter.dateText(entry)) \(formatter.timeText(entry)): 기초교육 시작일(\(trainingDay)) 이전 코칭은 인정되지 않아요. 삭제해 주세요."))
+            }
+        } else if !ordered.isEmpty {
+            issues.append(.init(entryID: nil, severity: .warning, rule: 0, code: "trainingStart",
+                                message: "기초교육(20시간) 시작일을 설정에 입력하면 그 이전 코칭을 찾아드려요."))
+        }
+
+        // Total hours — 50 hours required, 55–60 hours recommended as a margin
+        if checkTotalHours && !ordered.isEmpty {
+            let total = KACSummary(entries: ordered).totalMinutes
+            if total < requiredTotalMinutes {
+                issues.append(.init(entryID: nil, severity: .warning, rule: 0, code: "totalRequired",
+                                    message: "총 코칭시간이 \(KACDuration.hoursMinutes(total))이에요. KAC는 50시간이 필요해요."))
+            } else if total < recommendedTotalMinutes {
+                issues.append(.init(entryID: nil, severity: .warning, rule: 0, code: "totalMargin",
+                                    message: "총 코칭시간이 \(KACDuration.hoursMinutes(total))이에요. 일부 세션이 탈락할 수 있으니 55~60시간 이상으로 넉넉히 채우는 것이 안전해요."))
+            }
+        }
+
         // Rule 6-① — received coach-the-coach up to 25 hours
         let ctcTotal = ordered.reduce(0) { $0 + $1.ctcMinutes }
         if ctcTotal > maxCTCMinutes {
@@ -178,10 +263,7 @@ enum KACValidator {
                 add(.error, 1, "clientName", "\(label): 고객명이 비어 있어요.")
             }
             // Rule 3 — 30...120 minutes
-            let minutes = entry.recordedMinutes
-            if minutes > 0 && (minutes < minSessionMinutes || minutes > maxSessionMinutes) {
-                add(.error, 3, "length", "\(label): 한 세션은 30분 이상 120분 이하여야 해요. (\(minutes)분)")
-            }
+            checkLength(entry, label: label, code: "length", add: add)
             // Minutes must agree with the time range
             if entry.minutesOverride != nil && entry.minutesOverride != entry.rangeMinutes {
                 add(.warning, 1, "mismatch", "\(label): 적은 시간(\(entry.recordedMinutes)분)이 시간 범위(\(entry.rangeMinutes)분)와 달라요.")
@@ -204,17 +286,12 @@ enum KACValidator {
             } else if license.range(of: "^K[APS]C[0-9]+$", options: .regularExpression) == nil {
                 add(.warning, 6, "ctcLicenseFormat", "\(label): 자격번호 형식(예: KPC00000)을 확인해 주세요. KAC 이상 코치만 인정돼요.")
             }
-            let minutes = entry.recordedMinutes
             switch entry.ctcComposition {
             case .oneOnOne, .oneOnTwo:
-                // Rule 6-③ — doubled minutes must be 60...120
-                if minutes > 0 && (minutes < 60 || minutes > 120) {
-                    add(.error, 6, "ctcDoubled", "\(label): 1:1·1:2 코치더코치는 2배 계산한 시간이 60~120분이어야 해요. (\(minutes)분)")
-                }
+                // Rule 6-③ — doubled minutes must be 60...120 (real time 30...60)
+                checkLength(entry, label: label, code: "ctcDoubled", add: add)
             case .group:
-                if minutes > 0 && (minutes < minSessionMinutes || minutes > maxSessionMinutes) {
-                    add(.error, 3, "ctcLength", "\(label): 한 세션은 30분 이상 120분 이하여야 해요. (\(minutes)분)")
-                }
+                checkLength(entry, label: label, code: "ctcLength", add: add)
                 if entry.groupSize < 3 || entry.groupSize > 5 {
                     add(.warning, 6, "ctcGroupSize", "\(label): 그룹 코치더코치는 응시자 3-5명 구성이에요.")
                 }
@@ -224,5 +301,30 @@ enum KACValidator {
             }
         }
         return issues
+    }
+
+    /// Rule 3 / 6-③ — length of one session, checked on the written minutes and on the real time range.
+    private static func checkLength(
+        _ entry: LogEntry,
+        label: String,
+        code: String,
+        add: (ValidationIssue.Severity, Int, String, String) -> Void
+    ) {
+        let rule = code == "ctcDoubled" ? 6 : 3
+        let minutes = entry.recordedMinutes
+        let allowed = allowedRecordedMinutes(for: entry)
+        let lengthText = allowedLengthText(for: entry)
+        let isDoubled = allowed != allowedRangeMinutes(for: entry)
+        let prefix = isDoubled ? "1:1·1:2 코치더코치는" : "한 세션은"
+        guard minutes > 0 else { return }
+
+        if minutes > allowed.upperBound {
+            add(.error, rule, code, "\(label): \(minutes)분이에요. \(prefix) \(lengthText)만 인정돼요. 종료 시각을 줄여 주세요.")
+        } else if minutes < allowed.lowerBound {
+            add(.error, rule, code, "\(label): \(minutes)분이에요. \(prefix) \(lengthText)만 인정돼요. 시간을 확인하거나 이 기록을 삭제해 주세요.")
+        } else if entry.minutesOverride != nil && !allowedRangeMinutes(for: entry).contains(entry.rangeMinutes) {
+            // Typed minutes look fine, but the written time range breaks the limit.
+            add(.error, rule, "\(code)Range", "\(label): 분은 \(minutes)분으로 적었지만 시간 범위가 \(entry.rangeMinutes)분이에요. 시간 범위도 \(lengthText) 안이어야 해요.")
+        }
     }
 }

@@ -12,6 +12,7 @@ struct SessionDetailView: View {
     @Query private var allSessions: [CoachingSession]
 
     @AppStorage(AppSettings.candidateNameKey) private var candidateName = ""
+    @AppStorage(AppSettings.trainingStartKey) private var trainingStart = 0.0
     @AppStorage(AppSettings.requireOnDeviceKey) private var requireOnDevice = true
 
     @State private var player = AudioPlayer()
@@ -95,7 +96,11 @@ struct SessionDetailView: View {
     @ViewBuilder
     private var issuesSection: some View {
         let issues = KACValidator
-            .validate(entries: allSessions.map(\.logEntry), candidateName: candidateName)
+            .validate(
+                entries: allSessions.map(\.logEntry),
+                candidateName: candidateName,
+                trainingStartDate: AppSettings.trainingStartDate(trainingStart)
+            )
             .filter { $0.entryID == session.uuid }
         if !issues.isEmpty {
             Section("작성 점검") {
@@ -107,22 +112,43 @@ struct SessionDetailView: View {
     }
 
     private var timeSection: some View {
-        Section {
+        let entry = session.logEntry
+        let isValidLength = KACValidator.hasValidLength(entry)
+        return Section {
             DatePicker("날짜", selection: dayBinding, displayedComponents: .date)
             DatePicker("시작", selection: startBinding, displayedComponents: .hourAndMinute)
-            DatePicker("종료", selection: endBinding, displayedComponents: .hourAndMinute)
-            LabeledContent("시간 범위", value: "\(session.logEntry.rangeMinutes)분")
+            DatePicker("종료", selection: endBinding, in: endRange, displayedComponents: .hourAndMinute)
+            LabeledContent("시간 범위", value: "\(entry.rangeMinutes)분")
             Toggle("분 직접 입력", isOn: overrideEnabledBinding)
             if session.minutesOverride != nil {
-                Stepper(value: overrideValueBinding, in: 0...600, step: 5) {
+                Stepper(value: overrideValueBinding, in: KACValidator.allowedRecordedMinutes(for: entry), step: 5) {
                     LabeledContent("기록할 시간", value: "\(session.minutesOverride ?? 0)분")
                 }
+            }
+            LabeledContent("인정 범위") {
+                Label(KACValidator.allowedLengthText(for: entry),
+                      systemImage: isValidLength ? "checkmark.circle.fill" : "xmark.octagon.fill")
+                    .foregroundStyle(isValidLength ? Color.green : Color.red)
+            }
+            if let fix = KACValidator.lengthFix(for: entry) {
+                Button {
+                    session.endDate = fix.end
+                    session.minutesOverride = fix.minutesOverride
+                    try? modelContext.save()
+                } label: {
+                    Label(fixTitle(fix), systemImage: "wand.and.stars")
+                }
+            } else if !isValidLength && entry.end > entry.start {
+                Text("\(KACValidator.minSessionMinutes)분 미만 코칭은 인정되지 않아요. 실제 시간을 확인하거나 이 기록을 삭제해 주세요.")
+                    .foregroundStyle(.red)
             }
         } header: {
             Text("일시")
         } footer: {
-            if session.kind == .coachTheCoach {
-                Text("1:1·1:2 코치더코치는 실제 시간의 2배(\(session.logEntry.recordedMinutes)분)로 기록돼요.")
+            if session.kind == .coachTheCoach && session.ctcComposition.multiplier > 1 {
+                Text("1:1·1:2 코치더코치는 실제 시간의 2배(\(entry.recordedMinutes)분)로 기록돼요. 1시간이면 120분이라 최대 1시간까지만 적을 수 있어요.")
+            } else if session.kind == .coachTheCoach {
+                Text("그룹 코치더코치는 실제 시간 그대로(\(entry.recordedMinutes)분) 기록돼요.")
             } else {
                 Text("유료·무료 칸에는 시간 범위와 같은 분이 기록돼요. 시간 범위와 다른 값을 적으면 작성 오류로 볼 수 있어요.")
             }
@@ -296,11 +322,33 @@ struct SessionDetailView: View {
         )
     }
 
+    /// Moving the start keeps the session length, so a valid session never becomes invalid by accident.
     private var startBinding: Binding<Date> {
         Binding(
             get: { session.startDate },
-            set: { session.startDate = Calendar.current.combine(day: session.startDate, time: $0) }
+            set: {
+                let length = session.endDate.timeIntervalSince(session.startDate)
+                session.startDate = Calendar.current.combine(day: session.startDate, time: $0)
+                session.endDate = session.startDate.addingTimeInterval(max(length, 0))
+            }
         )
+    }
+
+    /// The end time can only be picked up to the maximum allowed length (120분, CTC 1:1·1:2는 60분).
+    private var endRange: ClosedRange<Date> {
+        let start = Calendar.current.combine(day: session.startDate, time: session.startDate)
+        let maxMinutes = KACValidator.allowedRangeMinutes(for: session.logEntry).upperBound
+        let latest = start.addingTimeInterval(TimeInterval(maxMinutes * 60))
+        // Keep an already-saved out-of-range end selectable so the picker shows the real value.
+        return start...max(latest, session.endDate)
+    }
+
+    private func fixTitle(_ fix: KACValidator.LengthFix) -> String {
+        if fix.end != session.endDate {
+            let time = fix.end.formatted(date: .omitted, time: .shortened)
+            return "종료 시각을 \(time)로 맞추기 (\(KACValidator.allowedRangeMinutes(for: session.logEntry).upperBound)분)"
+        }
+        return "직접 입력한 분 지우고 시간 범위대로 기록하기"
     }
 
     private var endBinding: Binding<Date> {
@@ -314,7 +362,10 @@ struct SessionDetailView: View {
         Binding(
             get: { session.minutesOverride != nil },
             set: { enabled in
-                session.minutesOverride = enabled ? session.logEntry.recordedMinutes : nil
+                let allowed = KACValidator.allowedRecordedMinutes(for: session.logEntry)
+                session.minutesOverride = enabled
+                    ? min(max(session.logEntry.recordedMinutes, allowed.lowerBound), allowed.upperBound)
+                    : nil
             }
         )
     }

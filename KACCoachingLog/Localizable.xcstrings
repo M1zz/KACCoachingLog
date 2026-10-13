@@ -1,0 +1,286 @@
+{
+  "sourceLanguage": "ko",
+  "strings": {
+    "직접 입력": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manual Entry"
+          }
+        }
+      }
+    },
+    "취소": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "저장": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
+          }
+        }
+      }
+    },
+    "응시자 명": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Candidate name"
+          }
+        }
+      }
+    },
+    "응시자 명 (엑셀 상단)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Candidate name (top of sheet)"
+          }
+        }
+      }
+    },
+    "모든 기록에 공통으로 들어가요. 설정에서도 바꿀 수 있어요.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shared by every entry. You can also change it in Settings."
+          }
+        }
+      }
+    },
+    "구분": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type"
+          }
+        }
+      }
+    },
+    "D·E·F 시간 칸": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Columns D·E·F (minutes)"
+          }
+        }
+      }
+    },
+    "유료는 D칸, 무료는 E칸, 받은 코치더코치는 F칸에 분이 기록돼요.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paid minutes go in column D, free in column E, and received coach-the-coach in column F."
+          }
+        }
+      }
+    },
+    "형태": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Format"
+          }
+        }
+      }
+    },
+    "G 코칭형태": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Column G: Coaching format"
+          }
+        }
+      }
+    },
+    "줌·보이스톡·전화로 진행했다면 비대면을 선택해 주세요.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose remote if the session was held over Zoom, voice call, or phone."
+          }
+        }
+      }
+    },
+    "코칭일지에 들어갈 내용": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Row in the coaching log"
+          }
+        }
+      }
+    },
+    "날짜": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date"
+          }
+        }
+      }
+    },
+    "시작": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start"
+          }
+        }
+      }
+    },
+    "종료": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "End"
+          }
+        }
+      }
+    },
+    "기록될 시간": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recorded time"
+          }
+        }
+      }
+    },
+    "%lld분": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld min"
+          }
+        }
+      }
+    },
+    "인정 범위": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allowed length"
+          }
+        }
+      }
+    },
+    "A 날짜 · B 시간": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Column A: Date · Column B: Time"
+          }
+        }
+      }
+    },
+    "실제로 진행한 시각을 분 단위까지 정확히 적어 주세요.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter the actual start and end times, to the minute."
+          }
+        }
+      }
+    },
+    "모든 칸이 채워졌고 문제가 없어요.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All cells are filled in and no problems were found."
+          }
+        }
+      }
+    },
+    "작성 점검": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check"
+          }
+        }
+      }
+    },
+    "빈 칸을 모두 채워야 저장할 수 있어요.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fill in every empty cell to save."
+          }
+        }
+      }
+    },
+    "B 시간: 종료 시각이 시작 시각보다 늦어야 해요": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "B Time: the end must be later than the start"
+          }
+        }
+      }
+    },
+    "C 고객명: %lld명의 이름이 필요해요": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "C Client: %lld name(s) needed"
+          }
+        }
+      }
+    },
+    "C 고객명: 코치더코치 코치 이름이 필요해요": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "C Client: the coach-the-coach coach's name is needed"
+          }
+        }
+      }
+    },
+    "C 고객명: 코치의 인증자격번호가 필요해요": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "C Client: the coach's certification number is needed"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

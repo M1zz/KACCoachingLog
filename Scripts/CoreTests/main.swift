@@ -54,6 +54,52 @@ check(has(3, "sameDayCount"), "3 sessions with same client in one day")
 check(has(3, "sameDayMinutes"), "same client over 120 minutes in one day")
 check(has(6, "ctcDoubled"), "doubled CTC over 120 minutes")
 
+print("Session length")
+func lengthCodes(_ entry: LogEntry) -> [String] {
+    KACValidator.validate(entry: entry, formatter: formatter).map(\.code)
+}
+let paid120 = LogEntry(start: date(2026, 9, 8, 9, 0), end: date(2026, 9, 8, 11, 0), clientNames: ["홍길동"])
+let paid121 = LogEntry(start: date(2026, 9, 8, 9, 0), end: date(2026, 9, 8, 11, 1), clientNames: ["홍길동"])
+let paid30 = LogEntry(start: date(2026, 9, 8, 9, 0), end: date(2026, 9, 8, 9, 30), clientNames: ["홍길동"])
+let paid29 = LogEntry(start: date(2026, 9, 8, 9, 0), end: date(2026, 9, 8, 9, 29), clientNames: ["홍길동"])
+check(!lengthCodes(paid120).contains("length"), "120 minutes is allowed")
+check(lengthCodes(paid121).contains("length"), "121 minutes is an error")
+check(!lengthCodes(paid30).contains("length"), "30 minutes is allowed")
+check(lengthCodes(paid29).contains("length"), "29 minutes is an error")
+
+let ctc60 = LogEntry(start: date(2026, 9, 8, 13, 0), end: date(2026, 9, 8, 14, 0), clientNames: ["김코치"], kind: .coachTheCoach, ctcComposition: .oneOnOne, ctcLicenseNumber: "KPC1")
+let ctc61 = LogEntry(start: date(2026, 9, 8, 13, 0), end: date(2026, 9, 8, 14, 1), clientNames: ["김코치"], kind: .coachTheCoach, ctcComposition: .oneOnTwo, ctcLicenseNumber: "KPC1")
+let ctc29 = LogEntry(start: date(2026, 9, 8, 13, 0), end: date(2026, 9, 8, 13, 29), clientNames: ["김코치"], kind: .coachTheCoach, ctcComposition: .oneOnOne, ctcLicenseNumber: "KPC1")
+let ctcGroup90 = LogEntry(start: date(2026, 9, 8, 13, 0), end: date(2026, 9, 8, 14, 30), clientNames: ["김코치"], groupSize: 4, kind: .coachTheCoach, ctcComposition: .group, ctcLicenseNumber: "KPC1")
+check(ctc60.recordedMinutes == 120 && !lengthCodes(ctc60).contains("ctcDoubled"), "CTC 1:1 for 1 hour = 120 minutes, allowed")
+check(lengthCodes(ctc61).contains("ctcDoubled"), "CTC 1:2 over 1 hour exceeds 120 doubled minutes")
+check(lengthCodes(ctc29).contains("ctcDoubled"), "CTC 1:1 under 30 minutes (58 doubled) is an error")
+check(!lengthCodes(ctcGroup90).contains("ctcLength"), "group CTC is not doubled: 90 minutes allowed")
+check(KACValidator.allowedRangeMinutes(for: ctc60) == 30...60, "CTC 1:1 real time range 30...60")
+
+var typed = paid121
+typed.minutesOverride = 120
+check(lengthCodes(typed).contains("lengthRange"), "typing 120 does not hide a 121-minute time range")
+var typedCTC = ctc61
+typedCTC.minutesOverride = 120
+check(lengthCodes(typedCTC).contains("ctcDoubledRange"), "typing 120 does not hide a 61-minute CTC")
+
+let fixLong = KACValidator.lengthFix(for: paid121)
+check(fixLong?.end == date(2026, 9, 8, 11, 0) && fixLong?.minutesOverride == nil, "too long → end cut to 120 minutes")
+let fixCTC = KACValidator.lengthFix(for: ctc61)
+check(fixCTC?.end == date(2026, 9, 8, 14, 0), "CTC too long → end cut to 60 real minutes")
+check(KACValidator.lengthFix(for: paid29) == nil, "too short is never padded automatically")
+check(KACValidator.lengthFix(for: paid120) == nil, "valid entry needs no fix")
+var badTyped = paid120
+badTyped.minutesOverride = 150
+check(KACValidator.lengthFix(for: badTyped) == KACValidator.LengthFix(end: paid120.end, minutesOverride: nil),"typed minutes off → clear override")
+if let fixed = fixLong {
+    var applied = paid121
+    applied.end = fixed.end
+    applied.minutesOverride = fixed.minutesOverride
+    check(KACValidator.hasValidLength(applied), "applying the fix leaves no length error")
+}
+
 print("XLSX")
 var entries = [free, ctc, group, e1]
 for i in 0..<14 {
@@ -81,6 +127,24 @@ let outputURL = outputDirectory.appendingPathComponent("sample-코칭일지.xlsx
 try data.write(to: outputURL)
 try shortBuilder.build().write(to: outputDirectory.appendingPathComponent("sample-short-with-examples.xlsx"))
 print("  → \(outputURL.path)")
+
+print("Training start and total hours")
+let beforeTraining = LogEntry(start: date(2026, 8, 31, 23, 0), end: date(2026, 8, 31, 23, 50), clientNames: ["홍길동"])
+let onTrainingDay = LogEntry(start: date(2026, 9, 1, 8, 0), end: date(2026, 9, 1, 8, 50), clientNames: ["이몽룡"])
+func codes(_ entries: [LogEntry], training: Date? = nil, total: Bool = false) -> [String] {
+    KACValidator.validate(entries: entries, candidateName: "이현호", trainingStartDate: training, checkTotalHours: total, formatter: formatter).map(\.code)
+}
+let trainingCodes = codes([beforeTraining, onTrainingDay], training: date(2026, 9, 1, 14, 0))
+check(trainingCodes.filter { $0 == "beforeTraining" }.count == 1, "only the session before the training day is rejected")
+check(codes([onTrainingDay]).contains("trainingStart"), "missing training start date is flagged")
+check(!codes([onTrainingDay], training: date(2026, 9, 1, 0, 0)).contains("trainingStart"), "no reminder once the date is set")
+check(codes([onTrainingDay], total: true).contains("totalRequired"), "under 50 hours is flagged on export")
+check(!codes([onTrainingDay]).contains("totalRequired"), "total hours are not checked while logging")
+let fiftyTwo = (0..<26).map { day in
+    LogEntry(start: date(2026, 10, 1, 9, 0).addingTimeInterval(Double(day) * 86_400), end: date(2026, 10, 1, 11, 0).addingTimeInterval(Double(day) * 86_400), clientNames: ["고객\(day % 4)"])
+}
+let marginCodes = codes(fiftyTwo, total: true)
+check(marginCodes.contains("totalMargin") && !marginCodes.contains("totalRequired"), "52 hours: enough but below the 55-hour margin")
 
 print(failures == 0 ? "\nALL CORE CHECKS PASSED" : "\n\(failures) CHECK(S) FAILED")
 exit(failures == 0 ? 0 : 1)

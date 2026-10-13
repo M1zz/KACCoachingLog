@@ -7,6 +7,7 @@ struct ExportView: View {
 
     @Environment(\.dismiss) private var dismiss
     @AppStorage(AppSettings.candidateNameKey) private var candidateName = ""
+    @AppStorage(AppSettings.trainingStartKey) private var trainingStart = 0.0
 
     @State private var useRange = false
     @State private var rangeStart = Calendar.current.date(byAdding: .month, value: -6, to: Date()) ?? Date()
@@ -41,7 +42,12 @@ struct ExportView: View {
     var body: some View {
         let entries = filteredEntries
         let summary = KACSummary(entries: entries)
-        let issues = KACValidator.validate(entries: entries, candidateName: candidateName)
+        let issues = KACValidator.validate(
+            entries: entries,
+            candidateName: candidateName,
+            trainingStartDate: AppSettings.trainingStartDate(trainingStart),
+            checkTotalHours: true
+        )
         let errorCount = issues.filter { $0.severity == .error }.count
         let warningCount = issues.count - errorCount
 
@@ -92,6 +98,11 @@ struct ExportView: View {
                 }
 
                 Section {
+                    if errorCount > 0 {
+                        Label("오류가 \(errorCount)건 있어요. 목록에서 빨간 표시가 있는 기록을 열어 고친 뒤 내보내 주세요.",
+                              systemImage: "xmark.octagon.fill")
+                            .foregroundStyle(.red)
+                    }
                     Button {
                         prepareFile(entries: entries)
                         if document != nil { showExporter = true }

@@ -8,6 +8,7 @@ struct RootView: View {
     @Query(sort: \CoachingSession.startDate, order: .reverse) private var sessions: [CoachingSession]
 
     @AppStorage(AppSettings.candidateNameKey) private var candidateName = ""
+    @AppStorage(AppSettings.trainingStartKey) private var trainingStart = 0.0
     @AppStorage(AppSettings.goalHoursKey) private var goalHours = AppSettings.defaultGoalHours
     @AppStorage(AppSettings.autoTranscribeKey) private var autoTranscribe = true
     @AppStorage(AppSettings.requireOnDeviceKey) private var requireOnDevice = true
@@ -15,6 +16,7 @@ struct RootView: View {
     @State private var selectedID: UUID?
     @State private var showRecording = false
     @State private var showExport = false
+    @State private var showManualEntry = false
     @State private var showSettings = false
     @State private var showAudioImporter = false
     @State private var alertMessage: String?
@@ -41,7 +43,11 @@ struct RootView: View {
     }
 
     var body: some View {
-        let issues = KACValidator.validate(entries: entries, candidateName: candidateName)
+        let issues = KACValidator.validate(
+            entries: entries,
+            candidateName: candidateName,
+            trainingStartDate: AppSettings.trainingStartDate(trainingStart)
+        )
         NavigationSplitView {
             sidebar(issues: issues)
         } detail: {
@@ -49,6 +55,11 @@ struct RootView: View {
         }
         .sheet(isPresented: $showRecording) {
             RecordingView(knownClients: knownClients) { session in
+                selectedID = session.uuid
+            }
+        }
+        .sheet(isPresented: $showManualEntry) {
+            ManualEntryView(knownClients: knownClients) { session in
                 selectedID = session.uuid
             }
         }
@@ -190,7 +201,7 @@ struct RootView: View {
 
                 Menu {
                     Button {
-                        addManualSession()
+                        showManualEntry = true
                     } label: {
                         Label("직접 입력", systemImage: "square.and.pencil")
                     }
@@ -246,19 +257,6 @@ struct RootView: View {
     }
 
     // MARK: Actions
-
-    private func addManualSession() {
-        let calendar = Calendar.current
-        let now = Date()
-        var components = calendar.dateComponents([.year, .month, .day, .hour], from: now)
-        components.minute = 0
-        let start = calendar.date(from: components) ?? now
-        let end = start.addingTimeInterval(50 * 60)
-        let session = CoachingSession(startDate: start, endDate: end)
-        modelContext.insert(session)
-        try? modelContext.save()
-        selectedID = session.uuid
-    }
 
     private func importAudio(_ result: Result<URL, Error>) {
         switch result {

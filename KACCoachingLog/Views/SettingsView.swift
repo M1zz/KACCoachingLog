@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @AppStorage(AppSettings.candidateNameKey) private var candidateName = ""
+    @AppStorage(AppSettings.trainingStartKey) private var trainingStart = 0.0
     @AppStorage(AppSettings.goalHoursKey) private var goalHours = AppSettings.defaultGoalHours
     @AppStorage(AppSettings.autoTranscribeKey) private var autoTranscribe = true
     @AppStorage(AppSettings.requireOnDeviceKey) private var requireOnDevice = true
@@ -9,6 +10,20 @@ struct SettingsView: View {
 
     @State private var engineDescription = "확인 중…"
     @State private var storageText = ""
+
+    private var hasTrainingStart: Binding<Bool> {
+        Binding(
+            get: { trainingStart > 0 },
+            set: { trainingStart = $0 ? Calendar.current.startOfDay(for: Date()).timeIntervalSince1970 : 0 }
+        )
+    }
+
+    private var trainingStartBinding: Binding<Date> {
+        Binding(
+            get: { Date(timeIntervalSince1970: trainingStart) },
+            set: { trainingStart = Calendar.current.startOfDay(for: $0).timeIntervalSince1970 }
+        )
+    }
 
     var body: some View {
         Form {
@@ -18,6 +33,17 @@ struct SettingsView: View {
                 Text("응시자")
             } footer: {
                 Text("코칭일지 상단 ‘응시자 명(필수작성)’ 칸에 들어가요.")
+            }
+
+            Section {
+                Toggle("기초교육 시작일 입력", isOn: hasTrainingStart)
+                if trainingStart > 0 {
+                    DatePicker("기초교육 시작일", selection: trainingStartBinding, displayedComponents: .date)
+                }
+            } header: {
+                Text("코칭 교육")
+            } footer: {
+                Text("코칭 실습은 기초교육(20시간)을 시작한 날 이후 기록만 인정돼요. 그 이전 코칭은 오류로 표시돼요.")
             }
 
             Section {

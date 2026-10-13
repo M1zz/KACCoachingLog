@@ -11,6 +11,12 @@ struct SessionDraft {
     var ctcLicenseNumber: String = ""
     var topic: String = ""
 
+    /// Entry used to check the session length while coaching.
+    func entry(start: Date, end: Date) -> LogEntry {
+        LogEntry(start: start, end: end, clientNames: clientNames, groupSize: groupSize,
+                 kind: kind, format: format, ctcComposition: ctcComposition)
+    }
+
     var title: String {
         let names = clientNames
             .prefix(kind == .coachTheCoach ? 1 : 3)
@@ -41,6 +47,8 @@ struct RecordingView: View {
     @State private var isStarting = false
     @State private var errorMessage: String?
     @State private var confirmClose = false
+    @State private var confirmShortStop = false
+    @State private var overLimitResult: RecordingResult?
 
     var body: some View {
         NavigationStack {
@@ -73,6 +81,34 @@ struct RecordingView: View {
                     dismiss()
                 }
                 Button("계속 코칭", role: .cancel) {}
+            }
+            .confirmationDialog("아직 \(KACValidator.minSessionMinutes)분이 안 됐어요", isPresented: $confirmShortStop, titleVisibility: .visible) {
+                Button("그래도 종료하고 저장") { stopAndSave(force: true) }
+                Button("계속 코칭", role: .cancel) {}
+            } message: {
+                Text("\(KACValidator.minSessionMinutes)분 미만 코칭은 코칭일지에 인정되지 않아요.")
+            }
+            .confirmationDialog(
+                "최대 인정 시간을 넘었어요",
+                isPresented: Binding(get: { overLimitResult != nil }, set: { if !$0 { overLimitResult = nil } }),
+                titleVisibility: .visible
+            ) {
+                if let result = overLimitResult {
+                    let maxMinutes = KACValidator.allowedRangeMinutes(for: draft.entry(start: result.startDate, end: result.endDate)).upperBound
+                    Button("\(maxMinutes)분으로 맞춰 저장") {
+                        var capped = result
+                        if let fix = KACValidator.lengthFix(for: draft.entry(start: result.startDate, end: result.endDate)) {
+                            capped.endDate = fix.end
+                        }
+                        save(capped)
+                    }
+                    Button("실제 시간 그대로 저장") { save(result) }
+                }
+            } message: {
+                if let result = overLimitResult {
+                    let entry = draft.entry(start: result.startDate, end: result.endDate)
+                    Text("이 코칭은 \(KACValidator.allowedLengthText(for: entry))만 인정돼요. 그대로 저장하면 작성 오류로 표시돼요. 녹음 파일은 그대로 남아요.")
+                }
             }
             .alert(
                 "시작할 수 없어요",
@@ -195,6 +231,10 @@ struct RecordingView: View {
 
             statusLabel
 
+            TimelineView(.periodic(from: .now, by: 1)) { context in
+                lengthGuide(at: context.date)
+            }
+
             HStack(spacing: 40) {
                 Button {
                     if recorder.state == .recording {
@@ -215,7 +255,7 @@ struct RecordingView: View {
                 .buttonStyle(.plain)
 
                 Button {
-                    stopAndSave()
+                    stopAndSave(force: false)
                 } label: {
                     VStack(spacing: 6) {
                         Image(systemName: "stop.fill")
@@ -251,6 +291,29 @@ struct RecordingView: View {
         }
     }
 
+    /// Tells the coach how much recognised time is left (120분, CTC 1:1·1:2는 실제 60분).
+    @ViewBuilder
+    private func lengthGuide(at date: Date) -> some View {
+        if let start = recorder.startDate {
+            let entry = draft.entry(start: start, end: date)
+            let range = KACValidator.allowedRangeMinutes(for: entry)
+            let minutes = entry.rangeMinutes
+            if minutes > range.upperBound {
+                Label("최대 \(range.upperBound)분을 넘었어요. 넘는 시간은 인정되지 않아요.", systemImage: "xmark.octagon.fill")
+                    .foregroundStyle(.red)
+            } else if minutes >= range.upperBound - 10 {
+                Label("최대 인정 시간까지 \(range.upperBound - minutes)분 남았어요.", systemImage: "exclamationmark.triangle.fill")
+                    .foregroundStyle(.orange)
+            } else if minutes < range.lowerBound {
+                Text("인정 범위 \(KACValidator.allowedLengthText(for: entry)) · \(range.lowerBound - minutes)분 더 하면 인정돼요")
+                    .foregroundStyle(.secondary)
+            } else {
+                Label("인정 범위 \(KACValidator.allowedLengthText(for: entry))", systemImage: "checkmark.circle.fill")
+                    .foregroundStyle(.green)
+            }
+        }
+    }
+
     // MARK: Actions
 
     private func start() async {
@@ -263,11 +326,27 @@ struct RecordingView: View {
         }
     }
 
-    private func stopAndSave() {
+    private func stopAndSave(force: Bool = true) {
+        if !force, let start = recorder.startDate {
+            let entry = draft.entry(start: start, end: Date())
+            if entry.rangeMinutes < KACValidator.allowedRangeMinutes(for: entry).lowerBound {
+                confirmShortStop = true
+                return
+            }
+        }
         guard let result = recorder.stop() else {
             dismiss()
             return
         }
+        let entry = draft.entry(start: result.startDate, end: result.endDate)
+        if entry.rangeMinutes > KACValidator.allowedRangeMinutes(for: entry).upperBound {
+            overLimitResult = result
+            return
+        }
+        save(result)
+    }
+
+    private func save(_ result: RecordingResult) {
         let session = CoachingSession(
             startDate: result.startDate,
             endDate: result.endDate,

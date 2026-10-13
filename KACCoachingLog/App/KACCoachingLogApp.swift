@@ -30,6 +30,12 @@ enum AppSettings {
     static let autoTranscribeKey = "autoTranscribe"
     static let requireOnDeviceKey = "requireOnDevice"
     static let recordAudioByDefaultKey = "recordAudioByDefault"
+    /// Start of the 20-hour basic training, as seconds since 1970. 0 = not set.
+    static let trainingStartKey = "trainingStartDate"
 
     static let defaultGoalHours = 50
+
+    static func trainingStartDate(_ stored: Double) -> Date? {
+        stored > 0 ? Date(timeIntervalSince1970: stored) : nil
+    }
 }
