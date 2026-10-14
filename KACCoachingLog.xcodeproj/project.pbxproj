@@ -255,6 +255,7 @@
 				INFOPLIST_FILE = Config/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "코칭일지";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "코칭 기록과 고객 정보를 보호하기 위해 Face ID로 앱 잠금을 해제합니다.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "코칭 세션을 녹음해 코칭일지와 대화 기록을 만들기 위해 마이크를 사용합니다.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "녹음한 코칭 대화를 텍스트로 변환하기 위해 음성 인식을 사용합니다.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphone*]" = YES;
@@ -296,6 +297,7 @@
 				INFOPLIST_FILE = Config/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "코칭일지";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "코칭 기록과 고객 정보를 보호하기 위해 Face ID로 앱 잠금을 해제합니다.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "코칭 세션을 녹음해 코칭일지와 대화 기록을 만들기 위해 마이크를 사용합니다.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "녹음한 코칭 대화를 텍스트로 변환하기 위해 음성 인식을 사용합니다.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphone*]" = YES;

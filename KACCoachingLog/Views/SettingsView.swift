@@ -3,6 +3,7 @@ import SwiftUI
 struct SettingsView: View {
     @AppStorage(AppSettings.candidateNameKey) private var candidateName = ""
     @AppStorage(AppSettings.trainingStartKey) private var trainingStart = 0.0
+    @AppStorage(AppSettings.appLockKey) private var appLockEnabled = false
     @AppStorage(AppSettings.goalHoursKey) private var goalHours = AppSettings.defaultGoalHours
     @AppStorage(AppSettings.autoTranscribeKey) private var autoTranscribe = true
     @AppStorage(AppSettings.requireOnDeviceKey) private var requireOnDevice = true
@@ -10,6 +11,28 @@ struct SettingsView: View {
 
     @State private var engineDescription = "확인 중…"
     @State private var storageText = ""
+    @State private var lockMessage: String?
+
+    /// Turning the lock on or off both require authentication, so nobody else can switch it off.
+    private var appLockBinding: Binding<Bool> {
+        Binding(
+            get: { appLockEnabled },
+            set: { newValue in
+                Task {
+                    let reason = newValue
+                        ? String(localized: "앱 잠금을 켜려면 인증해 주세요.")
+                        : String(localized: "앱 잠금을 끄려면 인증해 주세요.")
+                    switch await AppLock.authenticate(reason: reason) {
+                    case .success:
+                        appLockEnabled = newValue
+                        lockMessage = nil
+                    case .failure(let message):
+                        lockMessage = message
+                    }
+                }
+            }
+        )
+    }
 
     private var hasTrainingStart: Binding<Bool> {
         Binding(
@@ -33,6 +56,18 @@ struct SettingsView: View {
                 Text("응시자")
             } footer: {
                 Text("코칭일지 상단 ‘응시자 명(필수작성)’ 칸에 들어가요.")
+            }
+
+            Section {
+                Toggle("개인정보 보호 (앱 잠금)", isOn: appLockBinding)
+                if let lockMessage {
+                    Text(lockMessage)
+                        .foregroundStyle(.red)
+                }
+            } header: {
+                Text("개인정보 보호")
+            } footer: {
+                Text("켜면 앱을 열 때마다 Face ID 또는 기기 암호로 잠금을 해제해야 해요. 앱을 나가면 다시 잠기고, 앱 전환 화면에도 내용이 보이지 않아요.")
             }
 
             Section {

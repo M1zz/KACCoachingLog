@@ -4,11 +4,13 @@ import SwiftUI
 @main
 struct KACCoachingLogApp: App {
     @State private var transcriptionCenter = TranscriptionCenter()
+    @State private var appLock = AppLock()
 
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environment(transcriptionCenter)
+                .appLock(appLock)
         }
         .modelContainer(for: CoachingSession.self)
         #if os(macOS)
@@ -32,6 +34,7 @@ enum AppSettings {
     static let recordAudioByDefaultKey = "recordAudioByDefault"
     /// Start of the 20-hour basic training, as seconds since 1970. 0 = not set.
     static let trainingStartKey = "trainingStartDate"
+    static let appLockKey = "appLockEnabled"
 
     static let defaultGoalHours = 50
 

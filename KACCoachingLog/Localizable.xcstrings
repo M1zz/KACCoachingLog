@@ -1,286 +1,860 @@
 {
-  "sourceLanguage": "ko",
-  "strings": {
-    "직접 입력": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Manual Entry"
+  "sourceLanguage" : "ko",
+  "strings" : {
+    "‘코칭 시작’을 누르면 녹음과 함께 시작 시각이 기록되고, 종료하면 코칭일지 한 줄이 완성돼요. 지난 코칭은 ‘직접 입력’이나 ‘오디오 파일 가져오기’로 추가할 수 있어요." : {
+
+    },
+    "%@  %@" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@  %2$@"
           }
         }
       }
     },
-    "취소": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cancel"
+    "%@ / %@" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ / %2$@"
           }
         }
       }
     },
-    "저장": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Save"
+    "%lld분" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld min"
           }
         }
       }
     },
-    "응시자 명": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Candidate name"
+    "%lld분 미만 코칭은 인정되지 않아요. 실제 시간을 확인하거나 이 기록을 삭제해 주세요." : {
+
+    },
+    "%lld분 미만 코칭은 코칭일지에 인정되지 않아요." : {
+
+    },
+    "%lld분으로 맞춰 저장" : {
+
+    },
+    "└ 받은 코치더코치 포함" : {
+
+    },
+    "1:1·1:2 코치더코치는 실제 시간의 2배(%lld분)로 기록돼요. 1시간이면 120분이라 최대 1시간까지만 적을 수 있어요." : {
+
+    },
+    "A 날짜 · B 시간" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Column A: Date · Column B: Time"
           }
         }
       }
     },
-    "응시자 명 (엑셀 상단)": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Candidate name (top of sheet)"
+    "B 시간: 종료 시각이 시작 시각보다 늦어야 해요" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "B Time: the end must be later than the start"
           }
         }
       }
     },
-    "모든 기록에 공통으로 들어가요. 설정에서도 바꿀 수 있어요.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Shared by every entry. You can also change it in Settings."
+    "C 고객명: %lld명의 이름이 필요해요" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "C Client: %lld name(s) needed"
           }
         }
       }
     },
-    "구분": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Type"
+    "C 고객명: 코치더코치 코치 이름이 필요해요" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "C Client: the coach-the-coach coach's name is needed"
           }
         }
       }
     },
-    "D·E·F 시간 칸": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Columns D·E·F (minutes)"
+    "C 고객명: 코치의 인증자격번호가 필요해요" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "C Client: the coach's certification number is needed"
           }
         }
       }
     },
-    "유료는 D칸, 무료는 E칸, 받은 코치더코치는 F칸에 분이 기록돼요.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Paid minutes go in column D, free in column E, and received coach-the-coach in column F."
+    "D·E·F 시간 칸" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Columns D·E·F (minutes)"
           }
         }
       }
     },
-    "형태": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Format"
+    "G 코칭형태" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Column G: Coaching format"
           }
         }
       }
     },
-    "G 코칭형태": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Column G: Coaching format"
+    "iOS 26 · macOS 26 이상에서는 기기 안에서 처리하는 SpeechAnalyzer를 사용해요. 이전 버전에서 ‘기기 내 인식만 사용’을 끄면 음성이 Apple 서버로 전송될 수 있어요. 코칭 녹음은 고객 동의를 받은 경우에만 사용해 주세요." : {
+
+    },
+    "KAC 이상 인증 코치에게 받은 코치더코치만 인정돼요. 1:1·1:2는 2배로 계산되어 60~120분만 작성할 수 있고, 최대 25시간까지 인정돼요." : {
+
+    },
+    "개인정보 보호" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy"
           }
         }
       }
     },
-    "줌·보이스톡·전화로 진행했다면 비대면을 선택해 주세요.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choose remote if the session was held over Zoom, voice call, or phone."
+    "개인정보 보호 (앱 잠금)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy protection (app lock)"
           }
         }
       }
     },
-    "코칭일지에 들어갈 내용": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Row in the coaching log"
+    "계속" : {
+
+    },
+    "계속 코칭" : {
+
+    },
+    "고객" : {
+
+    },
+    "고객 수" : {
+
+    },
+    "고객 정보 보호를 위해 Face ID 또는 기기 암호로 잠금을 해제해 주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To protect client information, unlock with Face ID or your device passcode."
           }
         }
       }
     },
-    "날짜": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Date"
+    "공유 (메일 · 메시지 · AirDrop)" : {
+
+    },
+    "공유용 파일 만들기" : {
+
+    },
+    "구간별로 듣기 (%lld)" : {
+
+    },
+    "구분" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Type"
           }
         }
       }
     },
-    "시작": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Start"
+    "구성" : {
+
+    },
+    "그래도 종료하고 저장" : {
+
+    },
+    "그룹 코치더코치는 실제 시간 그대로(%lld분) 기록돼요." : {
+
+    },
+    "그룹코칭은 코칭일지에 3명까지만 기재하고, 코칭형태에 총 인원이 표시돼요." : {
+
+    },
+    "기간 지정" : {
+
+    },
+    "기기 내 인식만 사용" : {
+
+    },
+    "기록 삭제" : {
+
+    },
+    "기록될 시간" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recorded time"
           }
         }
       }
     },
-    "종료": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "End"
+    "기록할 시간" : {
+
+    },
+    "기초교육 시작일" : {
+
+    },
+    "기초교육 시작일 입력" : {
+
+    },
+    "날짜" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date"
           }
         }
       }
     },
-    "기록될 시간": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Recorded time"
+    "녹음" : {
+
+    },
+    "녹음 · 텍스트 변환" : {
+
+    },
+    "녹음 없이 시작·종료 시각만 기록해요." : {
+
+    },
+    "녹음 전에 고객에게 녹음과 텍스트 변환에 대한 동의를 받아 주세요. 녹음과 변환은 이 기기 안에 저장돼요." : {
+
+    },
+    "녹음 중" : {
+
+    },
+    "녹음 파일 공유" : {
+
+    },
+    "녹음 파일 삭제" : {
+
+    },
+    "녹음 파일 용량" : {
+
+    },
+    "녹음 파일과 변환된 텍스트도 함께 삭제돼요." : {
+
+    },
+    "녹음 파일을 삭제할까요?" : {
+
+    },
+    "녹음 파일이 없어요. Zoom·음성 메모 등으로 녹음한 파일을 붙일 수 있어요." : {
+
+    },
+    "녹음 파일이 있으면 텍스트로 변환할 수 있어요." : {
+
+    },
+    "녹음이 끝나면 자동으로 텍스트 변환" : {
+
+    },
+    "녹음하며 코칭 시작" : {
+
+    },
+    "누적 코칭시간" : {
+
+    },
+    "다시 변환" : {
+
+    },
+    "닫기" : {
+
+    },
+    "모든 기록에 공통으로 들어가요. 설정에서도 바꿀 수 있어요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shared by every entry. You can also change it in Settings."
           }
         }
       }
     },
-    "%lld분": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld min"
+    "모든 칸이 채워졌고 문제가 없어요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All cells are filled in and no problems were found."
           }
         }
       }
     },
-    "인정 범위": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Allowed length"
+    "목표" : {
+
+    },
+    "목표 %lld시간" : {
+
+    },
+    "목표 코칭시간" : {
+
+    },
+    "받은 코치더코치" : {
+
+    },
+    "범위" : {
+
+    },
+    "변환 엔진" : {
+
+    },
+    "변환 완료" : {
+
+    },
+    "변환 완료 · %@" : {
+
+    },
+    "변환된 텍스트" : {
+
+    },
+    "변환된 텍스트와 코칭일지 항목은 그대로 남아요." : {
+
+    },
+    "분 직접 입력" : {
+
+    },
+    "빈 칸을 모두 채워야 저장할 수 있어요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fill in every empty cell to save."
           }
         }
       }
     },
-    "A 날짜 · B 시간": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Column A: Date · Column B: Time"
+    "삭제" : {
+
+    },
+    "새 코칭" : {
+
+    },
+    "새 코칭은 오디오 녹음으로 시작" : {
+
+    },
+    "설정" : {
+
+    },
+    "시간 범위" : {
+
+    },
+    "시작" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start"
           }
         }
       }
     },
-    "실제로 진행한 시각을 분 단위까지 정확히 적어 주세요.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enter the actual start and end times, to the minute."
+    "시작 %@ · %@" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "시작 %1$@ · %2$@"
           }
         }
       }
     },
-    "모든 칸이 채워졌고 문제가 없어요.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "All cells are filled in and no problems were found."
+    "시작 시각은 버튼을 누른 순간, 종료 시각은 ‘종료’를 누른 순간으로 기록돼요. 코칭교육 시간 중 실습은 코칭일지에 넣지 않아요." : {
+
+    },
+    "시작일" : {
+
+    },
+    "시작할 수 없어요" : {
+
+    },
+    "실제 시간 그대로 저장" : {
+
+    },
+    "실제로 진행한 시각을 분 단위까지 정확히 적어 주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter the actual start and end times, to the minute."
           }
         }
       }
     },
-    "작성 점검": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Check"
+    "아직 %lld분이 안 됐어요" : {
+
+    },
+    "알림" : {
+
+    },
+    "앱 잠금을 끄려면 인증해 주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Authenticate to turn off the app lock."
           }
         }
       }
     },
-    "빈 칸을 모두 채워야 저장할 수 있어요.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fill in every empty cell to save."
+    "앱 잠금을 켜려면 인증해 주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Authenticate to turn on the app lock."
           }
         }
       }
     },
-    "B 시간: 종료 시각이 시작 시각보다 늦어야 해요": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "B Time: the end must be later than the start"
+    "양식" : {
+
+    },
+    "양식 %@ 기준으로 날짜순 정렬해 작성돼요. 합계 칸은 시간과 분으로 채워져요." : {
+
+    },
+    "엑셀 파일로 저장" : {
+
+    },
+    "엑셀로 내보내기" : {
+
+    },
+    "오늘 코칭의 주제" : {
+
+    },
+    "오디오 녹음" : {
+
+    },
+    "오디오 파일 가져오기" : {
+
+    },
+    "오디오 파일 첨부" : {
+
+    },
+    "오류가 %lld건 있어요. 목록에서 빨간 표시가 있는 기록을 열어 고친 뒤 내보내 주세요." : {
+
+    },
+    "완료" : {
+
+    },
+    "원본 양식의 예시 행(7–10행) 포함" : {
+
+    },
+    "유료·무료 칸에는 시간 범위와 같은 분이 기록돼요. 시간 범위와 다른 값을 적으면 작성 오류로 볼 수 있어요." : {
+
+    },
+    "유료는 D칸, 무료는 E칸, 받은 코치더코치는 F칸에 분이 기록돼요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paid minutes go in column D, free in column E, and received coach-the-coach in column F."
           }
         }
       }
     },
-    "C 고객명: %lld명의 이름이 필요해요": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "C Client: %lld name(s) needed"
+    "유의사항 %lld번" : {
+
+    },
+    "응시 요건(필요한 코칭시간과 유료·무료 구성)은 한국코치협회의 최신 ‘코치인증자격시험 세부사항’을 확인해 주세요." : {
+
+    },
+    "응시자" : {
+
+    },
+    "응시자 명" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Candidate name"
           }
         }
       }
     },
-    "C 고객명: 코치더코치 코치 이름이 필요해요": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "C Client: the coach-the-coach coach's name is needed"
+    "응시자 명 (엑셀 상단)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Candidate name (top of sheet)"
           }
         }
       }
     },
-    "C 고객명: 코치의 인증자격번호가 필요해요": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "C Client: the coach's certification number is needed"
+    "응시자 명 (필수)" : {
+
+    },
+    "응시자 수" : {
+
+    },
+    "이 기기에 암호가 설정되어 있지 않아 잠금을 사용할 수 없어요. 기기 설정에서 암호를 먼저 설정해 주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This device has no passcode, so the lock can't be used. Set a passcode in the device settings first."
           }
         }
       }
+    },
+    "이 코칭 기록 삭제" : {
+
+    },
+    "이 코칭 기록을 삭제할까요?" : {
+
+    },
+    "이 코칭은 %@만 인정돼요. 그대로 저장하면 작성 오류로 표시돼요. 녹음 파일은 그대로 남아요." : {
+
+    },
+    "인원" : {
+
+    },
+    "인정 범위" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allowed length"
+          }
+        }
+      }
+    },
+    "인정 범위 %@" : {
+
+    },
+    "인정 범위 %@ · %lld분 더 하면 인정돼요" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "인정 범위 %1$@ · %2$lld분 더 하면 인정돼요"
+          }
+        }
+      }
+    },
+    "인증자격번호 (예: KPC00000)" : {
+
+    },
+    "일시" : {
+
+    },
+    "일시정지" : {
+
+    },
+    "일시정지됨" : {
+
+    },
+    "작성 점검" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check"
+          }
+        }
+      }
+    },
+    "작성 점검 · 오류 %lld건 · 주의 %lld건" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "작성 점검 · 오류 %1$lld건 · 주의 %2$lld건"
+          }
+        }
+      }
+    },
+    "작성 점검 통과" : {
+
+    },
+    "작성 점검: 오류 %lld건 · 주의 %lld건" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "작성 점검: 오류 %1$lld건 · 주의 %2$lld건"
+          }
+        }
+      }
+    },
+    "잠금 해제" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlock"
+          }
+        }
+      }
+    },
+    "저장" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        }
+      }
+    },
+    "저장하고 닫기" : {
+
+    },
+    "전화 등으로 일시정지됐어요" : {
+
+    },
+    "점검 규칙" : {
+
+    },
+    "점검한 항목에서 문제가 발견되지 않았어요." : {
+
+    },
+    "종료" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End"
+          }
+        }
+      }
+    },
+    "종료 및 저장" : {
+
+    },
+    "종료일" : {
+
+    },
+    "주제" : {
+
+    },
+    "주제 · 메모" : {
+
+    },
+    "주제 (선택)" : {
+
+    },
+    "줌·보이스톡·전화로 진행했다면 비대면을 선택해 주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose remote if the session was held over Zoom, voice call, or phone."
+          }
+        }
+      }
+    },
+    "중지" : {
+
+    },
+    "직접 수정한 내용은 새 변환 결과로 바뀌어요." : {
+
+    },
+    "직접 입력" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manual Entry"
+          }
+        }
+      }
+    },
+    "진행 중인 코칭을 어떻게 할까요?" : {
+
+    },
+    "처음 사용할 때는 한국어 음성 모델을 내려받느라 시간이 걸릴 수 있어요." : {
+
+    },
+    "첫 코칭을 기록해 보세요" : {
+
+    },
+    "총 무료 코칭 시간" : {
+
+    },
+    "총 유료 코칭 시간" : {
+
+    },
+    "총 코칭시간 합계" : {
+
+    },
+    "최대 %lld분을 넘었어요. 넘는 시간은 인정되지 않아요." : {
+
+    },
+    "최대 인정 시간까지 %lld분 남았어요." : {
+
+    },
+    "최대 인정 시간을 넘었어요" : {
+
+    },
+    "추가" : {
+
+    },
+    "취소" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
+    },
+    "켜면 앱을 열 때마다 Face ID 또는 기기 암호로 잠금을 해제해야 해요. 앱을 나가면 다시 잠기고, 앱 전환 화면에도 내용이 보이지 않아요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When on, the app must be unlocked with Face ID or your device passcode each time you open it. It locks again when you leave, and its content is hidden in the app switcher."
+          }
+        }
+      }
+    },
+    "코치더코치 코치 이름" : {
+
+    },
+    "코칭 교육" : {
+
+    },
+    "코칭 구분" : {
+
+    },
+    "코칭 기록 텍스트" : {
+
+    },
+    "코칭 기록을 보려면 잠금을 해제해 주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlock to view your coaching records."
+          }
+        }
+      }
+    },
+    "코칭 시작" : {
+
+    },
+    "코칭 실습은 기초교육(20시간)을 시작한 날 이후 기록만 인정돼요. 그 이전 코칭은 오류로 표시돼요." : {
+
+    },
+    "코칭 중" : {
+
+    },
+    "코칭 후 메모 (고객의 목표, 합의한 실천, 다음 세션 등)" : {
+
+    },
+    "코칭을 녹음하면 날짜·시간·분이 자동으로 기록되고, 대화는 텍스트로 변환돼요." : {
+
+    },
+    "코칭을 선택하세요" : {
+
+    },
+    "코칭일지" : {
+
+    },
+    "코칭일지 내보내기" : {
+
+    },
+    "코칭일지 상단 ‘응시자 명(필수작성)’ 칸에 들어가요." : {
+
+    },
+    "코칭일지 양식" : {
+
+    },
+    "코칭일지 엑셀로 내보내기" : {
+
+    },
+    "코칭일지가 잠겨 있어요" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coaching Log is locked"
+          }
+        }
+      }
+    },
+    "코칭일지에 들어갈 내용" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Row in the coaching log"
+          }
+        }
+      }
+    },
+    "타이머 작동 중" : {
+
+    },
+    "타이머로 코칭 시작" : {
+
+    },
+    "텍스트 공유" : {
+
+    },
+    "텍스트 변환 (STT)" : {
+
+    },
+    "텍스트로 변환 중… %lld%%" : {
+
+    },
+    "텍스트를 다시 변환할까요?" : {
+
+    },
+    "포함되는 코칭" : {
+
+    },
+    "합계 미리보기" : {
+
+    },
+    "협회 기준: 건별 작성 오류가 5개를 초과하면 탈락 사유이고, 오류 건의 시간은 합계에서 제외돼요. 코칭교육 중 실시한 실습(유의사항 5번)은 앱이 구분할 수 없으니 직접 빼 주세요." : {
+
+    },
+    "형태" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Format"
+          }
+        }
+      }
+    },
+    "화자는 구분되지 않아요. 고객 정보가 담긴 기록이니 공유할 때 주의해 주세요." : {
+
+    },
+    "확인" : {
+
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }
