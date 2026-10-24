@@ -146,5 +146,49 @@ let fiftyTwo = (0..<26).map { day in
 let marginCodes = codes(fiftyTwo, total: true)
 check(marginCodes.contains("totalMargin") && !marginCodes.contains("totalRequired"), "52 hours: enough but below the 55-hour margin")
 
+print("Certifications")
+func certCodes(_ entries: [LogEntry], _ certification: Certification, total: Bool = false) -> [String] {
+    KACValidator.validate(entries: entries, candidateName: "이현호", certification: certification, trainingStartDate: date(2026, 1, 1, 0, 0), checkTotalHours: total, formatter: formatter).map(\.code)
+}
+check(Certification.kac.requiredTotalMinutes == 50 * 60 && Certification.kac.recommendedTotalMinutes == 55 * 60, "KAC 50 hours, 55-hour margin")
+check(Certification.kpc.practiceHours == 200 && Certification.kpc.maxCTCHours == 80, "KPC 200 hours, CTC up to 80")
+check(Certification.ksc.practiceHours == 800 && Certification.ksc.maxCTCHours == 100, "KSC 800 hours, CTC up to 100")
+check(Certification.acc.minimumPaidHours == 75 && Certification.pcc.minimumPaidHours == 450 && Certification.mcc.minimumPaidHours == 2250, "ICF paid hours")
+check(certCodes(fiftyTwo, .kpc, total: true).contains("totalRequired"), "52 hours is short for KPC")
+check(!certCodes(fiftyTwo, .kac, total: true).contains("totalRequired"), "52 hours is enough for KAC")
+
+let ctcHours = (0..<14).map { day in
+    LogEntry(start: date(2026, 11, 1, 9, 0).addingTimeInterval(Double(day) * 86_400), end: date(2026, 11, 1, 10, 0).addingTimeInterval(Double(day) * 86_400), clientNames: ["김코치"], kind: .coachTheCoach, ctcComposition: .oneOnOne, ctcLicenseNumber: "KSC1")
+}
+check(certCodes(ctcHours, .kac).contains("ctcTotal"), "28 CTC hours exceed the KAC 25-hour cap")
+check(!certCodes(ctcHours, .kpc).contains("ctcTotal"), "28 CTC hours are fine for KPC")
+
+let longICF = LogEntry(start: date(2026, 9, 8, 9, 0), end: date(2026, 9, 8, 12, 0), clientNames: ["홍길동"])
+check(!certCodes([longICF], .acc).contains("length"), "ICF has no 120-minute session limit")
+check(certCodes([longICF], .kac).contains("length"), "KCA keeps the 120-minute session limit")
+check(certCodes([ctc], .acc).contains("icfCTC"), "coach-the-coach is flagged for ICF")
+check(KACSummary(entries: [e1, ctc], certification: .acc).totalMinutes == e1.recordedMinutes, "ICF totals leave out coach-the-coach")
+check(certCodes([e1, free], .acc).contains("clients"), "ACC needs 8 clients")
+let icfPaid = certCodes(fiftyTwo, .acc, total: true)
+check(icfPaid.contains("totalRequired") && icfPaid.contains("paidRequired"), "52 paid hours: short of 100 total and 75 paid")
+let eightyPaid = (0..<40).map { day in
+    LogEntry(start: date(2026, 10, 1, 9, 0).addingTimeInterval(Double(day) * 86_400), end: date(2026, 10, 1, 11, 0).addingTimeInterval(Double(day) * 86_400), clientNames: ["고객\(day % 8)"])
+}
+check(!certCodes(eightyPaid, .acc, total: true).contains("paidRequired"), "80 paid hours meet the ACC paid share")
+check(certCodes([free], .acc, total: true).contains("paidRequired"), "ICF flags missing paid hours")
+let big = LogEntry(start: date(2026, 9, 9, 9, 0), end: date(2026, 9, 9, 10, 0), clientNames: ["가"], groupSize: 12)
+check(!certCodes([big], .acc).contains("groupSize") && certCodes([big], .kac).contains("groupSize"), "group of 12: ICF ok, KCA over 1:9")
+
+print("ICF log")
+check(ICFLogBuilder.hours(50) == "0.83" && ICFLogBuilder.hours(90) == "1.5" && ICFLogBuilder.hours(120) == "2", "decimal hours")
+check(ICFLogBuilder.escape("가, 나") == "\"가, 나\"", "CSV escaping")
+let icf = ICFLogBuilder(candidateName: "이현호", entries: [free, ctc, group, e1], formatter: formatter)
+check(icf.rows.count == 3 && icf.rows.first?[4] == "2026-09-01", "sorted rows without coach-the-coach")
+check(icf.rows.contains { $0[2] == "Group" && $0[3] == "6" }, "group row with size")
+let csvText = icf.csv()
+check(csvText.contains("Total,,,,,,2.83,1"), "totals row: paid 2:50 → 2.83, pro bono 1")
+check(icf.build().prefix(3) == Data([0xEF, 0xBB, 0xBF]), "UTF-8 BOM for Excel")
+try icf.build().write(to: outputDirectory.appendingPathComponent("sample-icf-log.csv"))
+
 print(failures == 0 ? "\nALL CORE CHECKS PASSED" : "\n\(failures) CHECK(S) FAILED")
 exit(failures == 0 ? 0 : 1)

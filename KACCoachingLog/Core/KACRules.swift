@@ -17,11 +17,13 @@ struct KACSummary: Equatable {
 
     init() {}
 
-    init(entries: [LogEntry]) {
-        entryCount = entries.count
-        paidMinutes = entries.reduce(0) { $0 + $1.paidMinutes }
-        freeCoachingMinutes = entries.reduce(0) { $0 + $1.freeMinutes }
-        ctcMinutes = entries.reduce(0) { $0 + $1.ctcMinutes }
+    /// ICF logs have no coach-the-coach column, so those sessions are left out of the totals.
+    init(entries: [LogEntry], certification: Certification = .kac) {
+        let counted = certification.countsCoachTheCoach ? entries : entries.filter { $0.kind != .coachTheCoach }
+        entryCount = counted.count
+        paidMinutes = counted.reduce(0) { $0 + $1.paidMinutes }
+        freeCoachingMinutes = counted.reduce(0) { $0 + $1.freeMinutes }
+        ctcMinutes = counted.reduce(0) { $0 + $1.ctcMinutes }
         uniqueClientCount = KACValidator.uniqueClients(in: entries).count
     }
 }
@@ -49,13 +51,6 @@ enum KACValidator {
     static let minSessionMinutes = 30
     static let maxSessionMinutes = 120
     static let maxSameClientSessionsPerDay = 2
-    static let maxGroupSize = 9
-    static let maxCTCMinutes = 25 * 60
-    static let minimumClientCount = 3
-    /// KAC requires 50 hours of coaching.
-    static let requiredTotalMinutes = 50 * 60
-    /// Some sessions may be rejected for writing errors, so 55–60 hours is the safe target.
-    static let recommendedTotalMinutes = 55 * 60
 
     static func uniqueClients(in entries: [LogEntry]) -> Set<String> {
         var names = Set<String>()
@@ -94,6 +89,16 @@ enum KACValidator {
         let multiplier = entry.kind == .coachTheCoach ? entry.ctcComposition.multiplier : 1
         let recorded = allowedRecordedMinutes(for: entry)
         return (recorded.lowerBound / multiplier)...(recorded.upperBound / multiplier)
+    }
+
+    /// Longest real time range the end-time picker allows. Without a length rule (ICF) it is the rest of the day.
+    static func maxRangeMinutes(for entry: LogEntry, certification: Certification) -> Int {
+        certification.limitsSessionLength ? allowedRangeMinutes(for: entry).upperBound : 24 * 60 - 1
+    }
+
+    /// Minutes that may be typed by hand.
+    static func typedMinutesRange(for entry: LogEntry, certification: Certification) -> ClosedRange<Int> {
+        certification.limitsSessionLength ? allowedRecordedMinutes(for: entry) : 1...(24 * 60)
     }
 
     /// Human-readable allowed length, e.g. "30~120분" or "실제 30~60분 (2배 60~120분)".
@@ -136,6 +141,7 @@ enum KACValidator {
     static func validate(
         entries: [LogEntry],
         candidateName: String,
+        certification: Certification = .kac,
         trainingStartDate: Date? = nil,
         checkTotalHours: Bool = false,
         formatter: KACFormatter = KACFormatter()
@@ -149,23 +155,25 @@ enum KACValidator {
                                 message: "응시자 명이 비어 있어요. 설정에서 입력해 주세요."))
         }
 
-        // Rule 2 — at least 3 clients (KAC)
-        if !ordered.isEmpty {
+        // Rule 2 — minimum number of clients (KAC 3명, ICF ACC 8명 · PCC 25명 · MCC 35명)
+        if !ordered.isEmpty, let minimumClientCount = certification.minimumClientCount {
             let count = uniqueClients(in: ordered).count
             if count < minimumClientCount {
-                issues.append(.init(entryID: nil, severity: .error, rule: 2, code: "clients",
-                                    message: "KAC는 최소 \(minimumClientCount)명 이상의 고객이 필요해요. (현재 \(count)명)"))
+                // Below the final requirement is only a reminder while hours are still being collected.
+                let severity: ValidationIssue.Severity = certification == .kac || checkTotalHours ? .error : .warning
+                issues.append(.init(entryID: nil, severity: severity, rule: 2, code: "clients",
+                                    message: "\(certification.title)는 최소 \(minimumClientCount)명 이상의 고객이 필요해요. (현재 \(count)명)"))
             }
         }
 
         // Per-entry checks
         for entry in ordered {
-            issues.append(contentsOf: validate(entry: entry, formatter: formatter))
+            issues.append(contentsOf: validate(entry: entry, certification: certification, formatter: formatter))
         }
 
-        // Rule 3 — same client, same day: max 2 sessions, max 120 minutes combined
+        // Rule 3 — same client, same day: max 2 sessions, max 120 minutes combined (KCA only)
         var perClientDay: [String: [LogEntry]] = [:]
-        for entry in ordered where entry.kind != .coachTheCoach {
+        for entry in ordered where entry.kind != .coachTheCoach && certification.limitsSessionLength {
             let day = formatter.dayKey(entry.start)
             for name in Set(entry.cleanedClientNames.map(normalize)) {
                 perClientDay["\(day)|\(name)", default: []].append(entry)
@@ -201,35 +209,43 @@ enum KACValidator {
             }
         }
 
-        // Practice only counts from the day the 20-hour basic training started.
+        // Practice only counts from the day the coach training started.
         if let trainingStartDate {
             let trainingDay = formatter.dayKey(trainingStartDate)
             for entry in ordered where formatter.dayKey(entry.start) < trainingDay {
                 issues.append(.init(entryID: entry.id, severity: .error, rule: 0, code: "beforeTraining",
-                                    message: "\(formatter.dateText(entry)) \(formatter.timeText(entry)): 기초교육 시작일(\(trainingDay)) 이전 코칭은 인정되지 않아요. 삭제해 주세요."))
+                                    message: "\(formatter.dateText(entry)) \(formatter.timeText(entry)): 코칭 교육 시작일(\(trainingDay)) 이전 코칭은 인정되지 않아요. 삭제해 주세요."))
             }
         } else if !ordered.isEmpty {
             issues.append(.init(entryID: nil, severity: .warning, rule: 0, code: "trainingStart",
-                                message: "기초교육(20시간) 시작일을 설정에 입력하면 그 이전 코칭을 찾아드려요."))
+                                message: "코칭 교육 시작일을 설정에 입력하면 그 이전 코칭을 찾아드려요."))
         }
 
-        // Total hours — 50 hours required, 55–60 hours recommended as a margin
+        // Total hours — e.g. KAC 50 hours required, 55–60 hours recommended as a margin
         if checkTotalHours && !ordered.isEmpty {
-            let total = KACSummary(entries: ordered).totalMinutes
-            if total < requiredTotalMinutes {
+            let summary = KACSummary(entries: ordered, certification: certification)
+            let total = summary.totalMinutes
+            let name = certification.title
+            if total < certification.requiredTotalMinutes {
                 issues.append(.init(entryID: nil, severity: .warning, rule: 0, code: "totalRequired",
-                                    message: "총 코칭시간이 \(KACDuration.hoursMinutes(total))이에요. KAC는 50시간이 필요해요."))
-            } else if total < recommendedTotalMinutes {
+                                    message: "총 코칭시간이 \(KACDuration.hoursMinutes(total))이에요. \(name)는 \(certification.practiceHours)시간이 필요해요."))
+            } else if total < certification.recommendedTotalMinutes {
+                let recommendedHours = certification.recommendedTotalMinutes / 60
                 issues.append(.init(entryID: nil, severity: .warning, rule: 0, code: "totalMargin",
-                                    message: "총 코칭시간이 \(KACDuration.hoursMinutes(total))이에요. 일부 세션이 탈락할 수 있으니 55~60시간 이상으로 넉넉히 채우는 것이 안전해요."))
+                                    message: "총 코칭시간이 \(KACDuration.hoursMinutes(total))이에요. 일부 세션이 탈락할 수 있으니 \(recommendedHours)시간 이상으로 넉넉히 채우는 것이 안전해요."))
+            }
+            // ICF — paid hours within the total
+            if let minimumPaidHours = certification.minimumPaidHours, summary.paidMinutes < minimumPaidHours * 60 {
+                issues.append(.init(entryID: nil, severity: .warning, rule: 0, code: "paidRequired",
+                                    message: "유료 코칭이 \(KACDuration.hoursMinutes(summary.paidMinutes))이에요. \(name)는 유료 \(minimumPaidHours)시간 이상이 필요해요."))
             }
         }
 
-        // Rule 6-① — received coach-the-coach up to 25 hours
+        // Rule 6-① — received coach-the-coach cap (KAC 25 · KPC 80 · KSC 100시간)
         let ctcTotal = ordered.reduce(0) { $0 + $1.ctcMinutes }
-        if ctcTotal > maxCTCMinutes {
+        if let maxCTCHours = certification.maxCTCHours, ctcTotal > maxCTCHours * 60 {
             issues.append(.init(entryID: nil, severity: .error, rule: 6, code: "ctcTotal",
-                                message: "받은 코치더코치가 \(KACDuration.hoursMinutes(ctcTotal))이에요. 최대 25시간까지만 작성할 수 있어요."))
+                                message: "받은 코치더코치가 \(KACDuration.hoursMinutes(ctcTotal))이에요. \(certification.title)는 최대 \(maxCTCHours)시간까지만 작성할 수 있어요."))
         }
 
         return issues.sorted {
@@ -238,7 +254,11 @@ enum KACValidator {
         }
     }
 
-    static func validate(entry: LogEntry, formatter: KACFormatter = KACFormatter()) -> [ValidationIssue] {
+    static func validate(
+        entry: LogEntry,
+        certification: Certification = .kac,
+        formatter: KACFormatter = KACFormatter()
+    ) -> [ValidationIssue] {
         var issues: [ValidationIssue] = []
         func add(_ severity: ValidationIssue.Severity, _ rule: Int, _ code: String, _ message: String) {
             issues.append(.init(entryID: entry.id, severity: severity, rule: rule, code: code, message: message))
@@ -256,6 +276,11 @@ enum KACValidator {
             add(.error, 1, "minutes", "\(label): 코칭 시간(분)이 비어 있어요.")
         }
 
+        if certification.body == .icf {
+            validateICF(entry, label: label, certification: certification, add: add)
+            return issues
+        }
+
         switch entry.kind {
         case .paid, .free:
             // Rule 1 — client name
@@ -269,7 +294,7 @@ enum KACValidator {
                 add(.warning, 1, "mismatch", "\(label): 적은 시간(\(entry.recordedMinutes)분)이 시간 범위(\(entry.rangeMinutes)분)와 달라요.")
             }
             // Rule 7 — group coaching up to 1:9
-            if entry.participantCount > maxGroupSize {
+            if entry.participantCount > certification.maxGroupSize {
                 add(.error, 7, "groupSize", "\(label): 그룹코칭은 최대 1:9(총 9명)까지만 작성할 수 있어요.")
             }
             if entry.participantCount > 1 && entry.cleanedClientNames.count < min(entry.participantCount, 3) {
@@ -284,7 +309,7 @@ enum KACValidator {
             if license.isEmpty {
                 add(.error, 6, "ctcLicense", "\(label): 코치더코치 코치의 인증자격번호가 비어 있어요.")
             } else if license.range(of: "^K[APS]C[0-9]+$", options: .regularExpression) == nil {
-                add(.warning, 6, "ctcLicenseFormat", "\(label): 자격번호 형식(예: KPC00000)을 확인해 주세요. KAC 이상 코치만 인정돼요.")
+                add(.warning, 6, "ctcLicenseFormat", "\(label): 자격번호 형식(예: KPC00000)을 확인해 주세요. 한국코치협회 인증 코치만 인정돼요.")
             }
             switch entry.ctcComposition {
             case .oneOnOne, .oneOnTwo:
@@ -301,6 +326,28 @@ enum KACValidator {
             }
         }
         return issues
+    }
+
+    /// ICF log: client name, group size and paid / pro bono hours. No per-session length limit.
+    private static func validateICF(
+        _ entry: LogEntry,
+        label: String,
+        certification: Certification,
+        add: (ValidationIssue.Severity, Int, String, String) -> Void
+    ) {
+        if entry.kind == .coachTheCoach {
+            add(.warning, 0, "icfCTC", "\(label): 받은 코치더코치는 ICF 코칭 로그 시간에 포함되지 않아요.")
+            return
+        }
+        if entry.cleanedClientNames.isEmpty {
+            add(.error, 1, "clientName", "\(label): 고객명이 비어 있어요.")
+        }
+        if entry.participantCount > certification.maxGroupSize {
+            add(.error, 7, "groupSize", "\(label): ICF 그룹코칭은 최대 \(certification.maxGroupSize)명까지예요.")
+        }
+        if entry.minutesOverride != nil && entry.minutesOverride != entry.rangeMinutes {
+            add(.warning, 1, "mismatch", "\(label): 적은 시간(\(entry.recordedMinutes)분)이 시간 범위(\(entry.rangeMinutes)분)와 달라요.")
+        }
     }
 
     /// Rule 3 / 6-③ — length of one session, checked on the written minutes and on the real time range.

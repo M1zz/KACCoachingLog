@@ -9,7 +9,7 @@ struct RootView: View {
 
     @AppStorage(AppSettings.candidateNameKey) private var candidateName = ""
     @AppStorage(AppSettings.trainingStartKey) private var trainingStart = 0.0
-    @AppStorage(AppSettings.goalHoursKey) private var goalHours = AppSettings.defaultGoalHours
+    @AppStorage(AppSettings.certificationKey) private var certification: Certification = .kac
     @AppStorage(AppSettings.autoTranscribeKey) private var autoTranscribe = true
     @AppStorage(AppSettings.requireOnDeviceKey) private var requireOnDevice = true
 
@@ -46,6 +46,7 @@ struct RootView: View {
         let issues = KACValidator.validate(
             entries: entries,
             candidateName: candidateName,
+            certification: certification,
             trainingStartDate: AppSettings.trainingStartDate(trainingStart)
         )
         NavigationSplitView {
@@ -128,7 +129,7 @@ struct RootView: View {
 
     @ViewBuilder
     private func sidebar(issues: [ValidationIssue]) -> some View {
-        let summary = KACSummary(entries: entries)
+        let summary = KACSummary(entries: entries, certification: certification)
         let issuesByEntry = Dictionary(grouping: issues.filter { $0.entryID != nil }, by: { $0.entryID! })
         let globalIssues = issues.filter { $0.entryID == nil }
 
@@ -136,7 +137,7 @@ struct RootView: View {
             Section {
                 SummaryCard(
                     summary: summary,
-                    goalMinutes: goalHours * 60,
+                    certification: certification,
                     errorCount: issues.filter { $0.severity == .error }.count,
                     warningCount: issues.filter { $0.severity == .warning }.count
                 )
@@ -151,7 +152,7 @@ struct RootView: View {
                         Text("첫 코칭을 기록해 보세요")
                             .font(.headline)
                         Text("‘코칭 시작’을 누르면 녹음과 함께 시작 시각이 기록되고, 종료하면 코칭일지 한 줄이 완성돼요. 지난 코칭은 ‘직접 입력’이나 ‘오디오 파일 가져오기’로 추가할 수 있어요.")
-                            .font(.callout)
+                            .font(.body)
                             .foregroundStyle(.secondary)
                     }
                     .padding(.vertical, 6)
@@ -311,17 +312,17 @@ struct SessionRow: View {
                     .font(.headline)
                     .lineLimit(1)
                 Text("\(formatter.dateText(entry))  \(formatter.timeText(entry))")
-                    .font(.subheadline)
+                    .font(.body)
                     .foregroundStyle(.secondary)
                     .monospacedDigit()
                 HStack(spacing: 6) {
                     KindBadge(kind: session.kind)
                     Text(formatter.formatText(entry).replacingOccurrences(of: "\n", with: " "))
-                        .font(.caption)
+                        .font(.body)
                         .foregroundStyle(.secondary)
                     if session.audioFileName != nil {
                         Image(systemName: "waveform")
-                            .font(.caption)
+                            .font(.body)
                             .foregroundStyle(.secondary)
                     }
                     transcriptionBadge
@@ -352,11 +353,11 @@ struct SessionRow: View {
             switch session.transcriptionState {
             case .completed:
                 Image(systemName: "text.bubble")
-                    .font(.caption)
+                    .font(.body)
                     .foregroundStyle(.secondary)
             case .failed:
                 Image(systemName: "text.bubble.badge.exclamationmark")
-                    .font(.caption)
+                    .font(.body)
                     .foregroundStyle(.orange)
             case .idle, .inProgress:
                 EmptyView()
@@ -367,19 +368,21 @@ struct SessionRow: View {
 
 struct SummaryCard: View {
     let summary: KACSummary
-    let goalMinutes: Int
+    let certification: Certification
     let errorCount: Int
     let warningCount: Int
+
+    private var goalMinutes: Int { certification.requiredTotalMinutes }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline) {
                 Text("누적 코칭시간")
-                    .font(.caption)
+                    .font(.body)
                     .foregroundStyle(.secondary)
                 Spacer()
-                Text("목표 \(goalMinutes / 60)시간")
-                    .font(.caption)
+                Text("\(certification.title) 목표 \(certification.practiceHours)시간")
+                    .font(.body)
                     .foregroundStyle(.secondary)
             }
             Text(KACDuration.hoursMinutes(summary.totalMinutes))
@@ -389,7 +392,9 @@ struct SummaryCard: View {
             HStack(spacing: 0) {
                 stat("유료", KACDuration.hoursMinutes(summary.paidMinutes))
                 stat("무료", KACDuration.hoursMinutes(summary.freeCoachingMinutes))
-                stat("CTC", KACDuration.hoursMinutes(summary.ctcMinutes))
+                if certification.countsCoachTheCoach {
+                    stat("CTC", KACDuration.hoursMinutes(summary.ctcMinutes))
+                }
                 stat("고객", "\(summary.uniqueClientCount)명")
             }
             if errorCount > 0 || warningCount > 0 {
@@ -397,11 +402,11 @@ struct SummaryCard: View {
                     "작성 점검: 오류 \(errorCount)건 · 주의 \(warningCount)건",
                     systemImage: errorCount > 0 ? "xmark.octagon.fill" : "exclamationmark.triangle.fill"
                 )
-                .font(.caption)
+                .font(.body)
                 .foregroundStyle(errorCount > 0 ? Color.red : Color.orange)
             } else if summary.entryCount > 0 {
                 Label("작성 점검 통과", systemImage: "checkmark.seal.fill")
-                    .font(.caption)
+                    .font(.body)
                     .foregroundStyle(.green)
             }
         }
@@ -411,10 +416,10 @@ struct SummaryCard: View {
     private func stat(_ title: String, _ value: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(title)
-                .font(.caption2)
+                .font(.body)
                 .foregroundStyle(.secondary)
             Text(value)
-                .font(.caption.weight(.medium))
+                .font(.body.weight(.medium))
                 .monospacedDigit()
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)

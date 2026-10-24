@@ -12,6 +12,8 @@ struct ParticipantsEditor: View {
     @Binding var ctcLicenseNumber: String
     var knownClients: [String]
 
+    @AppStorage(AppSettings.certificationKey) private var certification: Certification = .kac
+
     var body: some View {
         if kind == .coachTheCoach {
             coachTheCoachSection
@@ -22,7 +24,7 @@ struct ParticipantsEditor: View {
 
     private var clientSection: some View {
         Section {
-            Stepper(value: $groupSize, in: 1...KACValidator.maxGroupSize) {
+            Stepper(value: $groupSize, in: 1...certification.maxGroupSize) {
                 LabeledContent("인원", value: groupSize == 1 ? "1:1 코칭" : "1:\(groupSize) 그룹코칭")
             }
             ForEach(0..<min(groupSize, 3), id: \.self) { index in
@@ -44,7 +46,7 @@ struct ParticipantsEditor: View {
         } header: {
             Text("고객")
         } footer: {
-            if groupSize > 3 {
+            if groupSize > 3 && certification.body == .kca {
                 Text("그룹코칭은 코칭일지에 3명까지만 기재하고, 코칭형태에 총 인원이 표시돼요.")
             }
         }
@@ -71,7 +73,7 @@ struct ParticipantsEditor: View {
         } header: {
             Text("받은 코치더코치")
         } footer: {
-            Text("KAC 이상 인증 코치에게 받은 코치더코치만 인정돼요. 1:1·1:2는 2배로 계산되어 60~120분만 작성할 수 있고, 최대 25시간까지 인정돼요.")
+            Text("한국코치협회 인증 코치에게 받은 코치더코치만 인정돼요. 1:1·1:2는 2배로 계산되어 60~120분만 작성할 수 있고, \(certification.title)는 최대 \(certification.maxCTCHours ?? 0)시간까지 인정돼요.")
         }
     }
 
@@ -102,7 +104,7 @@ struct ParticipantsEditor: View {
         while names.count < limit { names.append("") }
         if let emptyIndex = names.prefix(limit).firstIndex(where: { $0.trimmingCharacters(in: .whitespaces).isEmpty }) {
             names[emptyIndex] = name
-        } else if groupSize < KACValidator.maxGroupSize {
+        } else if groupSize < certification.maxGroupSize {
             groupSize += 1
             if names.count < 3 { names.append(name) }
         }
@@ -117,7 +119,7 @@ struct KindBadge: View {
 
     var body: some View {
         Text(kind.shortTitle)
-            .font(.caption2.weight(.semibold))
+            .font(.body.weight(.semibold))
             .padding(.horizontal, 6)
             .padding(.vertical, 2)
             .background(color.opacity(0.15), in: Capsule())
@@ -140,10 +142,10 @@ struct IssueRow: View {
         Label {
             VStack(alignment: .leading, spacing: 2) {
                 Text(issue.message)
-                    .font(.callout)
+                    .font(.body)
                 if issue.rule > 0 {
                     Text("유의사항 \(issue.rule)번")
-                        .font(.caption2)
+                        .font(.body)
                         .foregroundStyle(.secondary)
                 }
             }
@@ -205,8 +207,9 @@ extension UTType {
     }
 }
 
-struct XLSXDocument: FileDocument {
-    static var readableContentTypes: [UTType] { [.xlsxSpreadsheet] }
+/// Exported coaching log: the KCA .xlsx form or the ICF .csv log.
+struct LogDocument: FileDocument {
+    static var readableContentTypes: [UTType] { [.xlsxSpreadsheet, .commaSeparatedText] }
 
     var data: Data
 

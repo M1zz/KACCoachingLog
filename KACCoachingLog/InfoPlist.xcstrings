@@ -10,6 +10,12 @@
             "state" : "new",
             "value" : "코칭일지"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coaching Log"
+          }
         }
       }
     },
@@ -20,6 +26,12 @@
         "ko" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "KACCoachingLog"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "KACCoachingLog"
           }
         }
@@ -51,6 +63,12 @@
             "state" : "new",
             "value" : "코칭 세션을 녹음해 코칭일지와 대화 기록을 만들기 위해 마이크를 사용합니다."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The microphone is used to record coaching sessions for your coaching log and transcript."
+          }
         }
       }
     },
@@ -62,6 +80,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "녹음한 코칭 대화를 텍스트로 변환하기 위해 음성 인식을 사용합니다."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speech recognition is used to transcribe recorded coaching conversations to text."
           }
         }
       }

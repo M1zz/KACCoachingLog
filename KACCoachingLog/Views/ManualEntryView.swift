@@ -12,6 +12,7 @@ struct ManualEntryView: View {
 
     @AppStorage(AppSettings.candidateNameKey) private var candidateName = ""
     @AppStorage(AppSettings.trainingStartKey) private var trainingStart = 0.0
+    @AppStorage(AppSettings.certificationKey) private var certification: Certification = .kac
 
     @State private var start: Date
     @State private var end: Date
@@ -79,6 +80,7 @@ struct ManualEntryView: View {
             .validate(
                 entries: allSessions.map(\.logEntry) + [draft],
                 candidateName: candidateName,
+                certification: certification,
                 trainingStartDate: AppSettings.trainingStartDate(trainingStart)
             )
             .filter { $0.entryID == draftID }
@@ -101,7 +103,7 @@ struct ManualEntryView: View {
 
                 Section {
                     Picker("구분", selection: $kind) {
-                        ForEach(SessionKind.allCases) { kind in
+                        ForEach(certification.sessionKinds) { kind in
                             Text(kind.title).tag(kind)
                         }
                     }
@@ -170,7 +172,9 @@ struct ManualEntryView: View {
             DatePicker("시작", selection: startBinding, displayedComponents: .hourAndMinute)
             DatePicker("종료", selection: endBinding, in: endRange, displayedComponents: .hourAndMinute)
             LabeledContent("기록될 시간", value: String(localized: "\(entry.recordedMinutes)분"))
-            LabeledContent("인정 범위", value: KACValidator.allowedLengthText(for: entry))
+            if certification.limitsSessionLength {
+                LabeledContent("인정 범위", value: KACValidator.allowedLengthText(for: entry))
+            }
         } header: {
             Text("A 날짜 · B 시간")
         } footer: {
@@ -239,7 +243,7 @@ struct ManualEntryView: View {
 
     /// The end time can only be picked up to the maximum allowed length (120분, CTC 1:1·1:2는 60분).
     private var endRange: ClosedRange<Date> {
-        let maxMinutes = KACValidator.allowedRangeMinutes(for: draft).upperBound
+        let maxMinutes = KACValidator.maxRangeMinutes(for: draft, certification: certification)
         return start...max(start.addingTimeInterval(TimeInterval(maxMinutes * 60)), end)
     }
 

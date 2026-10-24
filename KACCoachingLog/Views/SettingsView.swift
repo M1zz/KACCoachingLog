@@ -4,7 +4,7 @@ struct SettingsView: View {
     @AppStorage(AppSettings.candidateNameKey) private var candidateName = ""
     @AppStorage(AppSettings.trainingStartKey) private var trainingStart = 0.0
     @AppStorage(AppSettings.appLockKey) private var appLockEnabled = false
-    @AppStorage(AppSettings.goalHoursKey) private var goalHours = AppSettings.defaultGoalHours
+    @AppStorage(AppSettings.certificationKey) private var certification: Certification = .kac
     @AppStorage(AppSettings.autoTranscribeKey) private var autoTranscribe = true
     @AppStorage(AppSettings.requireOnDeviceKey) private var requireOnDevice = true
     @AppStorage(AppSettings.recordAudioByDefaultKey) private var recordAudioByDefault = true
@@ -51,11 +51,38 @@ struct SettingsView: View {
     var body: some View {
         Form {
             Section {
+                Picker("자격증", selection: $certification) {
+                    Section(CertificationBody.kca.title) {
+                        ForEach(Certification.allCases.filter { $0.body == .kca }) { item in
+                            Text(item.title).tag(item)
+                        }
+                    }
+                    Section(CertificationBody.icf.title) {
+                        ForEach(Certification.allCases.filter { $0.body == .icf }) { item in
+                            Text(item.title).tag(item)
+                        }
+                    }
+                }
+                LabeledContent("발급 기관", value: certification.body.title)
+                ForEach(certification.requirementLines, id: \.self) { line in
+                    Label(line, systemImage: "checkmark.circle")
+                }
+            } header: {
+                Text("준비 중인 자격증")
+            } footer: {
+                Text(certification.body == .kca
+                     ? "목표 시간, 코치더코치 한도, 작성 점검 규칙이 이 자격증에 맞춰져요. 교육·멘토코칭 시간은 코칭일지와 따로 확인해 주세요."
+                     : "ICF 코칭 로그 기준으로 유료·프로보노 시간을 모아요. 받은 코치더코치는 시간에 포함되지 않아요. 교육·멘토코칭 시간은 따로 확인해 주세요.")
+            }
+
+            Section {
                 TextField("응시자 명", text: $candidateName)
             } header: {
                 Text("응시자")
             } footer: {
-                Text("코칭일지 상단 ‘응시자 명(필수작성)’ 칸에 들어가요.")
+                Text(certification.body == .kca
+                     ? "코칭일지 상단 ‘응시자 명(필수작성)’ 칸에 들어가요."
+                     : "코칭 로그 맨 위 코치 이름 칸에 들어가요.")
             }
 
             Section {
@@ -71,24 +98,14 @@ struct SettingsView: View {
             }
 
             Section {
-                Toggle("기초교육 시작일 입력", isOn: hasTrainingStart)
+                Toggle("코칭 교육 시작일 입력", isOn: hasTrainingStart)
                 if trainingStart > 0 {
-                    DatePicker("기초교육 시작일", selection: trainingStartBinding, displayedComponents: .date)
+                    DatePicker("코칭 교육 시작일", selection: trainingStartBinding, displayedComponents: .date)
                 }
             } header: {
                 Text("코칭 교육")
             } footer: {
-                Text("코칭 실습은 기초교육(20시간)을 시작한 날 이후 기록만 인정돼요. 그 이전 코칭은 오류로 표시돼요.")
-            }
-
-            Section {
-                Stepper(value: $goalHours, in: 5...500, step: 5) {
-                    LabeledContent("목표 코칭시간", value: "\(goalHours)시간")
-                }
-            } header: {
-                Text("목표")
-            } footer: {
-                Text("응시 요건(필요한 코칭시간과 유료·무료 구성)은 한국코치협회의 최신 ‘코치인증자격시험 세부사항’을 확인해 주세요.")
+                Text("코칭 실습은 \(certification.title) 교육(\(certification.educationHours)시간)을 시작한 날 이후 기록만 인정돼요. 그 이전 코칭은 오류로 표시돼요.")
             }
 
             Section {
@@ -103,9 +120,17 @@ struct SettingsView: View {
                 Text("iOS 26 · macOS 26 이상에서는 기기 안에서 처리하는 SpeechAnalyzer를 사용해요. 이전 버전에서 ‘기기 내 인식만 사용’을 끄면 음성이 Apple 서버로 전송될 수 있어요. 코칭 녹음은 고객 동의를 받은 경우에만 사용해 주세요.")
             }
 
-            Section("양식") {
-                LabeledContent("코칭일지 양식", value: KACTemplateParts.templateVersion)
-                LabeledContent("점검 규칙", value: "작성 시 유의사항 1~9번")
+            Section {
+                if certification.body == .kca {
+                    LabeledContent("코칭일지 양식", value: KACTemplateParts.templateVersion)
+                    LabeledContent("점검 규칙", value: "작성 시 유의사항 1~9번")
+                } else {
+                    LabeledContent("코칭 로그 양식", value: "ICF Coaching Log (CSV)")
+                }
+            } header: {
+                Text("양식")
+            } footer: {
+                Text("응시 요건은 바뀔 수 있어요. 응시 전에 \(certification.body.title)의 최신 안내를 확인해 주세요.")
             }
         }
         .formStyle(.grouped)

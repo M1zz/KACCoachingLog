@@ -40,6 +40,7 @@ struct RecordingView: View {
     @AppStorage(AppSettings.autoTranscribeKey) private var autoTranscribe = true
     @AppStorage(AppSettings.requireOnDeviceKey) private var requireOnDevice = true
     @AppStorage(AppSettings.recordAudioByDefaultKey) private var recordAudioByDefault = true
+    @AppStorage(AppSettings.certificationKey) private var certification: Certification = .kac
 
     @State private var recorder = AudioRecorder()
     @State private var draft = SessionDraft()
@@ -125,6 +126,7 @@ struct RecordingView: View {
         #endif
         .onAppear {
             recordAudio = recordAudioByDefault
+            if !certification.sessionKinds.contains(draft.kind) { draft.kind = .paid }
         }
     }
 
@@ -134,7 +136,7 @@ struct RecordingView: View {
         Form {
             Section("코칭 구분") {
                 Picker("구분", selection: $draft.kind) {
-                    ForEach(SessionKind.allCases) { kind in
+                    ForEach(certification.sessionKinds) { kind in
                         Text(kind.title).tag(kind)
                     }
                 }
@@ -207,7 +209,7 @@ struct RecordingView: View {
                     .multilineTextAlignment(.center)
                 if let startDate = recorder.startDate {
                     Text("시작 \(startDate.formatted(date: .omitted, time: .shortened)) · \(draft.format.title)")
-                        .font(.subheadline)
+                        .font(.body)
                         .foregroundStyle(.secondary)
                 }
             }
@@ -223,7 +225,7 @@ struct RecordingView: View {
                             .frame(maxWidth: 260)
                     }
                     Text(KACDuration.hoursMinutes(Int(recorder.elapsed(at: context.date) / 60)))
-                        .font(.callout)
+                        .font(.body)
                         .foregroundStyle(.secondary)
                         .monospacedDigit()
                 }
@@ -249,7 +251,7 @@ struct RecordingView: View {
                             .frame(width: 72, height: 72)
                             .background(.quaternary, in: Circle())
                         Text(recorder.state == .recording ? "일시정지" : "계속")
-                            .font(.caption)
+                            .font(.body)
                     }
                 }
                 .buttonStyle(.plain)
@@ -264,7 +266,7 @@ struct RecordingView: View {
                             .frame(width: 72, height: 72)
                             .background(Color.red, in: Circle())
                         Text("종료 및 저장")
-                            .font(.caption)
+                            .font(.body)
                     }
                 }
                 .buttonStyle(.plain)
@@ -294,7 +296,7 @@ struct RecordingView: View {
     /// Tells the coach how much recognised time is left (120분, CTC 1:1·1:2는 실제 60분).
     @ViewBuilder
     private func lengthGuide(at date: Date) -> some View {
-        if let start = recorder.startDate {
+        if let start = recorder.startDate, certification.limitsSessionLength {
             let entry = draft.entry(start: start, end: date)
             let range = KACValidator.allowedRangeMinutes(for: entry)
             let minutes = entry.rangeMinutes
@@ -327,7 +329,7 @@ struct RecordingView: View {
     }
 
     private func stopAndSave(force: Bool = true) {
-        if !force, let start = recorder.startDate {
+        if !force, certification.limitsSessionLength, let start = recorder.startDate {
             let entry = draft.entry(start: start, end: Date())
             if entry.rangeMinutes < KACValidator.allowedRangeMinutes(for: entry).lowerBound {
                 confirmShortStop = true
@@ -339,7 +341,7 @@ struct RecordingView: View {
             return
         }
         let entry = draft.entry(start: result.startDate, end: result.endDate)
-        if entry.rangeMinutes > KACValidator.allowedRangeMinutes(for: entry).upperBound {
+        if certification.limitsSessionLength && entry.rangeMinutes > KACValidator.allowedRangeMinutes(for: entry).upperBound {
             overLimitResult = result
             return
         }

@@ -14,6 +14,7 @@ struct SessionDetailView: View {
     @AppStorage(AppSettings.candidateNameKey) private var candidateName = ""
     @AppStorage(AppSettings.trainingStartKey) private var trainingStart = 0.0
     @AppStorage(AppSettings.requireOnDeviceKey) private var requireOnDevice = true
+    @AppStorage(AppSettings.certificationKey) private var certification: Certification = .kac
 
     @State private var player = AudioPlayer()
     @State private var showAudioImporter = false
@@ -99,6 +100,7 @@ struct SessionDetailView: View {
             .validate(
                 entries: allSessions.map(\.logEntry),
                 candidateName: candidateName,
+                certification: certification,
                 trainingStartDate: AppSettings.trainingStartDate(trainingStart)
             )
             .filter { $0.entryID == session.uuid }
@@ -113,7 +115,8 @@ struct SessionDetailView: View {
 
     private var timeSection: some View {
         let entry = session.logEntry
-        let isValidLength = KACValidator.hasValidLength(entry)
+        let limitsLength = certification.limitsSessionLength
+        let isValidLength = !limitsLength || KACValidator.hasValidLength(entry)
         return Section {
             DatePicker("날짜", selection: dayBinding, displayedComponents: .date)
             DatePicker("시작", selection: startBinding, displayedComponents: .hourAndMinute)
@@ -121,16 +124,18 @@ struct SessionDetailView: View {
             LabeledContent("시간 범위", value: "\(entry.rangeMinutes)분")
             Toggle("분 직접 입력", isOn: overrideEnabledBinding)
             if session.minutesOverride != nil {
-                Stepper(value: overrideValueBinding, in: KACValidator.allowedRecordedMinutes(for: entry), step: 5) {
+                Stepper(value: overrideValueBinding, in: KACValidator.typedMinutesRange(for: entry, certification: certification), step: 5) {
                     LabeledContent("기록할 시간", value: "\(session.minutesOverride ?? 0)분")
                 }
             }
-            LabeledContent("인정 범위") {
-                Label(KACValidator.allowedLengthText(for: entry),
-                      systemImage: isValidLength ? "checkmark.circle.fill" : "xmark.octagon.fill")
-                    .foregroundStyle(isValidLength ? Color.green : Color.red)
+            if limitsLength {
+                LabeledContent("인정 범위") {
+                    Label(KACValidator.allowedLengthText(for: entry),
+                          systemImage: isValidLength ? "checkmark.circle.fill" : "xmark.octagon.fill")
+                        .foregroundStyle(isValidLength ? Color.green : Color.red)
+                }
             }
-            if let fix = KACValidator.lengthFix(for: entry) {
+            if limitsLength, let fix = KACValidator.lengthFix(for: entry) {
                 Button {
                     session.endDate = fix.end
                     session.minutesOverride = fix.minutesOverride
@@ -149,6 +154,8 @@ struct SessionDetailView: View {
                 Text("1:1·1:2 코치더코치는 실제 시간의 2배(\(entry.recordedMinutes)분)로 기록돼요. 1시간이면 120분이라 최대 1시간까지만 적을 수 있어요.")
             } else if session.kind == .coachTheCoach {
                 Text("그룹 코치더코치는 실제 시간 그대로(\(entry.recordedMinutes)분) 기록돼요.")
+            } else if !limitsLength {
+                Text("ICF 코칭 로그에는 시간 범위가 시간 단위(예: 50분 → 0.83시간)로 기록돼요.")
             } else {
                 Text("유료·무료 칸에는 시간 범위와 같은 분이 기록돼요. 시간 범위와 다른 값을 적으면 작성 오류로 볼 수 있어요.")
             }
@@ -158,7 +165,8 @@ struct SessionDetailView: View {
     private var kindSection: some View {
         Section("구분") {
             Picker("구분", selection: $session.kind) {
-                ForEach(SessionKind.allCases) { kind in
+                // Keep a coach-the-coach record selectable even when the credential does not count it.
+                ForEach(certification.sessionKinds.contains(session.kind) ? certification.sessionKinds : SessionKind.allCases) { kind in
                     Text(kind.title).tag(kind)
                 }
             }
@@ -194,7 +202,7 @@ struct SessionDetailView: View {
                 }
             } else {
                 Text("녹음 파일이 없어요. Zoom·음성 메모 등으로 녹음한 파일을 붙일 수 있어요.")
-                    .font(.callout)
+                    .font(.body)
                     .foregroundStyle(.secondary)
                 Button {
                     showAudioImporter = true
@@ -230,10 +238,10 @@ struct SessionDetailView: View {
                         } label: {
                             HStack(alignment: .firstTextBaseline, spacing: 10) {
                                 Text(KACDuration.clock(segment.start))
-                                    .font(.caption.monospacedDigit())
+                                    .font(.body.monospacedDigit())
                                     .foregroundStyle(.secondary)
                                 Text(segment.text)
-                                    .font(.callout)
+                                    .font(.body)
                                     .multilineTextAlignment(.leading)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                             }
@@ -261,7 +269,7 @@ struct SessionDetailView: View {
                 }
                 ProgressView(value: progress)
                 Text("처음 사용할 때는 한국어 음성 모델을 내려받느라 시간이 걸릴 수 있어요.")
-                    .font(.caption)
+                    .font(.body)
                     .foregroundStyle(.secondary)
             }
         } else {
@@ -270,22 +278,22 @@ struct SessionDetailView: View {
                 Label(session.transcriptionError.isEmpty ? "변환에 실패했어요." : session.transcriptionError,
                       systemImage: "exclamationmark.triangle.fill")
                     .foregroundStyle(.orange)
-                    .font(.callout)
+                    .font(.body)
                 transcribeButton(title: "다시 시도")
             case .completed:
                 HStack {
                     Text(session.transcriptionEngine.isEmpty ? "변환 완료" : "변환 완료 · \(session.transcriptionEngine)")
-                        .font(.caption)
+                        .font(.body)
                         .foregroundStyle(.secondary)
                     Spacer()
                     if session.audioFileURL != nil {
                         Button("다시 변환") { confirmRetranscribe = true }
-                            .font(.caption)
+                            .font(.body)
                     }
                 }
                 if !session.transcriptionError.isEmpty {
                     Text(session.transcriptionError)
-                        .font(.caption)
+                        .font(.body)
                         .foregroundStyle(.orange)
                 }
             case .idle, .inProgress:
@@ -293,7 +301,7 @@ struct SessionDetailView: View {
                     transcribeButton(title: "텍스트로 변환")
                 } else {
                     Text("녹음 파일이 있으면 텍스트로 변환할 수 있어요.")
-                        .font(.callout)
+                        .font(.body)
                         .foregroundStyle(.secondary)
                 }
             }
@@ -337,7 +345,7 @@ struct SessionDetailView: View {
     /// The end time can only be picked up to the maximum allowed length (120분, CTC 1:1·1:2는 60분).
     private var endRange: ClosedRange<Date> {
         let start = Calendar.current.combine(day: session.startDate, time: session.startDate)
-        let maxMinutes = KACValidator.allowedRangeMinutes(for: session.logEntry).upperBound
+        let maxMinutes = KACValidator.maxRangeMinutes(for: session.logEntry, certification: certification)
         let latest = start.addingTimeInterval(TimeInterval(maxMinutes * 60))
         // Keep an already-saved out-of-range end selectable so the picker shows the real value.
         return start...max(latest, session.endDate)
@@ -362,7 +370,7 @@ struct SessionDetailView: View {
         Binding(
             get: { session.minutesOverride != nil },
             set: { enabled in
-                let allowed = KACValidator.allowedRecordedMinutes(for: session.logEntry)
+                let allowed = KACValidator.typedMinutesRange(for: session.logEntry, certification: certification)
                 session.minutesOverride = enabled
                     ? min(max(session.logEntry.recordedMinutes, allowed.lowerBound), allowed.upperBound)
                     : nil
@@ -439,7 +447,7 @@ struct PlayerControls: View {
                     Spacer()
 
                     Text("\(KACDuration.clock(current)) / \(KACDuration.clock(player.duration))")
-                        .font(.caption.monospacedDigit())
+                        .font(.body.monospacedDigit())
                         .foregroundStyle(.secondary)
                 }
                 Slider(
