@@ -13,7 +13,13 @@ struct RootView: View {
     @AppStorage(AppSettings.autoTranscribeKey) private var autoTranscribe = true
     @AppStorage(AppSettings.requireOnDeviceKey) private var requireOnDevice = true
 
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    #endif
+
     @State private var selectedID: UUID?
+    /// iPad portrait shows the list next to the detail instead of hiding it.
+    @State private var columnVisibility: NavigationSplitViewVisibility = .all
     @State private var showRecording = false
     @State private var showExport = false
     @State private var showManualEntry = false
@@ -49,23 +55,27 @@ struct RootView: View {
             certification: certification,
             trainingStartDate: AppSettings.trainingStartDate(trainingStart)
         )
-        NavigationSplitView {
+        NavigationSplitView(columnVisibility: $columnVisibility) {
             sidebar(issues: issues)
         } detail: {
             detailContent
         }
+        .navigationSplitViewStyle(.balanced)
         .sheet(isPresented: $showRecording) {
             RecordingView(knownClients: knownClients) { session in
                 selectedID = session.uuid
             }
+            .largeSheetOnPad()
         }
         .sheet(isPresented: $showManualEntry) {
             ManualEntryView(knownClients: knownClients) { session in
                 selectedID = session.uuid
             }
+            .largeSheetOnPad()
         }
         .sheet(isPresented: $showExport) {
             ExportView(sessions: sessions)
+                .largeSheetOnPad()
         }
         #if os(iOS)
         .sheet(isPresented: $showSettings) {
@@ -77,6 +87,7 @@ struct RootView: View {
                         }
                     }
             }
+            .largeSheetOnPad()
         }
         #endif
         .fileImporter(isPresented: $showAudioImporter, allowedContentTypes: [.audio]) { result in
@@ -105,8 +116,33 @@ struct RootView: View {
         .task {
             guard !didRecover else { return }
             didRecover = true
+            #if DEBUG
+            if ScreenshotSupport.isSeeding {
+                let newest = ScreenshotSupport.seed(modelContext)
+                switch ScreenshotSupport.screen {
+                case "detail": selectedID = newest?.uuid
+                case "recording": showRecording = true
+                case "export": showExport = true
+                case "settings": showSettings = true
+                case "manual": showManualEntry = true
+                default: break
+                }
+                if selectedID == nil && isRegularWidth { selectedID = newest?.uuid }
+                return
+            }
+            #endif
             transcriptionCenter.recoverInterrupted(sessions)
+            // On a wide screen the detail column would otherwise start empty.
+            if selectedID == nil && isRegularWidth { selectedID = sessions.first?.uuid }
         }
+    }
+
+    private var isRegularWidth: Bool {
+        #if os(iOS)
+        horizontalSizeClass == .regular
+        #else
+        true
+        #endif
     }
 
     @ViewBuilder
@@ -188,9 +224,7 @@ struct RootView: View {
             }
         }
         .navigationTitle("코칭일지")
-        #if os(macOS)
-        .navigationSplitViewColumnWidth(min: 300, ideal: 360)
-        #endif
+        .navigationSplitViewColumnWidth(min: 320, ideal: 400, max: 480)
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
                 Button {
@@ -199,6 +233,7 @@ struct RootView: View {
                     Label("코칭 시작", systemImage: "record.circle")
                 }
                 .help("녹음하며 코칭 시작")
+                .keyboardShortcut("n", modifiers: .command)
 
                 Menu {
                     Button {
@@ -221,6 +256,7 @@ struct RootView: View {
                     Label("엑셀로 내보내기", systemImage: "square.and.arrow.up")
                 }
                 .help("코칭일지 엑셀로 내보내기")
+                .keyboardShortcut("e", modifiers: .command)
 
                 #if os(iOS)
                 Button {
@@ -228,6 +264,7 @@ struct RootView: View {
                 } label: {
                     Label("설정", systemImage: "gearshape")
                 }
+                .keyboardShortcut(",", modifiers: .command)
                 #else
                 SettingsLink {
                     Label("설정", systemImage: "gearshape")
@@ -315,6 +352,8 @@ struct SessionRow: View {
                     .font(.body)
                     .foregroundStyle(.secondary)
                     .monospacedDigit()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
                 HStack(spacing: 6) {
                     KindBadge(kind: session.kind)
                     Text(formatter.formatText(entry).replacingOccurrences(of: "\n", with: " "))
@@ -389,7 +428,9 @@ struct SummaryCard: View {
                 .font(.title2.weight(.bold))
                 .monospacedDigit()
             ProgressView(value: goalMinutes > 0 ? min(1, Double(summary.totalMinutes) / Double(goalMinutes)) : 0)
-            HStack(spacing: 0) {
+            // Two columns so "27시간 45분" never runs into the next value at body size.
+            LazyVGrid(columns: [GridItem(.flexible(), alignment: .leading), GridItem(.flexible(), alignment: .leading)],
+                      alignment: .leading, spacing: 8) {
                 stat("유료", KACDuration.hoursMinutes(summary.paidMinutes))
                 stat("무료", KACDuration.hoursMinutes(summary.freeCoachingMinutes))
                 if certification.countsCoachTheCoach {
@@ -422,7 +463,7 @@ struct SummaryCard: View {
                 .font(.body.weight(.medium))
                 .monospacedDigit()
                 .lineLimit(1)
-                .minimumScaleFactor(0.7)
+                .minimumScaleFactor(0.8)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }

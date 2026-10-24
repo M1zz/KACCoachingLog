@@ -177,6 +177,15 @@ final class AudioRecorder {
     // MARK: Metering (polled by the UI through TimelineView)
 
     /// Wall-clock time since start, excluding pauses.
+    #if DEBUG
+    /// Screenshot mode: shows a session that has been running for `elapsed` seconds, without the microphone.
+    func startPreview(elapsed: TimeInterval) {
+        startDate = Date().addingTimeInterval(-elapsed)
+        isRecordingAudio = true
+        state = .recording
+    }
+    #endif
+
     func elapsed(at date: Date = Date()) -> TimeInterval {
         guard let startDate else { return 0 }
         var paused = pausedTotal

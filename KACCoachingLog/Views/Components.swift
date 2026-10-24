@@ -122,8 +122,9 @@ struct KindBadge: View {
             .font(.body.weight(.semibold))
             .padding(.horizontal, 6)
             .padding(.vertical, 2)
-            .background(color.opacity(0.15), in: Capsule())
-            .foregroundStyle(color)
+            // Solid fill stays readable on a selected (tinted) list row.
+            .background(color, in: Capsule())
+            .foregroundStyle(.white)
     }
 
     private var color: Color {
@@ -253,5 +254,21 @@ enum AudioImporter {
             duration: duration,
             recordedAt: values?.creationDate ?? values?.contentModificationDate
         )
+    }
+}
+
+extension View {
+    /// iPad: a page-sized sheet instead of the small form sheet. iPhone sheets are unchanged.
+    @ViewBuilder
+    func largeSheetOnPad() -> some View {
+        #if os(iOS)
+        if #available(iOS 18.0, *) {
+            presentationSizing(.page)
+        } else {
+            self
+        }
+        #else
+        self
+        #endif
     }
 }

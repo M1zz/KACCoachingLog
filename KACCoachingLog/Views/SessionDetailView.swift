@@ -129,10 +129,15 @@ struct SessionDetailView: View {
                 }
             }
             if limitsLength {
-                LabeledContent("인정 범위") {
-                    Label(KACValidator.allowedLengthText(for: entry),
-                          systemImage: isValidLength ? "checkmark.circle.fill" : "xmark.octagon.fill")
-                        .foregroundStyle(isValidLength ? Color.green : Color.red)
+                // Plain HStack: LabeledContent with a Label grows a tall empty row on iPad.
+                HStack {
+                    Text("인정 범위")
+                    Spacer()
+                    Group {
+                        Image(systemName: isValidLength ? "checkmark.circle.fill" : "xmark.octagon.fill")
+                        Text(KACValidator.allowedLengthText(for: entry))
+                    }
+                    .foregroundStyle(isValidLength ? Color.green : Color.red)
                 }
             }
             if limitsLength, let fix = KACValidator.lengthFix(for: entry) {

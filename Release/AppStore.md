@@ -145,12 +145,15 @@ Larger text throughout the app.
 No account is required. To try the app: tap the record button, enter a client name, and start a session (or use the timer if you prefer not to record audio). End the session to create a log entry, then tap the share button to export the coaching log file. The credential can be changed in Settings. All data stays on the device. The microphone is used only to record coaching sessions, and speech recognition is used only to transcribe them.
 ```
 
-## 스크린샷 체크리스트
+## 스크린샷
 
-| 기기 | 크기 | 장면 |
+`Release/screenshots/`에 App Store 규격 크기로 준비되어 있습니다. 파일 이름 순서대로 올리면 됩니다.
+
+| 폴더 | 크기 | 용도 |
 | --- | --- | --- |
-| iPhone 6.9형 | 1320 x 2868 | 요약 카드, 녹음 중, 세션 상세(작성 점검), 내보내기, 설정(자격증 선택) |
-| iPad 13형 | 2064 x 2752 | iPad를 지원하므로 필요 |
-| Mac | 2880 x 1800 | Mac 앱도 제출할 경우 |
+| iphone-6.9 | 1320 x 2868 | iPhone 6.9형 (필수, 작은 iPhone은 자동 축소) |
+| ipad-13 | 2064 x 2752 | iPad 13형 (필수, 작은 iPad는 자동 축소) |
 
-샘플 데이터로 찍고, 실제 고객 이름이 보이지 않게 해 주세요.
+1 목록과 누적 시간, 2 녹음 중, 3 작성 오류와 한 번에 고치기, 4 자격증 선택, 5 엑셀 내보내기 순서입니다. 고객 이름은 모두 가상의 이름입니다.
+
+다시 찍을 때는 Debug 빌드를 시뮬레이터에서 `-screenshotSeed -screenshotScreen <detail|recording|export|settings>`로 실행하면 같은 샘플 데이터와 화면이 열립니다 (`App/ScreenshotSupport.swift`).

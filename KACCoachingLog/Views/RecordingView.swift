@@ -127,6 +127,13 @@ struct RecordingView: View {
         .onAppear {
             recordAudio = recordAudioByDefault
             if !certification.sessionKinds.contains(draft.kind) { draft.kind = .paid }
+            #if DEBUG
+            if ScreenshotSupport.screen == "recording" {
+                draft.clientNames = ["이서연"]
+                draft.format = .remote
+                recorder.startPreview(elapsed: 47 * 60 + 12)
+            }
+            #endif
         }
     }
 
