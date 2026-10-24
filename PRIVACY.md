@@ -1,5 +1,7 @@
 # 개인정보처리방침 (Privacy Policy)
 
+웹 페이지: https://m1zz.github.io/KACCoachingLog/privacy.html
+
 시행일: 2026-10-24
 
 ## 한국어

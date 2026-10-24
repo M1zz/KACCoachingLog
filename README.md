@@ -89,4 +89,5 @@ Scripts/verify.sh   Mac에서 핵심 로직 테스트 + macOS/iOS 빌드 확인
 - 양식이 개정되면 `Export/KACTemplateParts.swift`의 스타일/문자열을 새 양식에서 다시 추출하고, `KACWorkbookBuilder`의 행 구성을 맞춰 주세요.
 - 녹음·텍스트는 앱 컨테이너(Application Support/Recordings)와 SwiftData 저장소에만 보관됩니다. 고객 동의 없이 녹음하지 마세요.
 - 응시 요건(필요 시간, 유료·무료 구성)은 협회의 최신 안내를 확인하세요. 자격증별 숫자는 `Core/Certification.swift`에 모여 있습니다.
-- App Store 제출 자료(설명, 키워드, 개인정보, 심사 메모)는 `docs/AppStore.md`, 개인정보처리방침은 `PRIVACY.md`에 있습니다.
+- App Store 제출 자료(설명, 키워드, 개인정보, 심사 메모)는 `Release/AppStore.md`에 있습니다.
+- 소개 페이지 https://m1zz.github.io/KACCoachingLog/ · 개인정보처리방침 https://m1zz.github.io/KACCoachingLog/privacy.html (GitHub Pages, `docs/` 폴더)

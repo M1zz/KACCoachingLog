@@ -12,7 +12,8 @@ App Store Connect에 그대로 붙여넣을 수 있게 정리했습니다. 글�
 | 카테고리 | 생산성 (보조: 비즈니스) |
 | 연령 등급 | 4+ (설문 전 항목 "없음") |
 | 가격 | 무료 |
-| 개인정보처리방침 URL | https://github.com/M1zz/KACCoachingLog/blob/main/PRIVACY.md |
+| 개인정보처리방침 URL | https://m1zz.github.io/KACCoachingLog/privacy.html |
+| 마케팅 URL | https://m1zz.github.io/KACCoachingLog/ |
 | 지원 URL | https://github.com/M1zz/KACCoachingLog/issues |
 | 수출 규정 | 암호화 사용 안 함 (Info.plist `ITSAppUsesNonExemptEncryption = NO`, 제출 시 질문 없음) |
 
