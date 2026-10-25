@@ -46,10 +46,6 @@ a { color: inherit; }
 
 .wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
 
-/* Language switch: elements carry data-lang="ko" or "en" */
-html[lang="ko"] [data-lang="en"],
-html[lang="en"] [data-lang="ko"] { display: none !important; }
-
 .topbar {
   display: flex; align-items: center; justify-content: space-between;
   padding: 18px 0;
@@ -57,11 +53,11 @@ html[lang="en"] [data-lang="ko"] { display: none !important; }
 .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; text-decoration: none; }
 .brand img { width: 36px; height: 36px; border-radius: 9px; }
 .lang { display: flex; gap: 4px; background: rgba(255,255,255,.12); border-radius: 999px; padding: 4px; }
-.lang button {
-  font: inherit; font-size: 15px; border: 0; background: transparent; color: inherit;
-  padding: 4px 12px; border-radius: 999px; cursor: pointer;
+.lang a {
+  font-size: 15px; color: inherit; text-decoration: none;
+  padding: 4px 12px; border-radius: 999px;
 }
-.lang button[aria-pressed="true"] { background: #fff; color: var(--navy); font-weight: 700; }
+.lang a[aria-current="page"] { background: #fff; color: var(--navy); font-weight: 700; }
 
 /* Hero */
 .hero {
