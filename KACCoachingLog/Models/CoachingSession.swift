@@ -115,10 +115,10 @@ extension CoachingSession {
     /// Short label for lists: "홍길동", "홍길동 외 2명", "김코치 (CTC)"
     var displayTitle: String {
         let names = logEntry.cleanedClientNames
-        guard let first = names.first else { return "이름 없음" }
-        if kind == .coachTheCoach { return "\(first) 코치" }
+        guard let first = names.first else { return String(localized: "이름 없음") }
+        if kind == .coachTheCoach { return String(localized: "\(first) 코치") }
         let others = max(logEntry.participantCount - 1, 0)
-        return others > 0 ? "\(first) 외 \(others)명" : first
+        return others > 0 ? String(localized: "\(first) 외 \(others)명") : first
     }
 
     func deleteAudioFile() {

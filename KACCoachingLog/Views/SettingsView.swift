@@ -9,7 +9,7 @@ struct SettingsView: View {
     @AppStorage(AppSettings.requireOnDeviceKey) private var requireOnDevice = true
     @AppStorage(AppSettings.recordAudioByDefaultKey) private var recordAudioByDefault = true
 
-    @State private var engineDescription = "확인 중…"
+    @State private var engineDescription = String(localized: "확인 중…")
     @State private var storageText = ""
     @State private var lockMessage: String?
 

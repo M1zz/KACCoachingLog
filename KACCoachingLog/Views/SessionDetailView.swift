@@ -121,11 +121,11 @@ struct SessionDetailView: View {
             DatePicker("날짜", selection: dayBinding, displayedComponents: .date)
             DatePicker("시작", selection: startBinding, displayedComponents: .hourAndMinute)
             DatePicker("종료", selection: endBinding, in: endRange, displayedComponents: .hourAndMinute)
-            LabeledContent("시간 범위", value: "\(entry.rangeMinutes)분")
+            LabeledContent("시간 범위", value: String(localized: "\(entry.rangeMinutes)분"))
             Toggle("분 직접 입력", isOn: overrideEnabledBinding)
             if session.minutesOverride != nil {
                 Stepper(value: overrideValueBinding, in: KACValidator.typedMinutesRange(for: entry, certification: certification), step: 5) {
-                    LabeledContent("기록할 시간", value: "\(session.minutesOverride ?? 0)분")
+                    LabeledContent("기록할 시간", value: String(localized: "\(session.minutesOverride ?? 0)분"))
                 }
             }
             if limitsLength {
@@ -280,11 +280,11 @@ struct SessionDetailView: View {
         } else {
             switch session.transcriptionState {
             case .failed:
-                Label(session.transcriptionError.isEmpty ? "변환에 실패했어요." : session.transcriptionError,
+                Label(session.transcriptionError.isEmpty ? String(localized: "변환에 실패했어요.") : session.transcriptionError,
                       systemImage: "exclamationmark.triangle.fill")
                     .foregroundStyle(.orange)
                     .font(.body)
-                transcribeButton(title: "다시 시도")
+                transcribeButton(title: String(localized: "다시 시도"))
             case .completed:
                 HStack {
                     Text(session.transcriptionEngine.isEmpty ? "변환 완료" : "변환 완료 · \(session.transcriptionEngine)")
@@ -303,7 +303,7 @@ struct SessionDetailView: View {
                 }
             case .idle, .inProgress:
                 if session.audioFileURL != nil {
-                    transcribeButton(title: "텍스트로 변환")
+                    transcribeButton(title: String(localized: "텍스트로 변환"))
                 } else {
                     Text("녹음 파일이 있으면 텍스트로 변환할 수 있어요.")
                         .font(.body)
@@ -359,9 +359,9 @@ struct SessionDetailView: View {
     private func fixTitle(_ fix: KACValidator.LengthFix) -> String {
         if fix.end != session.endDate {
             let time = fix.end.formatted(date: .omitted, time: .shortened)
-            return "종료 시각을 \(time)로 맞추기 (\(KACValidator.allowedRangeMinutes(for: session.logEntry).upperBound)분)"
+            return String(localized: "종료 시각을 \(time)로 맞추기 (\(KACValidator.allowedRangeMinutes(for: session.logEntry).upperBound)분)")
         }
-        return "직접 입력한 분 지우고 시간 범위대로 기록하기"
+        return String(localized: "직접 입력한 분 지우고 시간 범위대로 기록하기")
     }
 
     private var endBinding: Binding<Date> {
@@ -408,7 +408,7 @@ struct SessionDetailView: View {
                 try? modelContext.save()
                 startTranscription()
             } catch {
-                importError = "오디오 파일을 가져오지 못했어요: \(error.localizedDescription)"
+                importError = String(localized: "오디오 파일을 가져오지 못했어요: \(error.localizedDescription)")
             }
         }
     }

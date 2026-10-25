@@ -283,8 +283,8 @@ struct RootView: View {
         let calendar = Calendar.current
         var groups: [MonthGroup] = []
         for session in sessions {
-            let c = calendar.dateComponents([.year, .month], from: session.startDate)
-            let title = "\(c.year ?? 0)년 \(c.month ?? 0)월"
+            let month = calendar.dateInterval(of: .month, for: session.startDate)?.start ?? session.startDate
+            let title = month.formatted(.dateTime.year().month(.wide))
             if groups.last?.title == title {
                 groups[groups.count - 1].sessions.append(session)
             } else {
@@ -316,9 +316,9 @@ struct RootView: View {
                 if autoTranscribe {
                     transcriptionCenter.start(session, requireOnDevice: requireOnDevice)
                 }
-                alertMessage = "오디오를 가져왔어요. 파일의 생성 시각으로 시간을 채웠으니 실제 코칭 시간과 고객명을 확인해 주세요."
+                alertMessage = String(localized: "오디오를 가져왔어요. 파일의 생성 시각으로 시간을 채웠으니 실제 코칭 시간과 고객명을 확인해 주세요.")
             } catch {
-                alertMessage = "오디오 파일을 가져오지 못했어요: \(error.localizedDescription)"
+                alertMessage = String(localized: "오디오 파일을 가져오지 못했어요: \(error.localizedDescription)")
             }
         }
     }
@@ -356,7 +356,7 @@ struct SessionRow: View {
                     .minimumScaleFactor(0.8)
                 HStack(spacing: 6) {
                     KindBadge(kind: session.kind)
-                    Text(formatter.formatText(entry).replacingOccurrences(of: "\n", with: " "))
+                    Text(formatter.formatSummary(entry))
                         .font(.body)
                         .foregroundStyle(.secondary)
                     if session.audioFileName != nil {
@@ -436,7 +436,7 @@ struct SummaryCard: View {
                 if certification.countsCoachTheCoach {
                     stat("CTC", KACDuration.hoursMinutes(summary.ctcMinutes))
                 }
-                stat("고객", "\(summary.uniqueClientCount)명")
+                stat("고객", String(localized: "\(summary.uniqueClientCount)명"))
             }
             if errorCount > 0 || warningCount > 0 {
                 Label(
@@ -454,7 +454,7 @@ struct SummaryCard: View {
         .padding(.vertical, 6)
     }
 
-    private func stat(_ title: String, _ value: String) -> some View {
+    private func stat(_ title: LocalizedStringKey, _ value: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(title)
                 .font(.body)

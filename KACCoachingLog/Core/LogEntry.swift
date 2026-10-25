@@ -12,16 +12,16 @@ enum SessionKind: String, CaseIterable, Codable, Identifiable {
 
     var title: String {
         switch self {
-        case .paid: return "유료 코칭"
-        case .free: return "무료 코칭"
-        case .coachTheCoach: return "받은 코치더코치"
+        case .paid: return String(localized: "유료 코칭")
+        case .free: return String(localized: "무료 코칭")
+        case .coachTheCoach: return String(localized: "받은 코치더코치")
         }
     }
 
     var shortTitle: String {
         switch self {
-        case .paid: return "유료"
-        case .free: return "무료"
+        case .paid: return String(localized: "유료")
+        case .free: return String(localized: "무료")
         case .coachTheCoach: return "CTC"
         }
     }
@@ -35,6 +35,14 @@ enum CoachingFormat: String, CaseIterable, Codable, Identifiable {
     var id: String { rawValue }
 
     var title: String {
+        switch self {
+        case .faceToFace: return String(localized: "대면")
+        case .remote: return String(localized: "비대면")
+        }
+    }
+
+    /// The wording of the official Korean form, whatever the app language.
+    var formLabel: String {
         switch self {
         case .faceToFace: return "대면"
         case .remote: return "비대면"
@@ -52,9 +60,9 @@ enum CTCComposition: String, CaseIterable, Codable, Identifiable {
 
     var title: String {
         switch self {
-        case .oneOnOne: return "1:1 (2배 인정)"
-        case .oneOnTwo: return "1:2 (2배 인정)"
-        case .group: return "그룹 3-5명 (1배 인정)"
+        case .oneOnOne: return String(localized: "1:1 (2배 인정)")
+        case .oneOnTwo: return String(localized: "1:2 (2배 인정)")
+        case .group: return String(localized: "그룹 3-5명 (1배 인정)")
         }
     }
 
@@ -204,9 +212,19 @@ struct KACFormatter {
     /// Column G — e.g. "1:1 대면", "1:6 비대면\n(총6명)"
     func formatText(_ entry: LogEntry) -> String {
         let count = entry.participantCount
-        let base = "1:\(count) \(entry.format.title)"
+        let base = "1:\(count) \(entry.format.formLabel)"
         if entry.kind != .coachTheCoach && count >= 3 {
             return "\(base)\n(총\(count)명)"
+        }
+        return base
+    }
+
+    /// Column G in the app language, on one line, e.g. "1:6 Remote (6 total)".
+    func formatSummary(_ entry: LogEntry) -> String {
+        let count = entry.participantCount
+        let base = String(localized: "1:\(count) \(entry.format.title)")
+        if entry.kind != .coachTheCoach && count >= 3 {
+            return base + " " + String(localized: "(총\(count)명)")
         }
         return base
     }
@@ -225,8 +243,15 @@ struct KACFormatter {
 // MARK: - Duration helpers
 
 enum KACDuration {
-    /// 170 -> "2시간 50분"
+    /// 170 -> "2시간 50분" (in the app language)
     static func hoursMinutes(_ minutes: Int) -> String {
+        let sign = minutes < 0 ? "-" : ""
+        let value = abs(minutes)
+        return sign + String(localized: "\(value / 60)시간 \(value % 60)분")
+    }
+
+    /// 170 -> "2시간 50분" — the official Korean form's wording, whatever the app language.
+    static func formHoursMinutes(_ minutes: Int) -> String {
         let sign = minutes < 0 ? "-" : ""
         let value = abs(minutes)
         return "\(sign)\(value / 60)시간 \(value % 60)분"

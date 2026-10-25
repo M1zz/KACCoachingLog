@@ -16,9 +16,9 @@ enum RecorderError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .permissionDenied:
-            return "마이크 권한이 없어요. 설정 앱에서 코칭일지의 마이크 접근을 허용해 주세요."
+            return String(localized: "마이크 권한이 없어요. 설정 앱에서 코칭일지의 마이크 접근을 허용해 주세요.")
         case .couldNotStart:
-            return "녹음을 시작하지 못했어요. 다른 앱이 마이크를 사용 중인지 확인해 주세요."
+            return String(localized: "녹음을 시작하지 못했어요. 다른 앱이 마이크를 사용 중인지 확인해 주세요.")
         }
     }
 }

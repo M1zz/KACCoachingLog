@@ -25,13 +25,13 @@ enum TranscriptionError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .notAuthorized:
-            return "음성 인식 권한이 없어요. 설정 앱에서 코칭일지의 음성 인식을 허용해 주세요."
+            return String(localized: "음성 인식 권한이 없어요. 설정 앱에서 코칭일지의 음성 인식을 허용해 주세요.")
         case .recognizerUnavailable:
-            return "지금은 한국어 음성 인식을 사용할 수 없어요. 잠시 후 다시 시도해 주세요."
+            return String(localized: "지금은 음성 인식을 사용할 수 없어요. 잠시 후 다시 시도해 주세요.")
         case .onDeviceUnsupported:
-            return "이 기기는 한국어 기기 내 인식을 지원하지 않아요. 설정에서 ‘기기 내 인식만 사용’을 끄면 서버 인식으로 변환할 수 있어요."
+            return String(localized: "이 기기는 기기 내 인식을 지원하지 않아요. 설정에서 ‘기기 내 인식만 사용’을 끄면 서버 인식으로 변환할 수 있어요.")
         case .unreadableAudio:
-            return "오디오 파일을 읽을 수 없어요."
+            return String(localized: "오디오 파일을 읽을 수 없어요.")
         }
     }
 }
@@ -40,7 +40,8 @@ enum TranscriptionError: LocalizedError {
 /// - iOS 26 / macOS 26+: SpeechAnalyzer + SpeechTranscriber (on-device, long-form)
 /// - Older systems: SFSpeechRecognizer, processed in chunks
 enum TranscriptionService {
-    static let locale = Locale(identifier: "ko-KR")
+    /// Sessions are transcribed in the app's language: Korean or English.
+    static let locale = Locale(identifier: Bundle.main.preferredLocalizations.first == "ko" ? "ko-KR" : "en-US")
 
     static func transcribe(
         fileURL: URL,
@@ -66,11 +67,11 @@ enum TranscriptionService {
         #if compiler(>=6.2)
         if #available(iOS 26.0, macOS 26.0, *) {
             if await AnalyzerSpeechEngine.supports(locale: locale) {
-                return "SpeechAnalyzer (기기 내 처리, 긴 녹음 최적화)"
+                return String(localized: "SpeechAnalyzer (기기 내 처리, 긴 녹음 최적화)")
             }
         }
         #endif
-        return "SFSpeechRecognizer (구간 분할 처리)"
+        return String(localized: "SFSpeechRecognizer (구간 분할 처리)")
     }
 }
 
@@ -223,7 +224,7 @@ struct LegacySpeechEngine {
 
         return TranscriptionOutput(
             segments: segments,
-            engine: onDevice ? "SFSpeechRecognizer (기기 내)" : "SFSpeechRecognizer (서버)"
+            engine: onDevice ? String(localized: "SFSpeechRecognizer (기기 내)") : String(localized: "SFSpeechRecognizer (서버)")
         )
     }
 

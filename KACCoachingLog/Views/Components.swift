@@ -25,7 +25,7 @@ struct ParticipantsEditor: View {
     private var clientSection: some View {
         Section {
             Stepper(value: $groupSize, in: 1...certification.maxGroupSize) {
-                LabeledContent("인원", value: groupSize == 1 ? "1:1 코칭" : "1:\(groupSize) 그룹코칭")
+                LabeledContent("인원", value: groupSize == 1 ? String(localized: "1:1 코칭") : String(localized: "1:\(groupSize) 그룹코칭"))
             }
             ForEach(0..<min(groupSize, 3), id: \.self) { index in
                 TextField(placeholder(for: index), text: nameBinding(index))
@@ -67,7 +67,7 @@ struct ParticipantsEditor: View {
             }
             if ctcComposition == .group {
                 Stepper(value: $groupSize, in: 3...5) {
-                    LabeledContent("응시자 수", value: "\(groupSize)명")
+                    LabeledContent("응시자 수", value: String(localized: "\(groupSize)명"))
                 }
             }
         } header: {
@@ -83,7 +83,7 @@ struct ParticipantsEditor: View {
     }
 
     private func placeholder(for index: Int) -> String {
-        groupSize == 1 ? "고객 이름" : "고객 \(index + 1) 이름"
+        groupSize == 1 ? String(localized: "고객 이름") : String(localized: "고객 \(index + 1) 이름")
     }
 
     private func nameBinding(_ index: Int) -> Binding<String> {
@@ -170,13 +170,13 @@ struct SheetRowPreview: View {
             row("유료(분)", entry.kind == .paid ? "\(entry.recordedMinutes)" : "")
             row("무료(분)", entry.kind == .free ? "\(entry.recordedMinutes)" : "")
             row("받은 코치더코치(분)", entry.kind == .coachTheCoach ? "\(entry.recordedMinutes)" : "")
-            row("코칭형태", formatter.formatText(entry))
+            row("코칭형태", formatter.formatSummary(entry))
         }
         .font(.body)
     }
 
     @ViewBuilder
-    private func row(_ title: String, _ value: String) -> some View {
+    private func row(_ title: LocalizedStringKey, _ value: String) -> some View {
         GridRow {
             Text(title)
                 .foregroundStyle(.secondary)

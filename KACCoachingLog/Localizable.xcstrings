@@ -17,6 +17,26 @@
         }
       }
     },
+    "%@ %@ 세션과 시간이 겹쳐요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: overlaps the %2$@ session."
+          }
+        }
+      }
+    },
+    "%@ %@: 코칭 교육 시작일(%@) 이전 코칭은 인정되지 않아요. 삭제해 주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@: sessions before your training start date (%3$@) don't count. Please delete it."
+          }
+        }
+      }
+    },
     "%@ / %@" : {
       "localizations" : {
         "ko" : {
@@ -49,12 +69,282 @@
         }
       }
     },
+    "%@ 외 %lld명" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ +%2$lld"
+          }
+        }
+      }
+    },
+    "%@ 외 %lld명 · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ +%2$lld · %3$@"
+          }
+        }
+      }
+    },
+    "%@ 코치" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coach %@"
+          }
+        }
+      }
+    },
+    "%@ 코치 · 코치더코치" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coach %@ · Coach-the-coach"
+          }
+        }
+      }
+    },
     "%@ 필요 시간" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ required hours"
+          }
+        }
+      }
+    },
+    "%@: %lld분이에요. %@ 시간을 확인하거나 이 기록을 삭제해 주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: %2$lld min. %3$@ Check the time or delete this record."
+          }
+        }
+      }
+    },
+    "%@: %lld분이에요. %@ 종료 시각을 줄여 주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: %2$lld min. %3$@ Set an earlier end time."
+          }
+        }
+      }
+    },
+    "%@: ICF 그룹코칭은 최대 %lld명까지예요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: ICF group coaching allows up to %2$lld people."
+          }
+        }
+      }
+    },
+    "%@: 고객명이 비어 있어요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: the client name is missing."
+          }
+        }
+      }
+    },
+    "%@: 그룹 코치더코치는 응시자 3-5명 구성이에요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: group coach-the-coach needs 3 to 5 candidates."
+          }
+        }
+      }
+    },
+    "%@: 그룹코칭은 고객명을 3명(3인 미만이면 전원)까지 적어야 해요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: group coaching needs up to 3 client names (all of them if fewer than 3)."
+          }
+        }
+      }
+    },
+    "%@: 그룹코칭은 최대 1:9(총 9명)까지만 작성할 수 있어요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: group coaching can be logged for up to 1:9 (9 people)."
+          }
+        }
+      }
+    },
+    "%@: 날짜를 넘기는 세션이에요. 날짜별로 나눠 적는 것이 안전해요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: this session runs past midnight. It's safer to split it by date."
+          }
+        }
+      }
+    },
+    "%@: 받은 코치더코치는 ICF 코칭 로그 시간에 포함되지 않아요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: coach-the-coach received doesn't count toward ICF coaching log hours."
+          }
+        }
+      }
+    },
+    "%@: 분은 %lld분으로 적었지만 시간 범위가 %lld분이에요. 시간 범위도 %@ 안이어야 해요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: %2$lld min was entered, but the time range is %3$lld min. The time range must also be within %4$@."
+          }
+        }
+      }
+    },
+    "%@: 자격번호 형식(예: KPC00000)을 확인해 주세요. 한국코치협회 인증 코치만 인정돼요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: check the certification number format (e.g. KPC00000). Only KCA-certified coaches count."
+          }
+        }
+      }
+    },
+    "%@: 적은 시간(%lld분)이 시간 범위(%lld분)와 달라요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: the minutes entered (%2$lld) differ from the time range (%3$lld min)."
+          }
+        }
+      }
+    },
+    "%@: 적은 시간이 시간 범위×%lld배와 달라요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: the minutes entered differ from the time range × %2$lld."
+          }
+        }
+      }
+    },
+    "%@: 종료 시각이 시작 시각보다 늦어야 해요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: the end time must be after the start time."
+          }
+        }
+      }
+    },
+    "%@: 코치더코치 코치의 인증자격번호가 비어 있어요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: the coach-the-coach coach's certification number is missing."
+          }
+        }
+      }
+    },
+    "%@: 코치더코치를 해준 코치 이름이 비어 있어요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: the coach-the-coach coach's name is missing."
+          }
+        }
+      }
+    },
+    "%@: 코칭 시간(분)이 비어 있어요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: the coaching minutes are missing."
+          }
+        }
+      }
+    },
+    "%@는 최소 %lld명 이상의 고객이 필요해요. (현재 %lld명)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ requires at least %2$lld clients. (Now %3$lld)"
+          }
+        }
+      }
+    },
+    "%@에 %@ 님 코칭 합계가 %lld분이에요. 하루 2회 합산 최대 120분이에요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: sessions with %2$@ total %3$lld min. Two sessions a day can total at most 120 min."
+          }
+        }
+      }
+    },
+    "%@에 %@ 님 코칭이 %lld회예요. 같은 날 동일인은 2회까지만 인정돼요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: %3$lld sessions with %2$@. Only 2 sessions per client per day count."
+          }
+        }
+      }
+    },
+    "%lld~%lld분" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld–%2$lld min"
+          }
+        }
+      }
+    },
+    "%lld건" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        }
+      }
+    },
+    "%lld명" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
           }
         }
       }
@@ -99,12 +389,112 @@
         }
       }
     },
+    "%lld시간" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld h"
+          }
+        }
+      }
+    },
+    "%lld시간 %lld분" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld h %2$lld min"
+          }
+        }
+      }
+    },
+    "(사)한국코치협회" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Korea Coach Association"
+          }
+        }
+      }
+    },
+    "(총%lld명)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(%lld total)"
+          }
+        }
+      }
+    },
+    "1:%lld %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1:%1$lld %2$@"
+          }
+        }
+      }
+    },
+    "1:%lld 그룹코칭" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1:%lld group"
+          }
+        }
+      }
+    },
+    "1:1 (2배 인정)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1:1 (counts double)"
+          }
+        }
+      }
+    },
+    "1:1 코칭" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1:1"
+          }
+        }
+      }
+    },
+    "1:1·1:2 코치더코치는 %@만 인정돼요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1:1 and 1:2 coach-the-coach only counts for %@."
+          }
+        }
+      }
+    },
     "1:1·1:2 코치더코치는 실제 시간의 2배(%lld분)로 기록돼요. 1시간이면 120분이라 최대 1시간까지만 적을 수 있어요." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "1:1 and 1:2 coach-the-coach sessions are logged at twice the actual time (%lld min). One hour becomes 120 minutes, so you can log up to one hour."
+          }
+        }
+      }
+    },
+    "1:2 (2배 인정)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1:2 (counts double)"
           }
         }
       }
@@ -169,6 +559,16 @@
         }
       }
     },
+    "CTC" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CTC"
+          }
+        }
+      }
+    },
     "D·E·F 시간 칸" : {
       "localizations" : {
         "en" : {
@@ -225,6 +625,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The ICF coaching log records the time range in hours (e.g. 50 min → 0.83 h)."
+          }
+        }
+      }
+    },
+    "SFSpeechRecognizer (구간 분할 처리)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SFSpeechRecognizer (in chunks)"
+          }
+        }
+      }
+    },
+    "SFSpeechRecognizer (기기 내)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SFSpeechRecognizer (on device)"
+          }
+        }
+      }
+    },
+    "SFSpeechRecognizer (서버)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SFSpeechRecognizer (server)"
+          }
+        }
+      }
+    },
+    "SpeechAnalyzer (기기 내 처리, 긴 녹음 최적화)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SpeechAnalyzer (on device, built for long recordings)"
           }
         }
       }
@@ -309,6 +749,26 @@
         }
       }
     },
+    "고객 %lld 이름" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Client %lld Name"
+          }
+        }
+      }
+    },
+    "고객 %lld명 이상" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld+ clients"
+          }
+        }
+      }
+    },
     "고객 수" : {
       "localizations" : {
         "en" : {
@@ -319,12 +779,32 @@
         }
       }
     },
+    "고객 이름" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Client Name"
+          }
+        }
+      }
+    },
     "고객 정보 보호를 위해 Face ID 또는 기기 암호로 잠금을 해제해 주세요." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "To protect client information, unlock with Face ID or your device passcode."
+          }
+        }
+      }
+    },
+    "고객명" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Client"
           }
         }
       }
@@ -345,6 +825,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Create File to Share"
+          }
+        }
+      }
+    },
+    "공유용 파일을 만들지 못했어요: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't create the file to share: %@"
+          }
+        }
+      }
+    },
+    "교육 %lld시간" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Training %lld h"
           }
         }
       }
@@ -379,12 +879,32 @@
         }
       }
     },
+    "국제코칭연맹(ICF)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "International Coaching Federation (ICF)"
+          }
+        }
+      }
+    },
     "그래도 종료하고 저장" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "End and Save Anyway"
+          }
+        }
+      }
+    },
+    "그룹 3-5명 (1배 인정)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Group of 3–5 (counts once)"
           }
         }
       }
@@ -569,6 +1089,16 @@
         }
       }
     },
+    "녹음 파일이 없어요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The recording is missing."
+          }
+        }
+      }
+    },
     "녹음 파일이 없어요. Zoom·음성 메모 등으로 녹음한 파일을 붙일 수 있어요." : {
       "localizations" : {
         "en" : {
@@ -585,6 +1115,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "With a recording, you can transcribe it to text."
+          }
+        }
+      }
+    },
+    "녹음을 시작하지 못했어요. 다른 앱이 마이크를 사용 중인지 확인해 주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't start recording. Check whether another app is using the microphone."
           }
         }
       }
@@ -629,12 +1169,52 @@
         }
       }
     },
+    "다시 시도" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try Again"
+          }
+        }
+      }
+    },
     "닫기" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Close"
+          }
+        }
+      }
+    },
+    "대면" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In person"
+          }
+        }
+      }
+    },
+    "마이크 권한이 없어요. 설정 앱에서 코칭일지의 마이크 접근을 허용해 주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Microphone access is off. Allow Coaching Log to use the microphone in the Settings app."
+          }
+        }
+      }
+    },
+    "멘토코칭 %lld시간" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mentor coaching %lld h"
           }
         }
       }
@@ -669,12 +1249,62 @@
         }
       }
     },
+    "무료" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free"
+          }
+        }
+      }
+    },
+    "무료 코칭" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free Coaching"
+          }
+        }
+      }
+    },
+    "무료(분)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free (min)"
+          }
+        }
+      }
+    },
     "받은 코치더코치" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Coach-the-Coach Received"
+          }
+        }
+      }
+    },
+    "받은 코치더코치(분)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coach-the-coach received (min)"
+          }
+        }
+      }
+    },
+    "받은 코치더코치가 %@이에요. %@는 최대 %lld시간까지만 작성할 수 있어요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coach-the-coach received is %1$@. %2$@ allows up to %3$lld hours."
           }
         }
       }
@@ -749,12 +1379,32 @@
         }
       }
     },
+    "변환에 실패했어요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transcription failed."
+          }
+        }
+      }
+    },
     "분 직접 입력" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Enter Minutes Manually"
+          }
+        }
+      }
+    },
+    "비대면" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remote"
           }
         }
       }
@@ -805,6 +1455,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Settings"
+          }
+        }
+      }
+    },
+    "시간" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time"
           }
         }
       }
@@ -875,6 +1535,46 @@
         }
       }
     },
+    "실습 %lld시간" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Practice %lld h"
+          }
+        }
+      }
+    },
+    "실습 %lld시간 (CTC 최대 %lld시간)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Practice %1$lld h (up to %2$lld h CTC)"
+          }
+        }
+      }
+    },
+    "실습 %lld시간 (유료 %lld시간 이상)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Practice %1$lld h (at least %2$lld h paid)"
+          }
+        }
+      }
+    },
+    "실제 %lld~%lld분 (2배 %lld~%lld분)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld–%2$lld min actual (%3$lld–%4$lld min doubled)"
+          }
+        }
+      }
+    },
     "실제 시간 그대로 저장" : {
       "localizations" : {
         "en" : {
@@ -931,6 +1631,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Authenticate to turn on the app lock."
+          }
+        }
+      }
+    },
+    "앱이 종료되어 변환이 중단됐어요. 다시 변환해 주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transcription stopped because the app was closed. Please transcribe again."
           }
         }
       }
@@ -1015,6 +1725,36 @@
         }
       }
     },
+    "오디오 파일을 가져오지 못했어요: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't import the audio file: %@"
+          }
+        }
+      }
+    },
+    "오디오 파일을 읽을 수 없어요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Can't read the audio file."
+          }
+        }
+      }
+    },
+    "오디오를 가져왔어요. 파일의 생성 시각으로 시간을 채웠으니 실제 코칭 시간과 고객명을 확인해 주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio imported. The time was filled in from when the file was created, so check the actual session time and client name."
+          }
+        }
+      }
+    },
     "오류가 %lld건 있어요. 목록에서 빨간 표시가 있는 기록을 열어 고친 뒤 내보내 주세요." : {
       "localizations" : {
         "en" : {
@@ -1045,6 +1785,46 @@
         }
       }
     },
+    "유료" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paid"
+          }
+        }
+      }
+    },
+    "유료 코칭" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paid Coaching"
+          }
+        }
+      }
+    },
+    "유료 코칭이 %@이에요. %@는 유료 %lld시간 이상이 필요해요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paid coaching is %1$@. %2$@ requires at least %3$lld paid hours."
+          }
+        }
+      }
+    },
+    "유료(분)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paid (min)"
+          }
+        }
+      }
+    },
     "유료·무료 칸에는 시간 범위와 같은 분이 기록돼요. 시간 범위와 다른 값을 적으면 작성 오류로 볼 수 있어요." : {
       "localizations" : {
         "en" : {
@@ -1071,6 +1851,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Note %lld"
+          }
+        }
+      }
+    },
+    "음성 인식 권한이 없어요. 설정 앱에서 코칭일지의 음성 인식을 허용해 주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speech recognition is off. Allow Coaching Log to use speech recognition in the Settings app."
           }
         }
       }
@@ -1125,12 +1915,32 @@
         }
       }
     },
+    "응시자 명이 비어 있어요. 설정에서 입력해 주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The candidate name is missing. Enter it in Settings."
+          }
+        }
+      }
+    },
     "응시자 수" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Candidates"
+          }
+        }
+      }
+    },
+    "이 기기는 기기 내 인식을 지원하지 않아요. 설정에서 ‘기기 내 인식만 사용’을 끄면 서버 인식으로 변환할 수 있어요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This device doesn't support on-device recognition. Turn off “On-device recognition only” in Settings to transcribe with server recognition."
           }
         }
       }
@@ -1171,6 +1981,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "This session only counts for %@. Saving it as is will mark it as an error. The recording is kept."
+          }
+        }
+      }
+    },
+    "이름 없음" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Name"
+          }
+        }
+      }
+    },
+    "인식된 말소리가 없어요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No speech was recognized."
           }
         }
       }
@@ -1363,6 +2193,26 @@
         }
       }
     },
+    "저장하지 못했어요: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't save: %@"
+          }
+        }
+      }
+    },
+    "저장했어요: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saved: %@"
+          }
+        }
+      }
+    },
     "전화 등으로 일시정지됐어요" : {
       "localizations" : {
         "en" : {
@@ -1409,6 +2259,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "End and Save"
+          }
+        }
+      }
+    },
+    "종료 시각을 %@로 맞추기 (%lld분)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set End Time to %1$@ (%2$lld min)"
           }
         }
       }
@@ -1483,6 +2343,16 @@
         }
       }
     },
+    "지금은 음성 인식을 사용할 수 없어요. 잠시 후 다시 시도해 주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speech recognition isn't available right now. Please try again later."
+          }
+        }
+      }
+    },
     "직접 수정한 내용은 새 변환 결과로 바뀌어요." : {
       "localizations" : {
         "en" : {
@@ -1499,6 +2369,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Manual Entry"
+          }
+        }
+      }
+    },
+    "직접 입력한 분 지우고 시간 범위대로 기록하기" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear Typed Minutes and Use the Time Range"
           }
         }
       }
@@ -1563,6 +2443,26 @@
         }
       }
     },
+    "총 코칭시간이 %@이에요. %@는 %lld시간이 필요해요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total coaching is %1$@. %2$@ requires %3$lld hours."
+          }
+        }
+      }
+    },
+    "총 코칭시간이 %@이에요. 일부 세션이 탈락할 수 있으니 %lld시간 이상으로 넉넉히 채우는 것이 안전해요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total coaching is %1$@. Some sessions may be rejected, so aim for %2$lld hours or more to be safe."
+          }
+        }
+      }
+    },
     "최대 %lld분을 넘었어요. 넘는 시간은 인정되지 않아요." : {
       "localizations" : {
         "en" : {
@@ -1623,6 +2523,16 @@
         }
       }
     },
+    "코치더코치 %lld시간" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coach-the-coach %lld h"
+          }
+        }
+      }
+    },
     "코치더코치 코치 이름" : {
       "localizations" : {
         "en" : {
@@ -1659,6 +2569,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Set Training Start Date"
+          }
+        }
+      }
+    },
+    "코칭 교육 시작일을 설정에 입력하면 그 이전 코칭을 찾아드려요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set your training start date in Settings to find sessions logged before it."
           }
         }
       }
@@ -1859,6 +2779,16 @@
         }
       }
     },
+    "코칭형태" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Format"
+          }
+        }
+      }
+    },
     "타이머 작동 중" : {
       "localizations" : {
         "en" : {
@@ -1899,6 +2829,16 @@
         }
       }
     },
+    "텍스트로 변환" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transcribe"
+          }
+        }
+      }
+    },
     "텍스트로 변환 중… %lld%%" : {
       "localizations" : {
         "en" : {
@@ -1925,6 +2865,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sessions Included"
+          }
+        }
+      }
+    },
+    "한 세션은 %@만 인정돼요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A session only counts for %@."
           }
         }
       }
@@ -1991,6 +2941,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK"
+          }
+        }
+      }
+    },
+    "확인 중…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checking…"
           }
         }
       }

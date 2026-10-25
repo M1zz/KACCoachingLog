@@ -165,10 +165,10 @@ struct KACWorkbookBuilder {
 
     static func totalsText(_ summary: KACSummary) -> String {
         """
-        총 유료 코칭 시간: \(KACDuration.hoursMinutes(summary.paidMinutes))
-        총 무료 코칭 시간: \(KACDuration.hoursMinutes(summary.totalFreeMinutes))
+        총 유료 코칭 시간: \(KACDuration.formHoursMinutes(summary.paidMinutes))
+        총 무료 코칭 시간: \(KACDuration.formHoursMinutes(summary.totalFreeMinutes))
 
-        총 코칭시간 합계: \(KACDuration.hoursMinutes(summary.totalMinutes))
+        총 코칭시간 합계: \(KACDuration.formHoursMinutes(summary.totalMinutes))
         """
     }
 

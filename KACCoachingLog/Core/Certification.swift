@@ -9,8 +9,8 @@ enum CertificationBody: String, Codable {
 
     var title: String {
         switch self {
-        case .kca: return "(사)한국코치협회"
-        case .icf: return "국제코칭연맹(ICF)"
+        case .kca: return String(localized: "(사)한국코치협회")
+        case .icf: return String(localized: "국제코칭연맹(ICF)")
         }
     }
 }
@@ -126,17 +126,17 @@ enum Certification: String, CaseIterable, Codable, Identifiable {
 
     /// One line per requirement, e.g. ["교육 20시간", "실습 50시간 (CTC 최대 25시간)"].
     var requirementLines: [String] {
-        var lines = ["교육 \(educationHours)시간"]
+        var lines = [String(localized: "교육 \(educationHours)시간")]
         if let maxCTCHours {
-            lines.append("실습 \(practiceHours)시간 (CTC 최대 \(maxCTCHours)시간)")
+            lines.append(String(localized: "실습 \(practiceHours)시간 (CTC 최대 \(maxCTCHours)시간)"))
         } else if let minimumPaidHours {
-            lines.append("실습 \(practiceHours)시간 (유료 \(minimumPaidHours)시간 이상)")
+            lines.append(String(localized: "실습 \(practiceHours)시간 (유료 \(minimumPaidHours)시간 이상)"))
         } else {
-            lines.append("실습 \(practiceHours)시간")
+            lines.append(String(localized: "실습 \(practiceHours)시간"))
         }
-        if let mentorCoachingHours { lines.append("멘토코칭 \(mentorCoachingHours)시간") }
-        if let requiredCoachTheCoachHours { lines.append("코치더코치 \(requiredCoachTheCoachHours)시간") }
-        if let minimumClientCount { lines.append("고객 \(minimumClientCount)명 이상") }
+        if let mentorCoachingHours { lines.append(String(localized: "멘토코칭 \(mentorCoachingHours)시간")) }
+        if let requiredCoachTheCoachHours { lines.append(String(localized: "코치더코치 \(requiredCoachTheCoachHours)시간")) }
+        if let minimumClientCount { lines.append(String(localized: "고객 \(minimumClientCount)명 이상")) }
         return lines
     }
 }

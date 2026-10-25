@@ -23,9 +23,9 @@ struct SessionDraft {
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }
         if names.isEmpty { return kind.title }
-        if kind == .coachTheCoach { return "\(names[0]) 코치 · 코치더코치" }
+        if kind == .coachTheCoach { return String(localized: "\(names[0]) 코치 · 코치더코치") }
         let extra = max(groupSize - 1, 0)
-        return extra > 0 ? "\(names[0]) 외 \(extra)명 · \(kind.title)" : "\(names[0]) · \(kind.title)"
+        return extra > 0 ? String(localized: "\(names[0]) 외 \(extra)명 · \(kind.title)") : "\(names[0]) · \(kind.title)"
     }
 }
 
@@ -129,7 +129,7 @@ struct RecordingView: View {
             if !certification.sessionKinds.contains(draft.kind) { draft.kind = .paid }
             #if DEBUG
             if ScreenshotSupport.screen == "recording" {
-                draft.clientNames = ["이서연"]
+                draft.clientNames = [ScreenshotSupport.recordingClient]
                 draft.format = .remote
                 recorder.startPreview(elapsed: 47 * 60 + 12)
             }

@@ -27,7 +27,7 @@ final class TranscriptionCenter {
     func start(_ session: CoachingSession, requireOnDevice: Bool) {
         guard let url = session.audioFileURL else {
             session.transcriptionState = .failed
-            session.transcriptionError = "녹음 파일이 없어요."
+            session.transcriptionError = String(localized: "녹음 파일이 없어요.")
             return
         }
         let id = session.uuid
@@ -57,7 +57,7 @@ final class TranscriptionCenter {
                 session.transcriptionEngine = output.engine
                 session.transcriptionState = .completed
                 if output.segments.isEmpty {
-                    session.transcriptionError = "인식된 말소리가 없어요."
+                    session.transcriptionError = String(localized: "인식된 말소리가 없어요.")
                 }
             } catch {
                 if !self.discarded.contains(id) {
@@ -92,7 +92,7 @@ final class TranscriptionCenter {
     func recoverInterrupted(_ sessions: [CoachingSession]) {
         for session in sessions where session.transcriptionState == .inProgress && tasks[session.uuid] == nil {
             session.transcriptionState = .failed
-            session.transcriptionError = "앱이 종료되어 변환이 중단됐어요. 다시 변환해 주세요."
+            session.transcriptionError = String(localized: "앱이 종료되어 변환이 중단됐어요. 다시 변환해 주세요.")
         }
     }
 

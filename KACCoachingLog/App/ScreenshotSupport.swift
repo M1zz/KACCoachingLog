@@ -21,8 +21,17 @@ enum ScreenshotSupport {
         return arguments[index + 1]
     }
 
-    private static let clients = ["김민준", "이서연", "박지호", "최하은", "정우진", "강예린", "윤도현", "한소율"]
-    private static let topics = ["리더십 전환", "커리어 방향", "팀 소통", "일과 삶의 균형", "목표 설정", "자기 확신"]
+    /// Sample text follows the app language so each App Store locale shows its own screens.
+    private static let isKorean = Bundle.main.preferredLocalizations.first == "ko"
+
+    private static let clients = isKorean
+        ? ["김민준", "이서연", "박지호", "최하은", "정우진", "강예린", "윤도현", "한소율"]
+        : ["Emma Clarke", "Noah Bennett", "Olivia Hayes", "Liam Foster", "Ava Mitchell", "Ethan Reed", "Mia Turner", "Lucas Grant"]
+    private static let topics = isKorean
+        ? ["리더십 전환", "커리어 방향", "팀 소통", "일과 삶의 균형", "목표 설정", "자기 확신"]
+        : ["Leadership transition", "Career direction", "Team communication", "Work-life balance", "Goal setting", "Self-confidence"]
+    private static let mentor = isKorean ? "오정민" : "Jordan Ellis"
+    static var recordingClient: String { clients[1] }
 
     /// Wipes existing sessions and inserts about 38 hours of valid KAC practice. Returns the newest session.
     @discardableResult
@@ -32,7 +41,7 @@ enum ScreenshotSupport {
         let defaults = UserDefaults.standard
         let certification = value(after: "-screenshotCert") ?? Certification.kac.rawValue
         defaults.set(certification, forKey: AppSettings.certificationKey)
-        defaults.set("이하늘", forKey: AppSettings.candidateNameKey)
+        defaults.set(isKorean ? "이하늘" : "Hannah Lee", forKey: AppSettings.candidateNameKey)
         defaults.set(false, forKey: AppSettings.appLockKey)
 
         var calendar = Calendar(identifier: .gregorian)
@@ -61,9 +70,9 @@ enum ScreenshotSupport {
                 session.groupSize = 4
                 session.clientNames = [clients[(index + 1) % 8], clients[(index + 2) % 8], clients[(index + 3) % 8]]
             }
-            if index % 10 == 7 {
+            if index % 10 == 7 && Certification(rawValue: certification)?.body == .kca {
                 session.kind = .coachTheCoach
-                session.clientNames = ["오정민"]
+                session.clientNames = [mentor]
                 session.ctcLicenseNumber = "KPC01234"
                 session.endDate = start.addingTimeInterval(50 * 60)
             }
@@ -73,24 +82,31 @@ enum ScreenshotSupport {
         }
 
         if let newest {
-            newest.topic = "리더십 전환"
-            newest.notes = "새 팀장 역할에서 위임할 일 세 가지를 정함. 다음 세션에 실행 결과 나누기."
+            newest.topic = topics[0]
+            newest.notes = isKorean
+                ? "새 팀장 역할에서 위임할 일 세 가지를 정함. 다음 세션에 실행 결과 나누기."
+                : "Chose three tasks to delegate in the new team lead role. Review how it went next session."
             newest.transcriptionState = .completed
             newest.transcriptionEngine = "SpeechAnalyzer"
-            newest.transcriptSegments = [
-                TranscriptSegment(start: 4, end: 12, text: "오늘은 어떤 이야기를 나누고 싶으세요?"),
-                TranscriptSegment(start: 13, end: 31, text: "팀장이 되고 나서 일을 혼자 다 붙잡고 있는 것 같아요."),
-                TranscriptSegment(start: 32, end: 44, text: "다 붙잡고 있다는 건 어떤 모습인가요?"),
-                TranscriptSegment(start: 45, end: 70, text: "보고서를 제가 다시 고치고, 회의도 제가 다 들어가요."),
-            ]
+            let lines = isKorean
+                ? ["오늘은 어떤 이야기를 나누고 싶으세요?",
+                   "팀장이 되고 나서 일을 혼자 다 붙잡고 있는 것 같아요.",
+                   "다 붙잡고 있다는 건 어떤 모습인가요?",
+                   "보고서를 제가 다시 고치고, 회의도 제가 다 들어가요."]
+                : ["What would you like to talk about today?",
+                   "Since becoming a team lead, I feel like I'm holding on to everything myself.",
+                   "What does holding on to everything look like?",
+                   "I rewrite every report myself, and I sit in on every meeting."]
+            let times: [(TimeInterval, TimeInterval)] = [(4, 12), (13, 31), (32, 44), (45, 70)]
+            newest.transcriptSegments = zip(times, lines).map { TranscriptSegment(start: $0.0, end: $0.1, text: $1) }
             newest.transcript = newest.transcriptSegments.map(\.text).joined(separator: "\n")
         }
 
         if arguments.contains("-screenshotSeedWithError"), let last = newest {
             let start = last.startDate.addingTimeInterval(-26 * 3600)
             let long = CoachingSession(startDate: start, endDate: start.addingTimeInterval(135 * 60),
-                                       clientNames: ["강예린"], kind: .paid, format: .remote)
-            long.topic = "커리어 방향"
+                                       clientNames: [clients[5]], kind: .paid, format: .remote)
+            long.topic = topics[1]
             context.insert(long)
             newest = long
         }

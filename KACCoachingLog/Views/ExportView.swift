@@ -75,7 +75,7 @@ struct ExportView: View {
                         DatePicker("시작일", selection: $rangeStart, displayedComponents: .date)
                         DatePicker("종료일", selection: $rangeEnd, displayedComponents: .date)
                     }
-                    LabeledContent("포함되는 코칭", value: "\(entries.count)건")
+                    LabeledContent("포함되는 코칭", value: String(localized: "\(entries.count)건"))
                 }
 
                 Section("합계 미리보기") {
@@ -85,8 +85,8 @@ struct ExportView: View {
                         LabeledContent("└ 받은 코치더코치 포함", value: KACDuration.hoursMinutes(summary.ctcMinutes))
                     }
                     LabeledContent("총 코칭시간 합계", value: KACDuration.hoursMinutes(summary.totalMinutes))
-                    LabeledContent("\(certification.title) 필요 시간", value: "\(certification.practiceHours)시간")
-                    LabeledContent("고객 수", value: "\(summary.uniqueClientCount)명")
+                    LabeledContent("\(certification.title) 필요 시간", value: String(localized: "\(certification.practiceHours)시간"))
+                    LabeledContent("고객 수", value: String(localized: "\(summary.uniqueClientCount)명"))
                 }
 
                 Section {
@@ -175,9 +175,9 @@ struct ExportView: View {
             ) { result in
                 switch result {
                 case .success(let url):
-                    resultMessage = "저장했어요: \(url.lastPathComponent)"
+                    resultMessage = String(localized: "저장했어요: \(url.lastPathComponent)")
                 case .failure(let error):
-                    resultMessage = "저장하지 못했어요: \(error.localizedDescription)"
+                    resultMessage = String(localized: "저장하지 못했어요: \(error.localizedDescription)")
                 }
             }
         }
@@ -207,7 +207,7 @@ struct ExportView: View {
             shareURL = url
         } catch {
             shareURL = nil
-            resultMessage = "공유용 파일을 만들지 못했어요: \(error.localizedDescription)"
+            resultMessage = String(localized: "공유용 파일을 만들지 못했어요: \(error.localizedDescription)")
         }
     }
 }
