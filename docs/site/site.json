@@ -1,0 +1,36 @@
+{
+  "name": {
+    "en": "Coaching Log",
+    "ko": "코칭일지"
+  },
+  "url": "https://m1zz.github.io/KACCoachingLog/",
+  "appStoreId": "6822541501",
+  "email": "leeo@kakao.com",
+  "copyright": "M1zz",
+  "year": 2026,
+  "color": {
+    "light": "#1F4068",
+    "dark": "#89BDF1",
+    "darkBg": "#0a0d0f"
+  },
+  "shots": [
+    "1-list",
+    "2-recording",
+    "3-detail",
+    "5-export"
+  ],
+  "shotsFrom": "raw/iphone",
+  "frame": "phone",
+  "locales": [
+    {
+      "code": "ko",
+      "path": "",
+      "name": "한국어"
+    },
+    {
+      "code": "en",
+      "path": "en/",
+      "name": "English"
+    }
+  ]
+}

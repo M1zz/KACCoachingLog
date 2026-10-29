@@ -1,0 +1,46 @@
+/* 코칭일지 웹 체험. 오류는 빨강, 주의는 주황, 통과는 초록: 앱의 작성 점검 색과 같다. */
+.demo-card { display: grid; gap: var(--s4); --cl-red: #D70015; --cl-orange: #B25000; --cl-green: #248A3D; }
+@media (prefers-color-scheme: dark) { .demo-card { --cl-red: #FF6961; --cl-orange: #FFB340; --cl-green: #30D158; } }
+.cl-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s2); }
+.cl-certs { display: flex; gap: var(--s2); }
+.chip { font: inherit; font-weight: 600; color: var(--accent); background: var(--bg); border: 0;
+        border-radius: 999px; padding: var(--s2) var(--s4); min-height: 44px; min-width: 44px; cursor: pointer;
+        transition: transform .15s var(--ease), background .15s var(--ease); }
+.chip:hover { background: color-mix(in srgb, var(--accent) 14%, var(--bg)); }
+.chip:active { transform: scale(.95); }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+.cl-summary { background: var(--bg); border-radius: var(--r-inner); padding: var(--s4); }
+.cl-summary > div:first-child { display: flex; flex-direction: column; }
+.cl-summary b { font-size: 1.75rem; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.cl-bar { height: 6px; border-radius: 3px; background: var(--line); margin: var(--s2) 0 var(--s3); overflow: hidden; }
+.cl-bar i { display: block; height: 100%; background: var(--accent); transition: width .4s var(--ease); }
+.cl-status { font-weight: 600; margin: 0; }
+.cl-status.ok { color: var(--cl-green); }
+.cl-status.ok::before { content: "✓ "; }
+.cl-status.bad { color: var(--cl-red); }
+.cl-status.warn { color: var(--cl-orange); }
+
+.cl-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--s3); }
+.cl-row { background: var(--bg); border-radius: var(--r-inner); padding: var(--s3) var(--s4); box-shadow: inset 0 0 0 2px transparent;
+          transition: box-shadow .2s var(--ease); }
+.cl-row.has-error { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--cl-red) 55%, transparent); }
+.cl-head { display: flex; justify-content: space-between; gap: var(--s2); }
+.cl-min { font-weight: 600; font-variant-numeric: tabular-nums; }
+.cl-min.off { text-decoration: line-through; color: var(--muted); }
+.cl-kind { display: inline-block; font-size: .8125rem; font-weight: 700; color: #fff; border-radius: 6px; padding: 0 6px; margin-top: var(--s1); }
+.cl-kind.paid { background: #0A64D6; }
+.cl-kind.free { background: #1E7F3A; }
+.cl-kind.ctc { background: #A12DB8; }
+.cl-issue { font-size: .9375rem; margin: var(--s2) 0 0; padding-left: 1.3em; position: relative; }
+.cl-issue::before { position: absolute; left: 0; font-weight: 700; }
+.cl-issue.error { color: var(--cl-red); }
+.cl-issue.error::before { content: "✕"; }
+.cl-issue.warn { color: var(--cl-orange); }
+.cl-issue.warn::before { content: "!"; left: .3em; }
+.cl-fix { margin-top: var(--s2); font-size: .9375rem; background: var(--surface); box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--accent) 45%, transparent); }
+.cl-fix:hover { background: var(--surface); box-shadow: inset 0 0 0 2px var(--accent); }
+.cl-foot { margin: 0; }
+
+@media (prefers-reduced-motion: reduce) { .cl-bar i, .cl-row { transition: none; } }
+@media (max-width: 760px) { .cl-list { grid-template-columns: 1fr; } }

@@ -1,0 +1,187 @@
+{
+  "title": "Coaching Log: coaching hours that log themselves",
+  "description": "Record a session and the date, times and minutes log themselves while it's transcribed. Checked against KAC or ICF rules, then exported.",
+  "hero": {
+    "headline": "Record the session.\nThe log writes itself.",
+    "lead": "From Start to End, the date, times and minutes are logged and the conversation is transcribed. Every entry is checked against your credential's logging rules, then exported as a file ready to submit.",
+    "cta": "Get it free on the App Store",
+    "note": "Every feature is free. For iPhone, iPad and Mac."
+  },
+  "demo": {
+    "title": "Run a log check",
+    "lead": "This sample log has a few mistakes planted in it. Fix or delete the entries marked in red, and switch credentials to see how the rules change.",
+    "cert": "Credential",
+    "reset": "Reset sample",
+    "total": "Total coaching time",
+    "hm": "{h} h {m} min",
+    "goal": "{cert} goal: {h} hours",
+    "tally": "Log check: {e} errors, {w} warnings",
+    "pass": "Log check passed",
+    "min": "{n} min",
+    "paid": "Paid",
+    "free": "Free",
+    "ctc": "CTC",
+    "ctcDouble": "1:1 coach-the-coach, counts double",
+    "long": "{min} min. A session only counts at {lo} to {hi} minutes. Shorten the end time.",
+    "short": "{min} min. A session only counts at {lo} to {hi} minutes. Check the time or delete this entry.",
+    "sameDay": "{name} has {min} min on {day}. Two sessions in one day can add up to 120 minutes at most.",
+    "ctcIcf": "Received coach-the-coach time isn't part of the ICF coaching log.",
+    "clients": "{cert} needs at least {n} clients. (You have {count}.)",
+    "fix": "Set end time to {time} ({hi} min)",
+    "del": "Delete this entry",
+    "people": [
+      "Emma Clarke",
+      "Lucas Grant",
+      "Noah Bennett",
+      "Coach Olivia Hayes",
+      "Mia Turner"
+    ],
+    "note": "The web demo runs a few of the app's checks on sample entries. The app also checks overlapping sessions, sessions before your training began, group size, coach-the-coach license numbers and total hours."
+  },
+  "problem": {
+    "title": "Spending longer on the log than on the coaching?",
+    "text": "After every session you copy down the start and end times, work out the minutes, and count how many times you saw the same client that day. Then, right before you submit, a 135-minute session and a 25-minute one turn up. Coaching Log keeps the record from a single Record button and checks it against the association's rules before you send anything."
+  },
+  "features": [
+    {
+      "title": "The Record button keeps the time",
+      "text": "The moment you tap Start is your start time, and the moment you tap End is your end time. Incoming calls pause the session, and recording keeps going on the Lock Screen. If a client hasn't agreed to be recorded, use the timer to log time only.\nOn iOS 26 and macOS 26 or later, the conversation is transcribed on your device. Tap any sentence to play the audio from that point.",
+      "shot": "2-recording"
+    },
+    {
+      "title": "Catch the entries that would be rejected",
+      "text": "Sessions of 30 to 120 minutes, at most two sessions and 120 minutes per client per day, double-counted coach-the-coach time, groups up to 1:9, overlapping sessions and sessions before your training began are all checked. Problem entries get a red mark that says what's wrong.\nExtra time is fixed in one tap by moving the end time.",
+      "shot": "3-detail"
+    },
+    {
+      "title": "A file ready to submit, in one tap",
+      "text": "Korea Coach Association credentials export an Excel file that matches the official coaching log form. ICF credentials export a CSV in ICF coaching log column order. Entries are sorted by date and the hour and minute totals are filled in.\nAdd past sessions field by field, or import audio you recorded with Zoom or Voice Memos.",
+      "shot": "5-export"
+    }
+  ],
+  "steps": {
+    "title": "Three steps to a log you can submit",
+    "items": [
+      {
+        "title": "Pick your credential",
+        "text": "Enter your credential, your name and your training start date in Settings."
+      },
+      {
+        "title": "Record the session",
+        "text": "Choose the client and paid or free, tap Start, then End when you're done."
+      },
+      {
+        "title": "Check and export",
+        "text": "Fix anything in red, then save as Excel or CSV and share."
+      }
+    ]
+  },
+  "reference": {
+    "title": "Requirements by credential",
+    "rows": [
+      [
+        "KAC · Korea Coach Association",
+        "20 hours of training, 50 hours of practice (up to 25 CTC), at least 3 clients"
+      ],
+      [
+        "KPC · Korea Coach Association",
+        "60 hours of training, 200 hours of practice (up to 80 CTC), 5 hours mentor coaching, 5 hours coach-the-coach"
+      ],
+      [
+        "KSC · Korea Coach Association",
+        "150 hours of training, 800 hours of practice (up to 100 CTC), 10 hours mentor coaching, 10 hours coach-the-coach"
+      ],
+      [
+        "ACC · ICF",
+        "60 hours of training, 100 hours of practice (at least 75 paid), 10 hours mentor coaching, at least 8 clients"
+      ],
+      [
+        "PCC · ICF",
+        "125 hours of training, 500 hours of practice (at least 450 paid), 10 hours mentor coaching, at least 25 clients"
+      ],
+      [
+        "MCC · ICF",
+        "200 hours of training, 2,500 hours of practice (at least 2,250 paid), 10 hours mentor coaching, at least 35 clients"
+      ]
+    ],
+    "note": "Pick a credential in Settings and the goal hours, checks and export format follow it. Requirements can change, so check the latest guidance from each association before you apply. This app is not made by or affiliated with the Korea Coach Association or the International Coaching Federation."
+  },
+  "pricing": {
+    "title": "Everything is free",
+    "free": {
+      "name": "Free",
+      "items": [
+        "Session recording and timer",
+        "On-device transcription",
+        "Log checks for your credential",
+        "Excel and CSV export",
+        "Manual entry and audio import",
+        "App Lock with Face ID"
+      ]
+    },
+    "pro": {
+      "name": "Support the developer",
+      "items": [
+        "Send a small tip from Settings",
+        "Tips don't unlock anything extra"
+      ],
+      "note": "Not a subscription. Each tip is a one-time payment."
+    },
+    "note": "No ads, and no account needed."
+  },
+  "faq": {
+    "title": "Questions",
+    "items": [
+      {
+        "q": "How do I change my credential?",
+        "a": "In Settings, choose KAC, KPC, KSC, ACC, PCC or MCC. Goal hours, log checks and the export format all follow the credential you choose."
+      },
+      {
+        "q": "Can I log time without recording?",
+        "a": "Yes. If your client hasn't agreed to be recorded, use the timer to log just the start and end times. Only record sessions with your client's consent."
+      },
+      {
+        "q": "How do I add past sessions?",
+        "a": "Tap the plus button above the list to enter a session by hand, or import audio you recorded with Zoom or Voice Memos."
+      },
+      {
+        "q": "Transcription isn't working.",
+        "a": "On iOS 26 and macOS 26 or later, transcription runs on device. On earlier versions, check the speech recognition option in Settings. With “On-device recognition only” turned on, transcription may not be available if your device doesn't support it."
+      },
+      {
+        "q": "What does a red mark mean?",
+        "a": "The entry doesn't meet the Korea Coach Association logging rules or ICF requirements. Open it to see what's wrong, and fix extra time in one tap. The app can't tell which sessions happened during your coach training (rule 5), so remove those yourself."
+      },
+      {
+        "q": "How do I create the file to submit?",
+        "a": "Tap the share button. Korea Coach Association credentials export an Excel file, and ICF credentials export a CSV file. Fix any logging errors first."
+      },
+      {
+        "q": "Where is my data stored?",
+        "a": "Every record and recording stays on this device, and the developer can't see any of it. The app collects no data. Deleting the app deletes your records too, so export anything you want to keep first."
+      },
+      {
+        "q": "How do I turn on App Lock?",
+        "a": "Turn on App Lock in Settings and you'll unlock the app with Face ID, Touch ID or your passcode each time you open it. Its contents are also hidden in the app switcher."
+      },
+      {
+        "q": "Which devices does it run on?",
+        "a": "iPhone and iPad with iOS 17 or later, and Mac with macOS 14 or later. On-device transcription needs iOS 26 or macOS 26."
+      },
+      {
+        "q": "How do I get in touch?",
+        "a": "Email leeo@kakao.com or open an issue on GitHub at M1zz/KACCoachingLog. Please don't include client names or anything from your recordings."
+      }
+    ]
+  },
+  "closing": {
+    "headline": "From your next session,\nlet the app keep the log",
+    "cta": "Get it free on the App Store"
+  },
+  "ui": {
+    "skip": "Skip to content",
+    "languages": "Language",
+    "privacy": "Privacy Policy",
+    "contact": "Questions or feedback? Write to {email}."
+  }
+}
