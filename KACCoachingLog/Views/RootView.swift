@@ -342,16 +342,21 @@ struct SessionRow: View {
     let session: CoachingSession
     let issues: [ValidationIssue]
     let progress: Double?
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private let formatter = KACFormatter()
 
     var body: some View {
         let entry = session.logEntry
-        HStack(alignment: .top, spacing: 12) {
+        // 아주 큰 글씨에서는 분 표시를 옆이 아니라 아래로
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
+            : AnyLayout(HStackLayout(alignment: .top, spacing: 12))
+        layout {
             VStack(alignment: .leading, spacing: 4) {
                 Text(session.displayTitle)
                     .font(.headline)
-                    .lineLimit(1)
+                    .lineLimit(2)
                 Text("\(formatter.dateText(entry))  \(formatter.timeText(entry))")
                     .font(.body)
                     .foregroundStyle(.secondary)
@@ -367,6 +372,7 @@ struct SessionRow: View {
                         Image(systemName: "waveform")
                             .font(.body)
                             .foregroundStyle(.secondary)
+                            .accessibilityLabel(Text("녹음"))
                     }
                     transcriptionBadge
                 }
@@ -381,6 +387,7 @@ struct SessionRow: View {
                     Image(systemName: hasError ? "xmark.octagon.fill" : "exclamationmark.triangle.fill")
                         .foregroundStyle(hasError ? Color.red : Color.orange)
                         .help(issues.map(\.message).joined(separator: "\n"))
+                        .accessibilityLabel(Text(issues.map(\.message).joined(separator: ", ")))
                 }
             }
         }
@@ -398,10 +405,12 @@ struct SessionRow: View {
                 Image(systemName: "text.bubble")
                     .font(.body)
                     .foregroundStyle(.secondary)
+                    .accessibilityLabel(Text("변환 완료"))
             case .failed:
                 Image(systemName: "text.bubble.badge.exclamationmark")
                     .font(.body)
                     .foregroundStyle(.orange)
+                    .accessibilityLabel(Text("변환에 실패했어요."))
             case .idle, .inProgress:
                 EmptyView()
             }

@@ -431,6 +431,7 @@ struct PlayerControls: View {
                         Image(systemName: "gobackward.15")
                     }
                     .buttonStyle(.borderless)
+                    .accessibilityLabel(Text("15초 뒤로"))
 
                     Button {
                         player.load(url)
@@ -440,6 +441,7 @@ struct PlayerControls: View {
                             .font(.title)
                     }
                     .buttonStyle(.borderless)
+                    .accessibilityLabel(player.isPlaying ? Text("일시정지") : Text("재생"))
 
                     Button {
                         player.load(url)
@@ -448,6 +450,7 @@ struct PlayerControls: View {
                         Image(systemName: "goforward.15")
                     }
                     .buttonStyle(.borderless)
+                    .accessibilityLabel(Text("15초 앞으로"))
 
                     Spacer()
 
@@ -465,6 +468,8 @@ struct PlayerControls: View {
                     ),
                     in: 0...duration
                 )
+                .accessibilityLabel(Text("재생 위치"))
+                .accessibilityValue(Text(verbatim: KACDuration.clock(current)))
             }
         }
         .onAppear { player.load(url) }

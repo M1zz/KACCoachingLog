@@ -36,6 +36,8 @@ struct RecordingView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Environment(TranscriptionCenter.self) private var transcriptionCenter
+    /// 큰 시계도 글자 크기 설정을 따라 커진다
+    @ScaledMetric(relativeTo: .largeTitle) private var clockSize: CGFloat = 64
 
     @AppStorage(AppSettings.autoTranscribeKey) private var autoTranscribe = true
     @AppStorage(AppSettings.requireOnDeviceKey) private var requireOnDevice = true
@@ -224,12 +226,15 @@ struct RecordingView: View {
             TimelineView(.periodic(from: .now, by: 0.25)) { context in
                 VStack(spacing: 18) {
                     Text(KACDuration.clock(recorder.elapsed(at: context.date)))
-                        .font(.system(size: 64, weight: .light, design: .rounded))
+                        .font(.system(size: clockSize, weight: .light, design: .rounded))
                         .monospacedDigit()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
                     if recorder.isRecordingAudio {
                         LevelMeter(level: recorder.currentLevel())
                             .frame(height: 8)
                             .frame(maxWidth: 260)
+                            .accessibilityHidden(true)
                     }
                     Text(KACDuration.hoursMinutes(Int(recorder.elapsed(at: context.date) / 60)))
                         .font(.body)
@@ -257,6 +262,7 @@ struct RecordingView: View {
                             .font(.title)
                             .frame(width: 72, height: 72)
                             .background(.quaternary, in: Circle())
+                            .accessibilityHidden(true)
                         Text(recorder.state == .recording ? "일시정지" : "계속")
                             .font(.body)
                     }
@@ -272,6 +278,7 @@ struct RecordingView: View {
                             .foregroundStyle(.white)
                             .frame(width: 72, height: 72)
                             .background(Color.red, in: Circle())
+                            .accessibilityHidden(true)
                         Text("종료 및 저장")
                             .font(.body)
                     }

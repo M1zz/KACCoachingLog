@@ -98,6 +98,7 @@ struct LockScreen: View {
                 Image(systemName: "lock.fill")
                     .font(.system(size: 56))
                     .foregroundStyle(.tint)
+                    .accessibilityHidden(true)
                 Text("코칭일지가 잠겨 있어요")
                     .font(.title2.bold())
                 if lock.isLocked {
