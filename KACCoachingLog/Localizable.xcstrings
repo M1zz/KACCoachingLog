@@ -2954,6 +2954,29 @@
           }
         }
       }
+    },
+    "지금까지 코칭 %lld시간을 기록했어요" : {
+      "comment" : "Tip ask card: total coaching hours the person has logged",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "You've logged %lld hour of coaching so far"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "You've logged %lld hours of coaching so far"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

@@ -1,4 +1,5 @@
 import SwiftUI
+import LeeoKit
 
 struct SettingsView: View {
     @AppStorage(AppSettings.candidateNameKey) private var candidateName = ""
@@ -132,6 +133,11 @@ struct SettingsView: View {
             } footer: {
                 Text("응시 요건은 바뀔 수 있어요. 응시 전에 \(certification.body.title)의 최신 안내를 확인해 주세요.")
             }
+
+            // 개발자 응원하기 — 판매 중인 팁이 있어야 선다.
+            Section {
+                TipJarRow()
+            }
         }
         .formStyle(.grouped)
         .navigationTitle("설정")
@@ -139,5 +145,37 @@ struct SettingsView: View {
             storageText = AudioStorage.totalSizeText()
             engineDescription = await TranscriptionService.engineDescription()
         }
+    }
+}
+
+/// 개발자 응원하기 줄. iOS 설정은 NavigationStack 안이라 밀어서 열고,
+/// macOS 설정 창에는 내비게이션이 없어 시트로 연다.
+private struct TipJarRow: View {
+    @ObservedObject private var tipJar = KACCoachingLogSpec.tipJar
+    @State private var showTipJar = false
+
+    var body: some View {
+        #if os(iOS)
+        LeeoTipJarLink<KACCoachingLogSpec>(tipJar: tipJar)
+        #else
+        if tipJar.isAvailable {
+            Button {
+                showTipJar = true
+            } label: {
+                Label(LeeoTipText.entry, systemImage: "heart.fill")
+            }
+            .sheet(isPresented: $showTipJar) {
+                NavigationStack {
+                    LeeoTipJarView<KACCoachingLogSpec>(tipJar: tipJar)
+                        .toolbar {
+                            ToolbarItem(placement: .cancellationAction) {
+                                Button("닫기") { showTipJar = false }
+                            }
+                        }
+                }
+                .frame(minWidth: 420, minHeight: 520)
+            }
+        }
+        #endif
     }
 }

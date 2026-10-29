@@ -1,5 +1,6 @@
 import SwiftData
 import SwiftUI
+import LeeoKit
 import UniformTypeIdentifiers
 
 struct RootView: View {
@@ -180,6 +181,9 @@ struct RootView: View {
                 ForEach(globalIssues) { issue in
                     IssueRow(issue: issue)
                 }
+                // 기록한 코칭 시간이 쌓였을 때만, 드물게 응원을 부탁한다. 코칭을 마치고 돌아온 목록이다 (모달 아님)
+                LeeoTipAskSlot<KACCoachingLogSpec>(tipJar: KACCoachingLogSpec.tipJar,
+                                                   reached: KACCoachingLogTipMoments.reached(totalMinutes: summary.totalMinutes))
             }
 
             if sessions.isEmpty {
