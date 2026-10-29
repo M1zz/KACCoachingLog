@@ -150,7 +150,6 @@ reducedMotion
 ### Mac
 voiceOver
 voiceControl
-largerText
 darkInterface
 differentiateWithoutColor
 reducedMotion
