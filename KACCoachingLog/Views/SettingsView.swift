@@ -169,7 +169,7 @@ private struct TipJarRow: View {
                     LeeoTipJarView<KACCoachingLogSpec>(tipJar: tipJar)
                         .toolbar {
                             ToolbarItem(placement: .cancellationAction) {
-                                Button("닫기") { showTipJar = false }
+                                Button("닫기", systemImage: "xmark") { showTipJar = false }
                             }
                         }
                 }

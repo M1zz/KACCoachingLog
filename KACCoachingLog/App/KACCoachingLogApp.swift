@@ -1,5 +1,8 @@
 import SwiftData
 import SwiftUI
+#if os(iOS)
+import LeeoKit
+#endif
 
 @main
 struct KACCoachingLogApp: App {
@@ -13,6 +16,10 @@ struct KACCoachingLogApp: App {
                 .appLock(appLock)
                 // 팁 상품을 불러오고 끝나지 않은 팁을 마저 센다 (무료 앱이라 LeeoStore 대신 혼자)
                 .task { await KACCoachingLogSpec.tipJar.startStandalone() }
+                #if os(iOS)
+                // 창 크기로 접힘을 재서 아래로 흘린다. 시트 · 알림창도 접힌 선을 비킨다 (LeeoKit Fold).
+                .foldAware()
+                #endif
         }
         .modelContainer(for: CoachingSession.self)
         #if os(macOS)

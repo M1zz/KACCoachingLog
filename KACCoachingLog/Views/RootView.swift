@@ -16,7 +16,10 @@ struct RootView: View {
 
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.foldLayout) private var fold
     #endif
+    /// 좁은 화면에서 목록과 자세히 중 어느 쪽을 보이나(접힌 화면에서 사용자가 고른 것).
+    @State private var compactColumn: NavigationSplitViewColumn = .sidebar
 
     @State private var selectedID: UUID?
     /// iPad portrait shows the list next to the detail instead of hiding it.
@@ -56,12 +59,19 @@ struct RootView: View {
             certification: certification,
             trainingStartDate: AppSettings.trainingStartDate(trainingStart)
         )
-        NavigationSplitView(columnVisibility: $columnVisibility) {
-            sidebar(issues: issues)
-        } detail: {
-            detailContent
+        foldSplit {
+            NavigationSplitView(columnVisibility: $columnVisibility, preferredCompactColumn: compactColumnBinding) {
+                sidebar(issues: issues)
+            } detail: {
+                if isUnfolded {
+                    // 펼친 화면에서는 자세히가 옆 판에 선다. 여기서 또 그리지 않는다.
+                    Color.clear
+                } else {
+                    detailContent
+                }
+            }
+            .navigationSplitViewStyle(.balanced)
         }
-        .navigationSplitViewStyle(.balanced)
         .sheet(isPresented: $showRecording) {
             RecordingView(knownClients: knownClients) { session in
                 selectedID = session.uuid
@@ -84,7 +94,7 @@ struct RootView: View {
                 SettingsView()
                     .toolbar {
                         ToolbarItem(placement: .confirmationAction) {
-                            Button("완료") { showSettings = false }
+                            Button("완료", systemImage: "checkmark") { showSettings = false }
                         }
                     }
             }
@@ -136,6 +146,48 @@ struct RootView: View {
             // On a wide screen the detail column would otherwise start empty.
             if selectedID == nil && isRegularWidth { selectedID = sessions.first?.uuid }
         }
+    }
+
+    // MARK: 아이폰 듀오
+
+    /// 아이폰 듀오를 폈는가. 아이폰 듀오가 아니면(맥 포함) 늘 거짓이다.
+    private var isUnfolded: Bool {
+        #if os(iOS)
+        fold.isUnfolded
+        #else
+        false
+        #endif
+    }
+
+    /// 펼친 화면에서는 자세히가 옆 판에 늘 서 있으므로 목록 판은 목록에 머문다.
+    /// 그동안 고른 것은 `compactColumn` 에 적지 않는다. 접으면 펴기 전에 보던 쪽으로 돌아간다.
+    private var compactColumnBinding: Binding<NavigationSplitViewColumn> {
+        Binding(
+            get: { isUnfolded ? .sidebar : compactColumn },
+            set: { if !isUnfolded { compactColumn = $0 } }
+        )
+    }
+
+    /// 아이폰 듀오를 펴면 접힌 선 아래(가로면 왼쪽)에 코칭 목록, 위(오른쪽)에 고른 코칭의 자세히가 선다.
+    /// 접혀 있거나 보통 아이폰 · 아이패드 · 맥이면 목록 쪽만 그린다. 지금 화면 그대로.
+    @ViewBuilder
+    private func foldSplit<Choose: View>(@ViewBuilder _ choose: () -> Choose) -> some View {
+        #if os(iOS)
+        FoldSplitView {
+            choose()
+                // 판 한 장은 아이폰 폭이다. 목록 판에서 두 칸으로 벌어지지 않게 한다.
+                .environment(\.horizontalSizeClass, isUnfolded ? .compact : horizontalSizeClass)
+        } result: {
+            NavigationStack { detailContent }
+                .environment(\.foldLayout, .single)
+        }
+        // 펴는 순간 옆 판이 비어 있지 않게 가장 최근 코칭을 보여 준다.
+        .onChange(of: fold.isUnfolded, initial: true) { _, unfolded in
+            if unfolded, selectedID == nil { selectedID = sessions.first?.uuid }
+        }
+        #else
+        choose()
+        #endif
     }
 
     private var isRegularWidth: Bool {

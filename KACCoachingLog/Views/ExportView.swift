@@ -158,7 +158,7 @@ struct ExportView: View {
             .navigationTitle(isICF ? "코칭 로그 내보내기" : "코칭일지 내보내기")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("닫기") { dismiss() }
+                    Button("닫기", systemImage: "xmark") { dismiss() }
                 }
             }
             .onChange(of: useRange) { _, _ in shareURL = nil }

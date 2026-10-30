@@ -1,6 +1,9 @@
 import LocalAuthentication
 import SwiftUI
 #if os(iOS)
+import LeeoKit
+#endif
+#if os(iOS)
 import UIKit
 #endif
 
@@ -126,6 +129,10 @@ struct LockScreen: View {
             .padding(32)
             .frame(maxWidth: 420)
         }
+        #if os(iOS)
+        // 아이폰 듀오를 펴면 잠금 화면은 고르는 쪽 판에만 서고 다른 쪽은 비운다(가운데면 접힌 선 위다).
+        .foldConfined()
+        #endif
     }
 }
 
@@ -194,7 +201,8 @@ private final class LockOverlayWindows {
             for scene in UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }) {
                 let window = UIWindow(windowScene: scene)
                 window.windowLevel = .alert + 1
-                window.rootViewController = UIHostingController(rootView: LockScreen(lock: lock))
+                // 따로 띄운 창이라 접힘도 그 창에서 잰다.
+                window.rootViewController = UIHostingController(rootView: LockScreen(lock: lock).foldAware())
                 window.isHidden = false
                 windows.append(window)
             }
