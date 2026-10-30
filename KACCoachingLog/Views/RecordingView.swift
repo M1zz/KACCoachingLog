@@ -68,7 +68,7 @@ struct RecordingView: View {
             #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(recorder.state == .idle ? "취소" : "닫기") {
+                    Button(recorder.state == .idle ? "취소" : "닫기", systemImage: "xmark") {
                         if recorder.state == .idle {
                             dismiss()
                         } else {
