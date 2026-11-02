@@ -3021,6 +3021,26 @@
           }
         }
       }
+    },
+    "기록을 열지 못했어요" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't open your records"
+          }
+        }
+      }
+    },
+    "저장된 기록은 지워지지 않았어요. 다만 지금 적는 내용은 저장되지 않으니, 앱을 껐다 켜 보세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your saved records haven't been deleted. Anything you add now won't be saved, so please close the app and open it again."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

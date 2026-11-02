@@ -20,8 +20,9 @@ struct KACCoachingLogApp: App {
                 // 창 크기로 접힘을 재서 아래로 흘린다. 시트 · 알림창도 접힌 선을 비킨다 (LeeoKit Fold).
                 .foldAware()
                 #endif
+                .storeFallbackNotice()
         }
-        .modelContainer(for: CoachingSession.self)
+        .modelContainer(Self.container)
         #if os(macOS)
         .defaultSize(width: 1100, height: 760)
         #endif
@@ -33,6 +34,17 @@ struct KACCoachingLogApp: App {
         }
         #endif
     }
+
+    /// `.modelContainer(for:)` 는 저장소를 못 열면 앱을 죽인다 — 그러면 켤 때마다 죽고 고칠 길도 없다.
+    /// 손으로 열고, 실패하면 디스크의 기록은 그대로 둔 채 이번 실행만 메모리에서 연다.
+    private static let container: ModelContainer = {
+        let schema = Schema([CoachingSession.self])
+        do {
+            return try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema))
+        } catch {
+            return StoreFallback.memoryContainer(schema: schema, after: error)
+        }
+    }()
 }
 
 enum AppSettings {
