@@ -30,6 +30,8 @@ struct RootView: View {
     /// iPad portrait shows the list next to the detail instead of hiding it.
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
     @State private var showRecording = false
+    /// Siri 로 들어온 녹음 요청 (→ Recording/RecordingIntent.swift)
+    @Bindable private var recordingRouter = RecordingRouter.shared
     @State private var showExport = false
     @State private var showCalendar = false
     /// 직접 입력 중인 '작성 중' 기록. 있으면 입력 화면이 뜬다.
@@ -68,6 +70,9 @@ struct RootView: View {
                 }
             }
             .navigationSplitViewStyle(.balanced)
+        }
+        .onChange(of: recordingRouter.request, initial: true) { _, request in
+            if request > 0 { showRecording = true }
         }
         .sheet(isPresented: $showRecording) {
             RecordingView(knownClients: knownClients) { session in

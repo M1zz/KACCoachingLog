@@ -3265,6 +3265,42 @@
           }
         }
       }
+    },
+    "세션 녹음" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Record Session"
+          }
+        }
+      }
+    },
+    "코칭 세션 녹음 화면을 엽니다." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens the coaching session recorder."
+          }
+        }
+      }
+    },
+    "Record Session" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Record Session"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세션 녹음"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

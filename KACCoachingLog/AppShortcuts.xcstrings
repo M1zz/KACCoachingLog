@@ -1,0 +1,26 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Record a session in ${applicationName}" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName} 세션 녹음"
+          }
+        }
+      }
+    },
+    "Start a coaching session in ${applicationName}" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName}로 코칭 시작"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
