@@ -9,7 +9,7 @@ struct SessionDetailView: View {
 
     @Environment(\.modelContext) private var modelContext
     @Environment(TranscriptionCenter.self) private var transcriptionCenter
-    @Query private var allSessions: [CoachingSession]
+    @Query(filter: #Predicate<CoachingSession> { !$0.isDraft }) private var allSessions: [CoachingSession]
 
     @AppStorage(AppSettings.candidateNameKey) private var candidateName = ""
     @AppStorage(AppSettings.trainingStartKey) private var trainingStart = 0.0
@@ -37,7 +37,7 @@ struct SessionDetailView: View {
                 clientNames: $session.clientNames,
                 ctcComposition: $session.ctcComposition,
                 ctcLicenseNumber: $session.ctcLicenseNumber,
-                knownClients: knownClients
+                knownClients: otherClients
             )
             notesSection
             audioSection
@@ -56,11 +56,7 @@ struct SessionDetailView: View {
         .navigationTitle(session.displayTitle)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Label("저장됨", systemImage: "checkmark.circle.fill")
-                    .labelStyle(.titleAndIcon)
-                    .font(.footnote)
-                    .foregroundStyle(.green)
-                    .symbolEffect(.bounce, value: saveCount)
+                SavedIndicator(saveCount: saveCount)
             }
         }
         // Every edit is written right away; the check bounces so the user sees it landed.
@@ -96,6 +92,16 @@ struct SessionDetailView: View {
             player.stop()
             try? modelContext.save()
         }
+    }
+
+    /// 다른 기록에 나온 고객만 — 이 기록의 이름을 '전에 기록한 분'으로 보지 않게.
+    private var otherClients: [String] {
+        let others = Set(
+            allSessions
+                .filter { $0.uuid != session.uuid && $0.kind != .coachTheCoach }
+                .flatMap { $0.logEntry.cleanedClientNames.map(KACValidator.normalize) }
+        )
+        return knownClients.filter { others.contains(KACValidator.normalize($0)) }
     }
 
     // MARK: Sections

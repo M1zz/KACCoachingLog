@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E3C852D4F74F448F90929973 /* LeeoKit in Frameworks */ = {isa = PBXBuildFile; productRef = F896F2E5957B473D8E6E2D84 /* LeeoKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		4B1A0C000000000000000004 /* KACCoachingLog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KACCoachingLog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -250,6 +254,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"CODE_SIGN_ENTITLEMENTS[sdk=iphone*]" = "Config/KACCoachingLog-iOS.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Config/KACCoachingLog-macOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 5;
@@ -292,6 +297,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"CODE_SIGN_ENTITLEMENTS[sdk=iphone*]" = "Config/KACCoachingLog-iOS.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Config/KACCoachingLog-macOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 5;
@@ -351,10 +357,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin PBXBuildFile section */
-		E3C852D4F74F448F90929973 /* LeeoKit in Frameworks */ = {isa = PBXBuildFile; productRef = F896F2E5957B473D8E6E2D84 /* LeeoKit */; };
-/* End PBXBuildFile section */
 
 /* Begin XCRemoteSwiftPackageReference section */
 		9F2BC49D14AD469C951D3D0C /* XCRemoteSwiftPackageReference "LeeoKit" */ = {

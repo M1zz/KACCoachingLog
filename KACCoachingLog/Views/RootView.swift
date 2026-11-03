@@ -6,13 +6,18 @@ import UniformTypeIdentifiers
 struct RootView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(TranscriptionCenter.self) private var transcriptionCenter
-    @Query(sort: \CoachingSession.startDate, order: .reverse) private var sessions: [CoachingSession]
+    @Query(filter: #Predicate<CoachingSession> { !$0.isDraft }, sort: \CoachingSession.startDate, order: .reverse)
+    private var sessions: [CoachingSession]
+    /// 직접 입력하다 만 기록 — 목록 맨 위에서 이어 쓴다.
+    @Query(filter: #Predicate<CoachingSession> { $0.isDraft }, sort: \CoachingSession.createdAt)
+    private var drafts: [CoachingSession]
 
     @AppStorage(AppSettings.candidateNameKey) private var candidateName = ""
     @AppStorage(AppSettings.trainingStartKey) private var trainingStart = 0.0
     @AppStorage(AppSettings.certificationKey) private var certification: Certification = .kac
     @AppStorage(AppSettings.autoTranscribeKey) private var autoTranscribe = true
     @AppStorage(AppSettings.requireOnDeviceKey) private var requireOnDevice = true
+    @AppStorage(AppSettings.backupAudioKey) private var backupAudio = false
 
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -26,7 +31,9 @@ struct RootView: View {
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
     @State private var showRecording = false
     @State private var showExport = false
-    @State private var showManualEntry = false
+    @State private var showCalendar = false
+    /// 직접 입력 중인 '작성 중' 기록. 있으면 입력 화면이 뜬다.
+    @State private var editingDraft: CoachingSession?
     @State private var showSettings = false
     @State private var showAudioImporter = false
     @State private var alertMessage: String?
@@ -78,9 +85,15 @@ struct RootView: View {
             }
             .largeSheetOnPad()
         }
-        .sheet(isPresented: $showManualEntry) {
-            ManualEntryView(knownClients: knownClients) { session in
+        .sheet(item: $editingDraft) { draft in
+            ManualEntryView(session: draft, knownClients: knownClients) { session in
                 selectedID = session.uuid
+            }
+            .largeSheetOnPad()
+        }
+        .sheet(isPresented: $showCalendar) {
+            CalendarView(sessions: sessions) { id in
+                selectedID = id
             }
             .largeSheetOnPad()
         }
@@ -134,8 +147,9 @@ struct RootView: View {
                 case "detail": selectedID = newest?.uuid
                 case "recording": showRecording = true
                 case "export": showExport = true
+                case "calendar": showCalendar = true
                 case "settings": showSettings = true
-                case "manual": showManualEntry = true
+                case "manual": startManualEntry()
                 default: break
                 }
                 if selectedID == nil && isRegularWidth { selectedID = newest?.uuid }
@@ -145,6 +159,18 @@ struct RootView: View {
             transcriptionCenter.recoverInterrupted(sessions)
             // On a wide screen the detail column would otherwise start empty.
             if selectedID == nil && isRegularWidth { selectedID = sessions.first?.uuid }
+        }
+        // 녹음 백업: 받은 녹음은 풀어 두고, 켜져 있으면 새 녹음이 생길 때마다 올리고, 끄면 iCloud 에서 뺀다.
+        .onChange(of: sessions.map(\.audioFileName), initial: true) {
+            AudioBackup.restore(sessions)
+            if backupAudio { AudioBackup.upload(sessions, in: modelContext) }
+        }
+        .onChange(of: backupAudio) { _, on in
+            if on {
+                AudioBackup.upload(sessions, in: modelContext)
+            } else {
+                AudioBackup.remove(sessions, in: modelContext)
+            }
         }
     }
 
@@ -238,7 +264,27 @@ struct RootView: View {
                                                    reached: KACCoachingLogTipMoments.reached(totalMinutes: summary.totalMinutes))
             }
 
-            if sessions.isEmpty {
+            if !drafts.isEmpty {
+                Section("작성 중") {
+                    ForEach(drafts) { draft in
+                        Button {
+                            editingDraft = draft
+                        } label: {
+                            SessionRow(session: draft, issues: [], progress: nil)
+                        }
+                        .buttonStyle(.plain)
+                        .swipeActions(edge: .trailing) {
+                            Button(role: .destructive) {
+                                pendingDelete = draft
+                            } label: {
+                                Label("삭제", systemImage: "trash")
+                            }
+                        }
+                    }
+                }
+            }
+
+            if sessions.isEmpty && drafts.isEmpty {
                 Section {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("첫 코칭을 기록해 보세요")
@@ -293,7 +339,7 @@ struct RootView: View {
 
                 Menu {
                     Button {
-                        showManualEntry = true
+                        startManualEntry()
                     } label: {
                         Label("직접 입력", systemImage: "square.and.pencil")
                     }
@@ -305,6 +351,13 @@ struct RootView: View {
                 } label: {
                     Label("추가", systemImage: "plus")
                 }
+
+                Button {
+                    showCalendar = true
+                } label: {
+                    Label("달력", systemImage: "calendar")
+                }
+                .help("달력으로 보기")
 
                 Button {
                     showExport = true
@@ -377,6 +430,14 @@ struct RootView: View {
                 alertMessage = String(localized: "오디오 파일을 가져오지 못했어요: \(error.localizedDescription)")
             }
         }
+    }
+
+    /// 여는 순간 '작성 중' 기록을 만들어 둔다 — 닫아도 이어 쓸 수 있게.
+    private func startManualEntry() {
+        let draft = CoachingSession.manualDraft()
+        modelContext.insert(draft)
+        try? modelContext.save()
+        editingDraft = draft
     }
 
     private func delete(_ session: CoachingSession) {

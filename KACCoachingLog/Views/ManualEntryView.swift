@@ -2,54 +2,24 @@ import SwiftData
 import SwiftUI
 
 /// Adds a past session by hand, asking for every cell of one coaching-log row (columns A–G).
+/// 여는 순간 '작성 중' 기록이 생기고, 고칠 때마다 저장된다. 닫았다가 목록에서 이어 쓴다.
 struct ManualEntryView: View {
+    @Bindable var session: CoachingSession
     let knownClients: [String]
-    let onSave: (CoachingSession) -> Void
+    let onFinish: (CoachingSession) -> Void
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
-    @Query private var allSessions: [CoachingSession]
+    @Query(filter: #Predicate<CoachingSession> { !$0.isDraft }) private var finishedSessions: [CoachingSession]
 
     @AppStorage(AppSettings.candidateNameKey) private var candidateName = ""
     @AppStorage(AppSettings.trainingStartKey) private var trainingStart = 0.0
     @AppStorage(AppSettings.certificationKey) private var certification: Certification = .kac
 
-    @State private var start: Date
-    @State private var end: Date
-    @State private var kind: SessionKind = .paid
-    @State private var format: CoachingFormat = .faceToFace
-    @State private var clientNames: [String] = []
-    @State private var groupSize = 1
-    @State private var ctcComposition: CTCComposition = .oneOnOne
-    @State private var ctcLicenseNumber = ""
     @State private var askCandidateName = false
-    @State private var draftID = UUID()
+    @State private var saveCount = 0
 
-    init(knownClients: [String], onSave: @escaping (CoachingSession) -> Void) {
-        self.knownClients = knownClients
-        self.onSave = onSave
-        let calendar = Calendar.current
-        let now = Date()
-        var components = calendar.dateComponents([.year, .month, .day, .hour], from: now)
-        components.minute = 0
-        let start = calendar.date(from: components) ?? now
-        _start = State(initialValue: start)
-        _end = State(initialValue: start.addingTimeInterval(50 * 60))
-    }
-
-    private var draft: LogEntry {
-        LogEntry(
-            id: draftID,
-            start: start,
-            end: end,
-            clientNames: clientNames,
-            groupSize: groupSize,
-            kind: kind,
-            format: format,
-            ctcComposition: ctcComposition,
-            ctcLicenseNumber: ctcLicenseNumber
-        )
-    }
+    private var draft: LogEntry { session.logEntry }
 
     /// Cells of the row that are still empty. Saving is allowed only when this is empty.
     private var missingCells: [String] {
@@ -78,12 +48,12 @@ struct ManualEntryView: View {
     private var draftIssues: [ValidationIssue] {
         KACValidator
             .validate(
-                entries: allSessions.map(\.logEntry) + [draft],
+                entries: finishedSessions.map(\.logEntry) + [draft],
                 candidateName: candidateName,
                 certification: certification,
                 trainingStartDate: AppSettings.trainingStartDate(trainingStart)
             )
-            .filter { $0.entryID == draftID }
+            .filter { $0.entryID == session.uuid }
     }
 
     var body: some View {
@@ -102,7 +72,7 @@ struct ManualEntryView: View {
                 timeSection
 
                 Section {
-                    Picker("구분", selection: $kind) {
+                    Picker("구분", selection: $session.kind) {
                         ForEach(certification.sessionKinds) { kind in
                             Text(kind.title).tag(kind)
                         }
@@ -114,16 +84,16 @@ struct ManualEntryView: View {
                 }
 
                 ParticipantsEditor(
-                    kind: $kind,
-                    groupSize: $groupSize,
-                    clientNames: $clientNames,
-                    ctcComposition: $ctcComposition,
-                    ctcLicenseNumber: $ctcLicenseNumber,
+                    kind: $session.kind,
+                    groupSize: $session.groupSize,
+                    clientNames: $session.clientNames,
+                    ctcComposition: $session.ctcComposition,
+                    ctcLicenseNumber: $session.ctcLicenseNumber,
                     knownClients: knownClients
                 )
 
                 Section {
-                    Picker("형태", selection: $format) {
+                    Picker("형태", selection: $session.format) {
                         ForEach(CoachingFormat.allCases) { format in
                             Text(format.title).tag(format)
                         }
@@ -146,17 +116,25 @@ struct ManualEntryView: View {
             .formStyle(.grouped)
             .navigationTitle("직접 입력")
             .toolbar {
+                // 닫아도 작성 중인 내용은 남는다.
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("취소", systemImage: "xmark") { dismiss() }
+                    Button("닫기", systemImage: "xmark") { dismiss() }
+                }
+                ToolbarItem(placement: .principal) {
+                    SavedIndicator(saveCount: saveCount)
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("저장", systemImage: "checkmark") { save() }
+                    Button("완료", systemImage: "checkmark") { finish() }
                         .disabled(!missingCells.isEmpty)
                 }
             }
             .onAppear {
                 askCandidateName = candidateName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             }
+            .onChange(of: draft) {
+                if (try? modelContext.save()) != nil { saveCount += 1 }
+            }
+            .onDisappear(perform: discardIfEmpty)
         }
         #if os(macOS)
         .frame(minWidth: 520, minHeight: 640)
@@ -204,7 +182,7 @@ struct ManualEntryView: View {
             Text("작성 점검")
         } footer: {
             if !missing.isEmpty {
-                Text("빈 칸을 모두 채워야 저장할 수 있어요.")
+                Text("빈 칸을 모두 채우면 완료할 수 있어요. 닫아도 작성 중인 내용은 남아 목록 맨 위에서 이어 쓸 수 있어요.")
             }
         }
     }
@@ -213,11 +191,11 @@ struct ManualEntryView: View {
 
     private var dayBinding: Binding<Date> {
         Binding(
-            get: { start },
+            get: { session.startDate },
             set: { newDay in
                 let calendar = Calendar.current
-                start = calendar.combine(day: newDay, time: start)
-                end = calendar.combine(day: newDay, time: end)
+                session.startDate = calendar.combine(day: newDay, time: session.startDate)
+                session.endDate = calendar.combine(day: newDay, time: session.endDate)
             }
         )
     }
@@ -225,45 +203,64 @@ struct ManualEntryView: View {
     /// Moving the start keeps the session length.
     private var startBinding: Binding<Date> {
         Binding(
-            get: { start },
+            get: { session.startDate },
             set: {
-                let length = end.timeIntervalSince(start)
-                start = Calendar.current.combine(day: start, time: $0)
-                end = start.addingTimeInterval(max(length, 0))
+                let length = session.endDate.timeIntervalSince(session.startDate)
+                session.startDate = Calendar.current.combine(day: session.startDate, time: $0)
+                session.endDate = session.startDate.addingTimeInterval(max(length, 0))
             }
         )
     }
 
     private var endBinding: Binding<Date> {
         Binding(
-            get: { end },
-            set: { end = Calendar.current.combine(day: start, time: $0) }
+            get: { session.endDate },
+            set: { session.endDate = Calendar.current.combine(day: session.startDate, time: $0) }
         )
     }
 
     /// The end time can only be picked up to the maximum allowed length (120분, CTC 1:1·1:2는 60분).
     private var endRange: ClosedRange<Date> {
         let maxMinutes = KACValidator.maxRangeMinutes(for: draft, certification: certification)
-        return start...max(start.addingTimeInterval(TimeInterval(maxMinutes * 60)), end)
+        let start = session.startDate
+        return start...max(start.addingTimeInterval(TimeInterval(maxMinutes * 60)), session.endDate)
     }
 
     // MARK: Actions
 
-    private func save() {
-        let session = CoachingSession(
-            startDate: start,
-            endDate: end,
-            clientNames: draft.cleanedClientNames,
-            groupSize: groupSize,
-            kind: kind,
-            format: format
-        )
-        session.uuid = draftID
-        session.ctcComposition = ctcComposition
-        session.ctcLicenseNumber = ctcLicenseNumber.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-        modelContext.insert(session)
+    /// 빈 칸을 다 채웠을 때만 — '작성 중'을 떼고 정식 기록으로 넣는다.
+    private func finish() {
+        session.clientNames = draft.cleanedClientNames
+        session.ctcLicenseNumber = session.ctcLicenseNumber.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        session.isDraft = false
         try? modelContext.save()
-        onSave(session)
+        onFinish(session)
         dismiss()
+    }
+
+    /// 열자마자 닫아 이름 하나 적지 않은 초안은 남기지 않는다.
+    private func discardIfEmpty() {
+        guard session.isDraft,
+              draft.cleanedClientNames.isEmpty,
+              session.ctcLicenseNumber.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+        modelContext.delete(session)
+        try? modelContext.save()
+    }
+}
+
+extension CoachingSession {
+    /// 직접 입력을 열 때 만드는 '작성 중' 기록. 이번 정시에 시작해 기본 코칭 시간만큼.
+    static func manualDraft() -> CoachingSession {
+        let calendar = Calendar.current
+        let now = Date()
+        var components = calendar.dateComponents([.year, .month, .day, .hour], from: now)
+        components.minute = 0
+        let start = calendar.date(from: components) ?? now
+        let certification = UserDefaults.standard.string(forKey: AppSettings.certificationKey)
+            .flatMap(Certification.init(rawValue:)) ?? .kac
+        let minutes = AppSettings.defaultSessionMinutes(for: certification)
+        let session = CoachingSession(startDate: start, endDate: start.addingTimeInterval(TimeInterval(minutes * 60)))
+        session.isDraft = true
+        return session
     }
 }

@@ -36,7 +36,13 @@ final class CoachingSession {
     var transcriptionEngine: String = ""
     var transcriptionError: String = ""
     var audioFileName: String? = nil
+    /// 녹음 백업을 켰을 때만 녹음 파일을 담아 iCloud 로 보낸다. 평소엔 비어 있다 (→ AudioBackup).
+    @Attribute(.externalStorage) var audioBackup: Data? = nil
+    /// `audioBackup` 을 열지 않고도 올렸는지 안다 — 큰 파일을 매번 읽지 않으려고.
+    var audioBackedUp: Bool = false
     var createdAt: Date = Date()
+    /// 직접 입력하다 만 기록. 목록 맨 위 '작성 중'에만 보이고, 합계 · 점검 · 내보내기에서 빠진다.
+    var isDraft: Bool = false
 
     init(
         startDate: Date,
@@ -94,7 +100,10 @@ extension CoachingSession {
     var audioFileURL: URL? {
         guard let audioFileName else { return nil }
         let url = AudioStorage.recordingsDirectory.appendingPathComponent(audioFileName)
-        return FileManager.default.fileExists(atPath: url.path) ? url : nil
+        if FileManager.default.fileExists(atPath: url.path) { return url }
+        // 다른 기기에서 녹음해 iCloud 로 받은 것이면 이 기기에 풀어 둔다.
+        guard audioBackedUp, let audioBackup, (try? audioBackup.write(to: url)) != nil else { return nil }
+        return url
     }
 
     var logEntry: LogEntry {
@@ -126,6 +135,40 @@ extension CoachingSession {
             try? FileManager.default.removeItem(at: url)
         }
         audioFileName = nil
+        audioBackup = nil
+        audioBackedUp = false
+    }
+}
+
+/// 코칭 기록은 늘 iCloud 에 백업된다. 녹음 파일은 용량이 커서 사용자가 켤 때만 함께 올린다.
+@MainActor
+enum AudioBackup {
+    /// 아직 올리지 않은 녹음을 담는다. 켜져 있는 동안 녹음이 새로 생길 때마다 부른다.
+    static func upload(_ sessions: [CoachingSession], in context: ModelContext) {
+        for session in sessions where !session.audioBackedUp {
+            guard let url = session.audioFileURL,
+                  let data = try? Data(contentsOf: url, options: .mappedIfSafe) else { continue }
+            session.audioBackup = data
+            session.audioBackedUp = true
+            try? context.save()
+        }
+    }
+
+    /// 다른 기기에서 올린 녹음을 이 기기에 풀어 둔다. 거기서 백업을 꺼도 여기 녹음은 남는다.
+    static func restore(_ sessions: [CoachingSession]) {
+        for session in sessions where session.audioBackedUp {
+            _ = session.audioFileURL
+        }
+    }
+
+    /// 끄면 이 기기에 파일을 풀어 둔 뒤 iCloud 에서 뺀다 — 녹음은 기기에 그대로 남는다.
+    static func remove(_ sessions: [CoachingSession], in context: ModelContext) {
+        for session in sessions where session.audioBackedUp {
+            _ = session.audioFileURL
+            session.audioBackup = nil
+            session.audioBackedUp = false
+        }
+        try? context.save()
     }
 }
 

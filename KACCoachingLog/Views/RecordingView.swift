@@ -181,7 +181,7 @@ struct RecordingView: View {
                 Toggle("오디오 녹음", isOn: $recordAudio)
             } footer: {
                 Text(recordAudio
-                     ? "녹음 전에 고객에게 녹음과 텍스트 변환에 대한 동의를 받아 주세요. 녹음과 변환은 이 기기 안에 저장돼요."
+                     ? "녹음 전에 고객에게 녹음과 텍스트 변환에 대한 동의를 받아 주세요. 녹음 파일은 이 기기에 저장되고, 기록과 텍스트는 내 iCloud에 백업돼요."
                      : "녹음 없이 시작·종료 시각만 기록해요.")
             }
 

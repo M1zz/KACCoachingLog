@@ -13,6 +13,9 @@ struct ParticipantsEditor: View {
     var knownClients: [String]
 
     @AppStorage(AppSettings.certificationKey) private var certification: Certification = .kac
+    /// 동명이인으로 구분할 이름 칸과, 붙일 구분 말.
+    @State private var distinguishingIndex: Int?
+    @State private var distinguisher = ""
 
     var body: some View {
         if kind == .coachTheCoach {
@@ -29,6 +32,9 @@ struct ParticipantsEditor: View {
             }
             ForEach(0..<min(groupSize, 3), id: \.self) { index in
                 TextField(placeholder(for: index), text: nameBinding(index))
+                if let name = knownName(at: index) {
+                    sameNameNote(name, index: index)
+                }
             }
             let suggestions = suggestedClients
             if !suggestions.isEmpty {
@@ -82,6 +88,44 @@ struct ParticipantsEditor: View {
         return knownClients.filter { !current.contains(KACValidator.normalize($0)) }.prefix(12).map { $0 }
     }
 
+    /// 고객은 이름으로 센다. 전에 기록한 이름이면 같은 분으로 보고, 동명이인일 때만 구분 말을 붙인다.
+    private func knownName(at index: Int) -> String? {
+        guard index < clientNames.count else { return nil }
+        let name = clientNames[index].trimmingCharacters(in: .whitespaces)
+        guard !name.isEmpty else { return nil }
+        let key = KACValidator.normalize(name)
+        return knownClients.contains { KACValidator.normalize($0) == key } ? name : nil
+    }
+
+    private func sameNameNote(_ name: String, index: Int) -> some View {
+        HStack {
+            Text("전에 기록한 \(name) 님과 같은 분으로 세어져요.")
+                .foregroundStyle(.secondary)
+            Spacer()
+            Button("다른 분이에요") {
+                distinguisher = ""
+                distinguishingIndex = index
+            }
+            .buttonStyle(.borderless)
+        }
+        .alert(
+            "\(name) 님과 구분해 주세요",
+            isPresented: Binding(
+                get: { distinguishingIndex == index },
+                set: { if !$0 { distinguishingIndex = nil } }
+            )
+        ) {
+            TextField("예: 회사, 지역", text: $distinguisher)
+            Button("취소", role: .cancel) {}
+            Button("구분하기") {
+                let mark = distinguisher.trimmingCharacters(in: .whitespaces)
+                if !mark.isEmpty { nameBinding(index).wrappedValue = "\(name)(\(mark))" }
+            }
+        } message: {
+            Text("코칭일지에 ‘\(name)(회사)’처럼 적혀 다른 고객으로 세어져요.")
+        }
+    }
+
     private func placeholder(for index: Int) -> String {
         groupSize == 1 ? String(localized: "고객 이름") : String(localized: "고객 \(index + 1) 이름")
     }
@@ -113,6 +157,19 @@ struct ParticipantsEditor: View {
 }
 
 // MARK: - Small views
+
+/// 고치면 바로 저장된다는 표시. 저장할 때마다 체크가 한 번 튄다.
+struct SavedIndicator: View {
+    let saveCount: Int
+
+    var body: some View {
+        Label("저장됨", systemImage: "checkmark.circle.fill")
+            .labelStyle(.titleAndIcon)
+            .font(.footnote)
+            .foregroundStyle(.green)
+            .symbolEffect(.bounce, value: saveCount)
+    }
+}
 
 struct KindBadge: View {
     let kind: SessionKind

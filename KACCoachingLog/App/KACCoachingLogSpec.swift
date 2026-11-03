@@ -3,7 +3,7 @@ import LeeoKit
 
 /// LeeoKit 은 팁 화면에만 쓴다.
 /// ⚠️ 여기서 bootstrap · 피드백 · 분석을 켜지 않는다 — 계약을 채우는 값일 뿐 아무것도 돌지 않는다.
-/// 코칭 기록은 기기 밖으로 나가지 않는다는 약속(PRIVACY.md)을 그대로 지킨다.
+/// 코칭 기록은 사용자의 기기와 본인 iCloud 에만 둔다는 약속(PRIVACY.md)을 그대로 지킨다.
 enum KACCoachingLogSpec: LeeoAppSpec {
     static let appName = "코칭일지"
     static let developerEmail = "leeo@kakao.com"

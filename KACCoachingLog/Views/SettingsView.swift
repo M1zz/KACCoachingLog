@@ -9,6 +9,8 @@ struct SettingsView: View {
     @AppStorage(AppSettings.autoTranscribeKey) private var autoTranscribe = true
     @AppStorage(AppSettings.requireOnDeviceKey) private var requireOnDevice = true
     @AppStorage(AppSettings.recordAudioByDefaultKey) private var recordAudioByDefault = true
+    @AppStorage(AppSettings.backupAudioKey) private var backupAudio = false
+    @AppStorage(AppSettings.defaultSessionMinutesKey) private var defaultSessionMinutes = AppSettings.defaultSessionMinutesFallback
 
     @State private var engineDescription = String(localized: "확인 중…")
     @State private var storageText = ""
@@ -110,6 +112,17 @@ struct SettingsView: View {
             }
 
             Section {
+                let range = AppSettings.defaultSessionMinutesRange(for: certification)
+                Stepper(value: $defaultSessionMinutes, in: range, step: 5) {
+                    LabeledContent("기본 코칭 시간", value: String(localized: "\(defaultSessionMinutes)분"))
+                }
+            } header: {
+                Text("기본 코칭 시간")
+            } footer: {
+                Text("직접 입력할 때 종료 시각이 이 시간만큼 채워져요. 녹음한 코칭은 실제 시간 그대로 기록돼요.")
+            }
+
+            Section {
                 Toggle("새 코칭은 오디오 녹음으로 시작", isOn: $recordAudioByDefault)
                 Toggle("녹음이 끝나면 자동으로 텍스트 변환", isOn: $autoTranscribe)
                 Toggle("기기 내 인식만 사용", isOn: $requireOnDevice)
@@ -119,6 +132,14 @@ struct SettingsView: View {
                 Text("녹음 · 텍스트 변환")
             } footer: {
                 Text("iOS 26 · macOS 26 이상에서는 기기 안에서 처리하는 SpeechAnalyzer를 사용해요. 이전 버전에서 ‘기기 내 인식만 사용’을 끄면 음성이 Apple 서버로 전송될 수 있어요. 코칭 녹음은 고객 동의를 받은 경우에만 사용해 주세요.")
+            }
+
+            Section {
+                Toggle("녹음 파일도 백업", isOn: $backupAudio)
+            } header: {
+                Text("iCloud 백업")
+            } footer: {
+                Text("코칭 기록과 변환된 텍스트는 내 iCloud에 자동으로 백업돼 다른 기기에서도 볼 수 있어요. 녹음 파일은 용량이 커서 켤 때만 함께 올라가요. 개발자는 볼 수 없어요.")
             }
 
             Section {
@@ -141,6 +162,10 @@ struct SettingsView: View {
         }
         .formStyle(.grouped)
         .navigationTitle("설정")
+        // 자격증을 바꿔 기본 시간이 인정 범위를 벗어나면 범위 안으로 맞춘다.
+        .onChange(of: certification, initial: true) {
+            defaultSessionMinutes = AppSettings.defaultSessionMinutes(for: certification)
+        }
         .task {
             storageText = AudioStorage.totalSizeText()
             engineDescription = await TranscriptionService.engineDescription()
