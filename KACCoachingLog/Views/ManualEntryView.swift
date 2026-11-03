@@ -5,7 +5,7 @@ import SwiftUI
 /// 여는 순간 '작성 중' 기록이 생기고, 고칠 때마다 저장된다. 닫았다가 목록에서 이어 쓴다.
 struct ManualEntryView: View {
     @Bindable var session: CoachingSession
-    let knownClients: [String]
+    let knownClients: [KnownClient]
     let onFinish: (CoachingSession) -> Void
 
     @Environment(\.dismiss) private var dismiss
@@ -69,6 +69,16 @@ struct ManualEntryView: View {
                     }
                 }
 
+                // 고객부터 고른다 — 전에 만난 분이면 마지막 코칭 날이 바로 보인다.
+                ParticipantsEditor(
+                    kind: $session.kind,
+                    groupSize: $session.groupSize,
+                    clientNames: $session.clientNames,
+                    ctcComposition: $session.ctcComposition,
+                    ctcLicenseNumber: $session.ctcLicenseNumber,
+                    knownClients: knownClients
+                )
+
                 timeSection
 
                 Section {
@@ -82,15 +92,6 @@ struct ManualEntryView: View {
                 } footer: {
                     Text("유료는 D칸, 무료는 E칸, 받은 코치더코치는 F칸에 분이 기록돼요.")
                 }
-
-                ParticipantsEditor(
-                    kind: $session.kind,
-                    groupSize: $session.groupSize,
-                    clientNames: $session.clientNames,
-                    ctcComposition: $session.ctcComposition,
-                    ctcLicenseNumber: $session.ctcLicenseNumber,
-                    knownClients: knownClients
-                )
 
                 Section {
                     Picker("형태", selection: $session.format) {

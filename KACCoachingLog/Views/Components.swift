@@ -4,13 +4,44 @@ import UniformTypeIdentifiers
 
 // MARK: - Participants editor (clients or coach-the-coach coach)
 
+/// 전에 기록한 고객과 그분의 마지막 코칭 날.
+struct KnownClient: Hashable {
+    var name: String
+    var lastDate: Date
+
+    /// 최근에 만난 분부터. 이름은 띄어쓰기·대소문자를 무시하고 한 분으로 센다. 코치더코치는 고객이 아니라 뺀다.
+    static func list(from sessions: [CoachingSession]) -> [KnownClient] {
+        var latest: [String: KnownClient] = [:]
+        for session in sessions where session.kind != .coachTheCoach {
+            for name in session.logEntry.cleanedClientNames {
+                let key = KACValidator.normalize(name)
+                if let known = latest[key], known.lastDate >= session.startDate { continue }
+                latest[key] = KnownClient(name: name, lastDate: session.startDate)
+            }
+        }
+        return latest.values.sorted { $0.lastDate > $1.lastDate }
+    }
+
+    /// "10월 28일 · 6일 전". 올해가 아니면 연도도 붙인다.
+    var lastDateText: String {
+        let calendar = Calendar.current
+        let now = Date()
+        let sameYear = calendar.isDate(lastDate, equalTo: now, toGranularity: .year)
+        let day = lastDate.formatted(sameYear ? .dateTime.month().day() : .dateTime.year().month().day())
+        let days = calendar.dateComponents([.day], from: calendar.startOfDay(for: lastDate), to: calendar.startOfDay(for: now)).day ?? 0
+        let formatter = RelativeDateTimeFormatter()
+        formatter.dateTimeStyle = .named
+        return "\(day) · \(formatter.localizedString(from: DateComponents(day: -days)))"
+    }
+}
+
 struct ParticipantsEditor: View {
     @Binding var kind: SessionKind
     @Binding var groupSize: Int
     @Binding var clientNames: [String]
     @Binding var ctcComposition: CTCComposition
     @Binding var ctcLicenseNumber: String
-    var knownClients: [String]
+    var knownClients: [KnownClient]
 
     @AppStorage(AppSettings.certificationKey) private var certification: Certification = .kac
     /// 동명이인으로 구분할 이름 칸과, 붙일 구분 말.
@@ -32,8 +63,8 @@ struct ParticipantsEditor: View {
             }
             ForEach(0..<min(groupSize, 3), id: \.self) { index in
                 TextField(placeholder(for: index), text: nameBinding(index))
-                if let name = knownName(at: index) {
-                    sameNameNote(name, index: index)
+                if let known = knownClient(at: index) {
+                    sameNameNote(known, index: index)
                 }
             }
             let suggestions = suggestedClients
@@ -85,21 +116,22 @@ struct ParticipantsEditor: View {
 
     private var suggestedClients: [String] {
         let current = Set(clientNames.map { KACValidator.normalize($0) })
-        return knownClients.filter { !current.contains(KACValidator.normalize($0)) }.prefix(12).map { $0 }
+        return knownClients.map(\.name).filter { !current.contains(KACValidator.normalize($0)) }.prefix(12).map { $0 }
     }
 
     /// 고객은 이름으로 센다. 전에 기록한 이름이면 같은 분으로 보고, 동명이인일 때만 구분 말을 붙인다.
-    private func knownName(at index: Int) -> String? {
+    private func knownClient(at index: Int) -> KnownClient? {
         guard index < clientNames.count else { return nil }
-        let name = clientNames[index].trimmingCharacters(in: .whitespaces)
-        guard !name.isEmpty else { return nil }
-        let key = KACValidator.normalize(name)
-        return knownClients.contains { KACValidator.normalize($0) == key } ? name : nil
+        let key = KACValidator.normalize(clientNames[index].trimmingCharacters(in: .whitespaces))
+        guard !key.isEmpty else { return nil }
+        return knownClients.first { KACValidator.normalize($0.name) == key }
     }
 
-    private func sameNameNote(_ name: String, index: Int) -> some View {
-        HStack {
-            Text("전에 기록한 \(name) 님과 같은 분으로 세어져요.")
+    /// 전에 만난 분이면 마지막 코칭 날을 보여 준다. 같은 분으로 세어지니, 아니면 구분하게 한다.
+    private func sameNameNote(_ known: KnownClient, index: Int) -> some View {
+        let name = known.name
+        return HStack {
+            Label("마지막 코칭 \(known.lastDateText)", systemImage: "clock.arrow.circlepath")
                 .foregroundStyle(.secondary)
             Spacer()
             Button("다른 분이에요") {

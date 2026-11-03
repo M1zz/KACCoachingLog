@@ -1,228 +1,65 @@
 {
   "sourceLanguage" : "ko",
   "strings" : {
-    "달력" : {
+    " " : {},
+    "‘코칭 시작’을 누르면 녹음과 함께 시작 시각이 기록되고, 종료하면 코칭일지 한 줄이 완성돼요. 지난 코칭은 ‘직접 입력’이나 ‘오디오 파일 가져오기’로 추가할 수 있어요." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calendar"
+            "value" : "Tap “Start Coaching” to record and log the start time. When you finish, one row of your coaching log is done. Add past sessions with “Manual Entry” or “Import Audio File”."
           }
         }
       }
     },
-    "달력으로 보기" : {
+    "(사)한국코치협회" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "View as Calendar"
+            "value" : "Korea Coach Association"
           }
         }
       }
     },
-    "이전 달" : {
+    "(총%lld명)" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Previous Month"
-          }
-        }
-      }
-    },
-    "다음 달" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Next Month"
-          }
-        }
-      }
-    },
-    "%lld건 · %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld sessions · %@"
-          }
-        }
-      }
-    },
-    "코칭 %lld건" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld coaching sessions"
-          }
-        }
-      }
-    },
-    "코칭 없음" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No sessions"
-          }
-        }
-      }
-    },
-    "이날은 코칭 기록이 없어요." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No sessions on this day."
-          }
-        }
-      }
-    },
-    "작성 중" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Drafts"
-          }
-        }
-      }
-    },
-    "빈 칸을 모두 채우면 완료할 수 있어요. 닫아도 작성 중인 내용은 남아 목록 맨 위에서 이어 쓸 수 있어요." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fill in every cell to finish. If you close, your draft stays at the top of the list so you can pick up where you left off."
-          }
-        }
-      }
-    },
-    "전에 기록한 %@ 님과 같은 분으로 세어져요." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Counted as the same %@ from earlier sessions."
-          }
-        }
-      }
-    },
-    "다른 분이에요" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Different Person"
-          }
-        }
-      }
-    },
-    "%@ 님과 구분해 주세요" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tell Them Apart from %@"
-          }
-        }
-      }
-    },
-    "예: 회사, 지역" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "e.g. company or city"
-          }
-        }
-      }
-    },
-    "구분하기" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add"
-          }
-        }
-      }
-    },
-    "코칭일지에 ‘%@(회사)’처럼 적혀 다른 고객으로 세어져요." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The log will show “%@ (Company)” and count them as a different client."
-          }
-        }
-      }
-    },
-    "기본 코칭 시간" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Default Session Length"
-          }
-        }
-      }
-    },
-    "직접 입력할 때 종료 시각이 이 시간만큼 채워져요. 녹음한 코칭은 실제 시간 그대로 기록돼요." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "When you add a session by hand, the end time is filled in this far after the start. Recorded sessions keep their real length."
-          }
-        }
-      }
-    },
-    "iCloud 백업" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iCloud Backup"
-          }
-        }
-      }
-    },
-    "녹음 파일도 백업" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Back up recordings too"
-          }
-        }
-      }
-    },
-    "코칭 기록과 변환된 텍스트는 내 iCloud에 자동으로 백업돼 다른 기기에서도 볼 수 있어요. 녹음 파일은 용량이 커서 켤 때만 함께 올라가요. 개발자는 볼 수 없어요." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your records and transcripts back up to your iCloud automatically, so you can see them on your other devices. Recordings are large, so they go up only if you turn this on. The developer can't see any of it."
+            "value" : "(%lld total)"
           }
         }
       }
     },
     "%@  %@" : {
       "localizations" : {
-        "ko" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@  %2$@"
           }
         },
-        "en" : {
+        "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@  %2$@"
+          }
+        }
+      }
+    },
+    "%@ / %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ / %2$@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ / %2$@"
           }
         }
       }
@@ -247,18 +84,12 @@
         }
       }
     },
-    "%@ / %@" : {
+    "%@ 님과 구분해 주세요" : {
       "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ / %2$@"
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ / %2$@"
+            "value" : "Tell Them Apart from %@"
           }
         }
       }
@@ -529,6 +360,7 @@
         }
       }
     },
+    "%lld" : {},
     "%lld~%lld분" : {
       "localizations" : {
         "en" : {
@@ -545,6 +377,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld"
+          }
+        }
+      }
+    },
+    "%lld건 · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld sessions · %@"
           }
         }
       }
@@ -619,22 +461,12 @@
         }
       }
     },
-    "(사)한국코치협회" : {
+    "└ 받은 코치더코치 포함" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Korea Coach Association"
-          }
-        }
-      }
-    },
-    "(총%lld명)" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(%lld total)"
+            "value" : "└ incl. coach-the-coach received"
           }
         }
       }
@@ -705,6 +537,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "1:2 (counts double)"
+          }
+        }
+      }
+    },
+    "15초 뒤로" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back 15 seconds"
+          }
+        }
+      }
+    },
+    "15초 앞으로" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forward 15 seconds"
           }
         }
       }
@@ -839,6 +693,26 @@
         }
       }
     },
+    "iCloud 백업" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Backup"
+          }
+        }
+      }
+    },
+    "iOS 26 · macOS 26 이상에서는 기기 안에서 처리하는 SpeechAnalyzer를 사용해요. 이전 버전에서 ‘기기 내 인식만 사용’을 끄면 음성이 Apple 서버로 전송될 수 있어요. 코칭 녹음은 고객 동의를 받은 경우에만 사용해 주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On iOS 26 and macOS 26 or later, on-device SpeechAnalyzer is used. On earlier versions, turning off “On-device recognition only” may send audio to Apple servers. Record coaching only with your client's consent."
+          }
+        }
+      }
+    },
     "SFSpeechRecognizer (구간 분할 처리)" : {
       "localizations" : {
         "en" : {
@@ -875,36 +749,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "SpeechAnalyzer (on device, built for long recordings)"
-          }
-        }
-      }
-    },
-    "iOS 26 · macOS 26 이상에서는 기기 안에서 처리하는 SpeechAnalyzer를 사용해요. 이전 버전에서 ‘기기 내 인식만 사용’을 끄면 음성이 Apple 서버로 전송될 수 있어요. 코칭 녹음은 고객 동의를 받은 경우에만 사용해 주세요." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "On iOS 26 and macOS 26 or later, on-device SpeechAnalyzer is used. On earlier versions, turning off “On-device recognition only” may send audio to Apple servers. Record coaching only with your client's consent."
-          }
-        }
-      }
-    },
-    "‘코칭 시작’을 누르면 녹음과 함께 시작 시각이 기록되고, 종료하면 코칭일지 한 줄이 완성돼요. 지난 코칭은 ‘직접 입력’이나 ‘오디오 파일 가져오기’로 추가할 수 있어요." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tap “Start Coaching” to record and log the start time. When you finish, one row of your coaching log is done. Add past sessions with “Manual Entry” or “Import Audio File”."
-          }
-        }
-      }
-    },
-    "└ 받은 코치더코치 포함" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "└ incl. coach-the-coach received"
           }
         }
       }
@@ -1079,6 +923,16 @@
         }
       }
     },
+    "구분하기" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add"
+          }
+        }
+      }
+    },
     "구성" : {
       "localizations" : {
         "en" : {
@@ -1179,12 +1033,32 @@
         }
       }
     },
+    "기록을 열지 못했어요" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't open your records"
+          }
+        }
+      }
+    },
     "기록할 시간" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Minutes to Log"
+          }
+        }
+      }
+    },
+    "기본 코칭 시간" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default Session Length"
           }
         }
       }
@@ -1289,6 +1163,16 @@
         }
       }
     },
+    "녹음 파일도 백업" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back up recordings too"
+          }
+        }
+      }
+    },
     "녹음 파일을 삭제할까요?" : {
       "localizations" : {
         "en" : {
@@ -1369,6 +1253,16 @@
         }
       }
     },
+    "다른 분이에요" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Different Person"
+          }
+        }
+      }
+    },
     "다시 변환" : {
       "localizations" : {
         "en" : {
@@ -1389,12 +1283,42 @@
         }
       }
     },
+    "다음 달" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next Month"
+          }
+        }
+      }
+    },
     "닫기" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Close"
+          }
+        }
+      }
+    },
+    "달력" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendar"
+          }
+        }
+      }
+    },
+    "달력으로 보기" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View as Calendar"
           }
         }
       }
@@ -1619,7 +1543,18 @@
         }
       }
     },
+    "빈 칸을 모두 채우면 완료할 수 있어요. 닫아도 작성 중인 내용은 남아 목록 맨 위에서 이어 쓸 수 있어요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fill in every cell to finish. If you close, your draft stays at the top of the list so you can pick up where you left off."
+          }
+        }
+      }
+    },
     "빈 칸을 모두 채워야 저장할 수 있어요." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1701,16 +1636,16 @@
     },
     "시작 %@ · %@" : {
       "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "시작 %1$@ · %2$@"
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Started %1$@ · %2$@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시작 %1$@ · %2$@"
           }
         }
       }
@@ -1895,6 +1830,16 @@
         }
       }
     },
+    "예: 회사, 지역" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "e.g. company or city"
+          }
+        }
+      }
+    },
     "오늘 코칭의 주제" : {
       "localizations" : {
         "en" : {
@@ -2025,22 +1970,22 @@
         }
       }
     },
-    "유료(분)" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Paid (min)"
-          }
-        }
-      }
-    },
     "유료·무료 칸에는 시간 범위와 같은 분이 기록돼요. 시간 범위와 다른 값을 적으면 작성 오류로 볼 수 있어요." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "The paid and free columns get the same minutes as the time range. A different value may be treated as a writing error."
+          }
+        }
+      }
+    },
+    "유료(분)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paid (min)"
           }
         }
       }
@@ -2195,12 +2140,32 @@
         }
       }
     },
+    "이날은 코칭 기록이 없어요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No sessions on this day."
+          }
+        }
+      }
+    },
     "이름 없음" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "No Name"
+          }
+        }
+      }
+    },
+    "이전 달" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previous Month"
           }
         }
       }
@@ -2247,16 +2212,16 @@
     },
     "인정 범위 %@ · %lld분 더 하면 인정돼요" : {
       "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "인정 범위 %1$@ · %2$lld분 더 하면 인정돼요"
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Allowed %1$@ · %2$lld more minutes to count"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "인정 범위 %1$@ · %2$lld분 더 하면 인정돼요"
           }
         }
       }
@@ -2333,16 +2298,16 @@
     },
     "작성 점검 · 오류 %lld건 · 주의 %lld건" : {
       "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "작성 점검 · 오류 %1$lld건 · 주의 %2$lld건"
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Log Check · %1$lld errors · %2$lld warnings"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작성 점검 · 오류 %1$lld건 · 주의 %2$lld건"
           }
         }
       }
@@ -2359,16 +2324,26 @@
     },
     "작성 점검: 오류 %lld건 · 주의 %lld건" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log check: %1$lld errors · %2$lld warnings"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "작성 점검: 오류 %1$lld건 · 주의 %2$lld건"
           }
-        },
+        }
+      }
+    },
+    "작성 중" : {
+      "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Log check: %1$lld errors · %2$lld warnings"
+            "value" : "Drafts"
           }
         }
       }
@@ -2383,7 +2358,30 @@
         }
       }
     },
+    "재생" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Play"
+          }
+        }
+      }
+    },
+    "재생 위치" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playback position"
+          }
+        }
+      }
+    },
     "저장" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2393,12 +2391,12 @@
         }
       }
     },
-    "저장하고 닫기" : {
+    "저장된 기록은 지워지지 않았어요. 다만 지금 적는 내용은 저장되지 않으니, 앱을 껐다 켜 보세요." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Save and Close"
+            "value" : "Your saved records haven't been deleted. Anything you add now won't be saved, so please close the app and open it again."
           }
         }
       }
@@ -2409,6 +2407,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Saved"
+          }
+        }
+      }
+    },
+    "저장하고 닫기" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save and Close"
           }
         }
       }
@@ -2513,22 +2521,22 @@
         }
       }
     },
-    "주제 (선택)" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Topic (Optional)"
-          }
-        }
-      }
-    },
     "주제 · 메모" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Topic · Notes"
+          }
+        }
+      }
+    },
+    "주제 (선택)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Topic (Optional)"
           }
         }
       }
@@ -2559,6 +2567,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Stop"
+          }
+        }
+      }
+    },
+    "지금까지 코칭 %lld시간을 기록했어요" : {
+      "comment" : "Tip ask card: total coaching hours the person has logged",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "You've logged %lld hour of coaching so far"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "You've logged %lld hours of coaching so far"
+                }
+              }
+            }
           }
         }
       }
@@ -2599,6 +2630,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clear Typed Minutes and Use the Time Range"
+          }
+        }
+      }
+    },
+    "직접 입력할 때 종료 시각이 이 시간만큼 채워져요. 녹음한 코칭은 실제 시간 그대로 기록돼요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When you add a session by hand, the end time is filled in this far after the start. Recorded sessions keep their real length."
           }
         }
       }
@@ -2763,6 +2804,16 @@
         }
       }
     },
+    "코칭 %lld건" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld coaching sessions"
+          }
+        }
+      }
+    },
     "코칭 교육" : {
       "localizations" : {
         "en" : {
@@ -2819,6 +2870,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Coaching transcript"
+          }
+        }
+      }
+    },
+    "코칭 기록과 변환된 텍스트는 내 iCloud에 자동으로 백업돼 다른 기기에서도 볼 수 있어요. 녹음 파일은 용량이 커서 켤 때만 함께 올라가요. 개발자는 볼 수 없어요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your records and transcripts back up to your iCloud automatically, so you can see them on your other devices. Recordings are large, so they go up only if you turn this on. The developer can't see any of it."
           }
         }
       }
@@ -2885,6 +2946,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "코칭 실습은 %1$@ 교육(%2$lld시간)을 시작한 날 이후 기록만 인정돼요. 그 이전 코칭은 오류로 표시돼요."
+          }
+        }
+      }
+    },
+    "코칭 없음" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No sessions"
           }
         }
       }
@@ -2985,6 +3056,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Coaching Log is locked"
+          }
+        }
+      }
+    },
+    "코칭일지에 ‘%@(회사)’처럼 적혀 다른 고객으로 세어져요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The log will show “%@ (Company)” and count them as a different client."
           }
         }
       }
@@ -3175,89 +3256,12 @@
         }
       }
     },
-    "지금까지 코칭 %lld시간을 기록했어요" : {
-      "comment" : "Tip ask card: total coaching hours the person has logged",
-      "localizations" : {
-        "en" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "You've logged %lld hour of coaching so far"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "You've logged %lld hours of coaching so far"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "재생" : {
-      "extractionState" : "manual",
+    "마지막 코칭 %@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Play"
-          }
-        }
-      }
-    },
-    "15초 뒤로" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Back 15 seconds"
-          }
-        }
-      }
-    },
-    "15초 앞으로" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Forward 15 seconds"
-          }
-        }
-      }
-    },
-    "재생 위치" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Playback position"
-          }
-        }
-      }
-    },
-    "기록을 열지 못했어요" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Couldn't open your records"
-          }
-        }
-      }
-    },
-    "저장된 기록은 지워지지 않았어요. 다만 지금 적는 내용은 저장되지 않으니, 앱을 껐다 켜 보세요." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your saved records haven't been deleted. Anything you add now won't be saved, so please close the app and open it again."
+            "value" : "Last session %@"
           }
         }
       }

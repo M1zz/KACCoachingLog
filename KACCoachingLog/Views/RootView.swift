@@ -47,17 +47,7 @@ struct RootView: View {
         return sessions.first { $0.uuid == selectedID }
     }
 
-    private var knownClients: [String] {
-        var seen = Set<String>()
-        var names: [String] = []
-        for session in sessions where session.kind != .coachTheCoach {
-            for name in session.logEntry.cleanedClientNames where !seen.contains(KACValidator.normalize(name)) {
-                seen.insert(KACValidator.normalize(name))
-                names.append(name)
-            }
-        }
-        return names
-    }
+    private var knownClients: [KnownClient] { KnownClient.list(from: sessions) }
 
     var body: some View {
         let issues = KACValidator.validate(
@@ -227,7 +217,7 @@ struct RootView: View {
     @ViewBuilder
     private var detailContent: some View {
         if let session = selectedSession {
-            SessionDetailView(session: session, knownClients: knownClients) {
+            SessionDetailView(session: session) {
                 pendingDelete = session
             }
             .id(session.uuid)

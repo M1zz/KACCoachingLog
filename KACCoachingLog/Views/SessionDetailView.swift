@@ -4,7 +4,6 @@ import UniformTypeIdentifiers
 
 struct SessionDetailView: View {
     @Bindable var session: CoachingSession
-    let knownClients: [String]
     let onDelete: () -> Void
 
     @Environment(\.modelContext) private var modelContext
@@ -95,13 +94,8 @@ struct SessionDetailView: View {
     }
 
     /// 다른 기록에 나온 고객만 — 이 기록의 이름을 '전에 기록한 분'으로 보지 않게.
-    private var otherClients: [String] {
-        let others = Set(
-            allSessions
-                .filter { $0.uuid != session.uuid && $0.kind != .coachTheCoach }
-                .flatMap { $0.logEntry.cleanedClientNames.map(KACValidator.normalize) }
-        )
-        return knownClients.filter { others.contains(KACValidator.normalize($0)) }
+    private var otherClients: [KnownClient] {
+        KnownClient.list(from: allSessions.filter { $0.uuid != session.uuid })
     }
 
     // MARK: Sections

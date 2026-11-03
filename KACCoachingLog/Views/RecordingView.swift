@@ -30,7 +30,7 @@ struct SessionDraft {
 }
 
 struct RecordingView: View {
-    let knownClients: [String]
+    let knownClients: [KnownClient]
     let onSaved: (CoachingSession) -> Void
 
     @Environment(\.dismiss) private var dismiss
@@ -143,6 +143,16 @@ struct RecordingView: View {
 
     private var setupForm: some View {
         Form {
+            // 고객부터 고른다 — 전에 만난 분이면 마지막 코칭 날이 바로 보인다.
+            ParticipantsEditor(
+                kind: $draft.kind,
+                groupSize: $draft.groupSize,
+                clientNames: $draft.clientNames,
+                ctcComposition: $draft.ctcComposition,
+                ctcLicenseNumber: $draft.ctcLicenseNumber,
+                knownClients: knownClients
+            )
+
             Section("코칭 구분") {
                 Picker("구분", selection: $draft.kind) {
                     ForEach(certification.sessionKinds) { kind in
@@ -163,15 +173,6 @@ struct RecordingView: View {
                 }
                 .pickerStyle(.segmented)
             }
-
-            ParticipantsEditor(
-                kind: $draft.kind,
-                groupSize: $draft.groupSize,
-                clientNames: $draft.clientNames,
-                ctcComposition: $draft.ctcComposition,
-                ctcLicenseNumber: $draft.ctcLicenseNumber,
-                knownClients: knownClients
-            )
 
             Section("주제 (선택)") {
                 TextField("오늘 코칭의 주제", text: $draft.topic)
