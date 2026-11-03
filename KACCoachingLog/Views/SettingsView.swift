@@ -136,6 +136,7 @@ struct SettingsView: View {
 
             Section {
                 Toggle("녹음 파일도 백업", isOn: $backupAudio)
+                VaultRow()
             } header: {
                 Text("iCloud 백업")
             } footer: {
@@ -170,6 +171,36 @@ struct SettingsView: View {
             storageText = AudioStorage.totalSizeText()
             engineDescription = await TranscriptionService.engineDescription()
         }
+    }
+}
+
+/// 백업 및 복원(LeeoKit 금고) 줄. 응원하기 줄과 같이 iOS 는 밀어서, macOS 설정 창은 시트로 연다.
+private struct VaultRow: View {
+    @State private var showVault = false
+
+    var body: some View {
+        #if os(iOS)
+        NavigationLink { LeeoVaultView(appName: KACCoachingLogSpec.displayName) } label: {
+            Label(LeeoVaultText.entry, systemImage: "externaldrive.badge.timemachine")
+        }
+        #else
+        Button {
+            showVault = true
+        } label: {
+            Label(LeeoVaultText.entry, systemImage: "externaldrive.badge.timemachine")
+        }
+        .sheet(isPresented: $showVault) {
+            NavigationStack {
+                LeeoVaultView(appName: KACCoachingLogSpec.displayName)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("닫기", systemImage: "xmark") { showVault = false }
+                        }
+                    }
+            }
+            .frame(minWidth: 420, minHeight: 520)
+        }
+        #endif
     }
 }
 

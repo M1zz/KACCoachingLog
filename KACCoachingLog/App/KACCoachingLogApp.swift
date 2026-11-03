@@ -1,13 +1,18 @@
 import SwiftData
 import SwiftUI
-#if os(iOS)
 import LeeoKit
-#endif
 
 @main
 struct KACCoachingLogApp: App {
     @State private var transcriptionCenter = TranscriptionCenter()
-    @State private var appLock = AppLock()
+    @State private var appLock: AppLock
+
+    init() {
+        // 백업 금고는 맨 먼저 — 예약된 복원을 저장소와 설정(UserDefaults)을 읽기 전에 적용한다.
+        // AppLock 은 만들 때 설정을 읽으므로 그 뒤에 만든다.
+        LeeoVault.start(KACCoachingLogSpec.self)
+        _appLock = State(initialValue: AppLock())
+    }
 
     var body: some Scene {
         WindowGroup {

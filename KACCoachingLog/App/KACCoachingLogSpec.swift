@@ -2,7 +2,7 @@ import Foundation
 import LeeoKit
 
 /// LeeoKit 은 팁 화면에만 쓴다.
-/// ⚠️ 여기서 bootstrap · 피드백 · 분석을 켜지 않는다 — 계약을 채우는 값일 뿐 아무것도 돌지 않는다.
+/// ⚠️ 여기서 bootstrap · 피드백 · 분석을 켜지 않는다 (백업 금고만 App.init 에서 직접 켠다) — 계약을 채우는 값일 뿐 아무것도 돌지 않는다.
 /// 코칭 기록은 사용자의 기기와 본인 iCloud 에만 둔다는 약속(PRIVACY.md)을 그대로 지킨다.
 enum KACCoachingLogSpec: LeeoAppSpec {
     static let appName = "코칭일지"
@@ -16,6 +16,8 @@ enum KACCoachingLogSpec: LeeoAppSpec {
         supportURL: URL(string: "https://m1zz.github.io/KACCoachingLog/support.html")!
     )
     static let monetization = LeeoMonetization.free
+    /// 피드백 허브 iCloud 컨테이너가 entitlements 에 없다 — 금고는 파일로만 백업한다.
+    static let vaultUsesICloud = false
 
     /// 무료 앱이라 LeeoStore 가 없다 — 팁만 혼자 받는다(앱을 열 때 `startStandalone()`, → KACCoachingLogApp).
     /// 소모성 상품 셋, 작은 것부터. ⚠️ 기능을 여는 상품이 아니다.
