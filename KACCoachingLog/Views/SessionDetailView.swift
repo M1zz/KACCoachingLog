@@ -21,6 +21,7 @@ struct SessionDetailView: View {
     @State private var confirmRetranscribe = false
     @State private var confirmDeleteAudio = false
     @State private var importError: String?
+    @State private var saveCount = 0
 
     private let formatter = KACFormatter()
 
@@ -53,6 +54,19 @@ struct SessionDetailView: View {
         }
         .formStyle(.grouped)
         .navigationTitle(session.displayTitle)
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Label("저장됨", systemImage: "checkmark.circle.fill")
+                    .labelStyle(.titleAndIcon)
+                    .font(.footnote)
+                    .foregroundStyle(.green)
+                    .symbolEffect(.bounce, value: saveCount)
+            }
+        }
+        // Every edit is written right away; the check bounces so the user sees it landed.
+        .onChange(of: editedContent) {
+            if (try? modelContext.save()) != nil { saveCount += 1 }
+        }
         .fileImporter(isPresented: $showAudioImporter, allowedContentTypes: [.audio]) { result in
             attachAudio(result)
         }
@@ -320,6 +334,17 @@ struct SessionDetailView: View {
             Label(title, systemImage: "text.bubble")
         }
         .disabled(session.audioFileURL == nil)
+    }
+
+    private struct EditedContent: Equatable {
+        let entry: LogEntry
+        let topic: String
+        let notes: String
+        let transcript: String
+    }
+
+    private var editedContent: EditedContent {
+        EditedContent(entry: session.logEntry, topic: session.topic, notes: session.notes, transcript: session.transcript)
     }
 
     // MARK: Bindings

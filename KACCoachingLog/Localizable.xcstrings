@@ -2193,6 +2193,16 @@
         }
       }
     },
+    "저장됨" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saved"
+          }
+        }
+      }
+    },
     "저장하지 못했어요: %@" : {
       "localizations" : {
         "en" : {
