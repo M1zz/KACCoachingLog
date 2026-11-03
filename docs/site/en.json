@@ -158,7 +158,7 @@
       },
       {
         "q": "Where is my data stored?",
-        "a": "Every record and recording stays on this device, and the developer can't see any of it. The app collects no data. Deleting the app deletes your records too, so export anything you want to keep first."
+        "a": "Your records and transcripts are stored on this device and in your own iCloud, so you can see them on your other devices with the same Apple Account. Recordings go to iCloud only if you turn on “Back up recordings too” in Settings. The developer can't see any of it, and the app collects no data."
       },
       {
         "q": "How do I turn on App Lock?",

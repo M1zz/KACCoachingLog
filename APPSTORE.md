@@ -40,7 +40,7 @@ iOS 26과 macOS 26 이상에서는 음성이 기기 밖으로 나가지 않고 �
 직접 입력 화면에서 엑셀 칸 순서대로 입력하거나, Zoom이나 음성 메모로 녹음한 파일을 가져와 기록으로 만들 수 있어요.
 
 고객 정보 보호
-모든 기록과 녹음은 이 기기에만 저장되고, 앱은 어떤 정보도 수집하지 않아요. 앱 잠금을 켜면 Face ID나 기기 암호로 열 수 있고, 앱 전환 화면에서도 내용이 가려져요.
+기록은 내 iCloud에 자동으로 백업돼 iPhone, iPad, Mac에서 이어서 볼 수 있어요. 개발자는 볼 수 없고, 앱은 어떤 정보도 수집하지 않아요. 앱 잠금을 켜면 Face ID나 기기 암호로 열 수 있고, 앱 전환 화면에서도 내용이 가려져요.
 
 iPhone, iPad, Mac에서 쓸 수 있어요.
 
@@ -99,7 +99,7 @@ Add past sessions
 Enter earlier sessions field by field, or import audio you recorded with Zoom or Voice Memos.
 
 Your clients' privacy comes first
-Every record and recording stays on your device, and the app collects no data. Turn on App Lock to require Face ID or your passcode, and session details stay hidden in the app switcher.
+Your records back up to your own iCloud and stay in sync across iPhone, iPad, and Mac. The developer can't see them, and the app collects no data. Turn on App Lock to require Face ID or your passcode, and session details stay hidden in the app switcher.
 
 Works on iPhone, iPad, and Mac.
 
