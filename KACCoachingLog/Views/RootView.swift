@@ -1,6 +1,7 @@
 import SwiftData
 import SwiftUI
 import LeeoKit
+import AppIntents
 import UniformTypeIdentifiers
 
 struct RootView: View {
@@ -30,8 +31,9 @@ struct RootView: View {
     /// iPad portrait shows the list next to the detail instead of hiding it.
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
     @State private var showRecording = false
-    /// Siri 로 들어온 녹음 요청 (→ Recording/RecordingIntent.swift)
-    @Bindable private var recordingRouter = RecordingRouter.shared
+    /// Siri · Spotlight 로 들어온 요청 (→ App/CoachingIntents.swift)
+    @Bindable private var siriRouter = SiriRouter.shared
+    @Environment(\.scenePhase) private var scenePhase
     @State private var showExport = false
     @State private var showCalendar = false
     /// 직접 입력 중인 '작성 중' 기록. 있으면 입력 화면이 뜬다.
@@ -71,8 +73,17 @@ struct RootView: View {
             }
             .navigationSplitViewStyle(.balanced)
         }
-        .onChange(of: recordingRouter.request, initial: true) { _, request in
+        .onChange(of: siriRouter.recordingRequest, initial: true) { _, request in
             if request > 0 { showRecording = true }
+        }
+        .onChange(of: siriRouter.sessionID, initial: true) { _, id in
+            guard let id else { return }
+            selectedID = id
+            siriRouter.sessionID = nil
+        }
+        // 앱을 열 때와 뒤로 보낼 때 Spotlight 의 코칭 기록을 지금 것에 맞춘다.
+        .onChange(of: scenePhase) { _, phase in
+            if phase != .inactive { Task { await CoachingLibrary.reindex() } }
         }
         .sheet(isPresented: $showRecording) {
             RecordingView(knownClients: knownClients) { session in
@@ -326,6 +337,7 @@ struct RootView: View {
             ToolbarItemGroup(placement: .primaryAction) {
                 Button {
                     showRecording = true
+                    IntentDonationManager.shared.donate(intent: OpenRecordingIntent())
                 } label: {
                     Label("코칭 시작", systemImage: "record.circle")
                 }

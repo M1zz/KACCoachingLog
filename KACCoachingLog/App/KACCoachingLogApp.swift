@@ -42,7 +42,7 @@ struct KACCoachingLogApp: App {
 
     /// `.modelContainer(for:)` 는 저장소를 못 열면 앱을 죽인다 — 그러면 켤 때마다 죽고 고칠 길도 없다.
     /// 손으로 열고, 실패하면 디스크의 기록은 그대로 둔 채 이번 실행만 메모리에서 연다.
-    private static let container: ModelContainer = {
+    static let container: ModelContainer = {
         let schema = Schema([CoachingSession.self])
         do {
             // 기록은 사용자의 iCloud(개인 데이터베이스)에 백업된다. 개발자는 볼 수 없다.

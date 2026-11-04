@@ -360,7 +360,16 @@
         }
       }
     },
-    "%lld" : {},
+    "%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        }
+      }
+    },
     "%lld~%lld분" : {
       "localizations" : {
         "en" : {
@@ -3298,6 +3307,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "세션 녹음"
+          }
+        }
+      }
+    },
+    "코칭 기록" : {
+      "comment" : "Siri/Spotlight: one logged coaching session",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coaching Session"
+          }
+        }
+      }
+    },
+    "코칭 기록 열기" : {
+      "comment" : "Siri/Spotlight: open a logged coaching session",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Coaching Session"
+          }
+        }
+      }
+    },
+    "고른 코칭 기록을 앱에서 엽니다." : {
+      "comment" : "Siri: open session description",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens the chosen coaching session in the app."
+          }
+        }
+      }
+    },
+    "열 코칭 기록. 고객 이름이나 주제로 찾습니다." : {
+      "comment" : "Siri: session parameter description",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The coaching session to open. Find it by client name or topic."
           }
         }
       }
