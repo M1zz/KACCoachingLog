@@ -8,6 +8,7 @@
 준비 중인 코치 자격증에 맞춰 실습 시간을 점검해요
 작성 오류를 미리 찾아 한 번에 고칠 수 있어요
 제출용 엑셀과 CSV 파일로 바로 내보내요
+Mac에서도 같은 기록으로 이어서 정리해요
 
 ### App Store (English)
 
@@ -15,3 +16,4 @@ Recording a session fills in your log
 Hours are checked for your credential
 Spot log errors and fix them in one tap
 Export Excel or CSV ready to submit
+Pick up the same log on your Mac

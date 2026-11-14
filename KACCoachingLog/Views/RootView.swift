@@ -267,7 +267,7 @@ struct RootView: View {
                 }
                 // 기록한 코칭 시간이 쌓였을 때만, 드물게 응원을 부탁한다. 코칭을 마치고 돌아온 목록이다 (모달 아님)
                 LeeoTipAskSlot<KACCoachingLogSpec>(tipJar: KACCoachingLogSpec.tipJar,
-                                                   reached: KACCoachingLogTipMoments.reached(totalMinutes: summary.totalMinutes))
+                                                   reached: Self.isScreenshot ? [] : KACCoachingLogTipMoments.reached(totalMinutes: summary.totalMinutes))
             }
 
             if !drafts.isEmpty {
@@ -333,6 +333,16 @@ struct RootView: View {
         }
         .navigationTitle("코칭일지")
         .navigationSplitViewColumnWidth(min: 320, ideal: 400, max: 480)
+        .focusedSceneValue(\.coachingActions, CoachingActions(
+            record: {
+                showRecording = true
+                IntentDonationManager.shared.donate(intent: OpenRecordingIntent())
+            },
+            manualEntry: { startManualEntry() },
+            importAudio: { showAudioImporter = true },
+            calendar: { showCalendar = true },
+            export: { showExport = true }
+        ))
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
                 Button {
@@ -342,7 +352,6 @@ struct RootView: View {
                     Label("코칭 시작", systemImage: "record.circle")
                 }
                 .help("녹음하며 코칭 시작")
-                .keyboardShortcut("n", modifiers: .command)
 
                 Menu {
                     Button {
@@ -372,7 +381,6 @@ struct RootView: View {
                     Label("엑셀로 내보내기", systemImage: "square.and.arrow.up")
                 }
                 .help("코칭일지 엑셀로 내보내기")
-                .keyboardShortcut("e", modifiers: .command)
 
                 #if os(iOS)
                 Button {
@@ -440,6 +448,15 @@ struct RootView: View {
     }
 
     /// 여는 순간 '작성 중' 기록을 만들어 둔다 — 닫아도 이어 쓸 수 있게.
+    /// 스크린샷에는 응원 부탁 카드를 띄우지 않는다 (예시 기록이 시간을 채워 매번 뜬다)
+    private static var isScreenshot: Bool {
+        #if DEBUG
+        ScreenshotSupport.isSeeding
+        #else
+        false
+        #endif
+    }
+
     private func startManualEntry() {
         let draft = CoachingSession.manualDraft()
         modelContext.insert(draft)

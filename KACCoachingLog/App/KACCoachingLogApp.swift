@@ -30,8 +30,9 @@ struct KACCoachingLogApp: App {
                 .storeFallbackNotice()
         }
         .modelContainer(Self.container)
+        .commands { CoachingCommands() }
         #if os(macOS)
-        .defaultSize(width: 1100, height: 760)
+        .defaultSize(Self.windowSize)
         #endif
 
         #if os(macOS)
@@ -44,8 +45,26 @@ struct KACCoachingLogApp: App {
 
     /// `.modelContainer(for:)` 는 저장소를 못 열면 앱을 죽인다 — 그러면 켤 때마다 죽고 고칠 길도 없다.
     /// 손으로 열고, 실패하면 디스크의 기록은 그대로 둔 채 이번 실행만 메모리에서 연다.
+    #if os(macOS)
+    /// 처음 여는 창 크기. 스크린샷은 1440×900 pt — Retina 로 찍으면 App Store Mac 규격 2880×1800 그대로다.
+    private static var windowSize: CGSize {
+        #if DEBUG
+        if ScreenshotSupport.isSeeding { return CGSize(width: 1440, height: 900) }
+        #endif
+        return CGSize(width: 1100, height: 760)
+    }
+    #endif
+
     static let container: ModelContainer = {
         let schema = Schema([CoachingSession.self])
+        #if DEBUG
+        // 스크린샷 예시는 기록을 모두 지우고 채운다 — 진짜 저장소(와 iCloud)에는 절대 닿지 않게 메모리에만.
+        // (Mac 에서 찍으면 그 Mac 의 진짜 기록이 지워지고, 지운 것이 iPhone 까지 동기화된다)
+        if ScreenshotSupport.isSeeding {
+            return try! ModelContainer(for: schema, configurations:
+                ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none))
+        }
+        #endif
         do {
             // 기록은 사용자의 iCloud(개인 데이터베이스)에 백업된다. 개발자는 볼 수 없다.
             let configuration = ModelConfiguration(schema: schema, cloudKitDatabase: .private("iCloud.com.leeo.KACCoachingLog"))
