@@ -75,7 +75,9 @@ final class AppLock {
         }
     }
 
-    static var biometryIcon: String {
+    /// LAContext 는 물을 때마다 시스템과 동기로 왕복한다. 화면을 그릴 때마다 물으면 메인이 막힐 수 있어
+    /// (세끼 1.2.2 가 같은 자리에서 워치독에 죽었다) 앱이 켜진 동안 한 번만 묻는다.
+    static let biometryIcon: String = {
         let context = LAContext()
         _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
         switch context.biometryType {
@@ -84,7 +86,7 @@ final class AppLock {
         case .opticID: return "opticid"
         default: return "lock.open.fill"
         }
-    }
+    }()
 }
 
 // MARK: - Lock screen
